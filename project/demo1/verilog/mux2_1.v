@@ -4,10 +4,11 @@
 
     2-1 mux template
 */
-module mux2_1(InA, InB, S, Out);
-    input   InA, InB;
+module mux2_1 #(parameter N) (InA, InB, S, Out);
+    input [N-1: 0] InA;
+    input [N-1: 0] InB;
     input   S;
-    output  Out;
+    output [N-1: 0] Out;
 
     wire S_n, A_s, B_s;
 
