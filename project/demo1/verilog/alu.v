@@ -9,7 +9,7 @@
     of the operation, as well as output a Zero bit and an Overflow
     (OFL) bit.
 */
-module alu (InA, InB, Cin, Op, invA, invB, sign, Out, Zero, Ofl);
+module alu (InA, InB, Cin, Op, invA, invB, sign, Out, Zero, Ofl, lt, lte, gt, gte);
 
    // declare constant for size of inputs, outputs (N),
    // and operations (O)
@@ -26,6 +26,10 @@ module alu (InA, InB, Cin, Op, invA, invB, sign, Out, Zero, Ofl);
    output [N-1:0] Out;
    output         Ofl;
    output         Zero;
+   output         lt;
+   output         lte;
+   output         gt;
+   output         gte;
 
    wire [N-1:0] barrelOut;
    wire [N-1:0] adderSum;
@@ -103,5 +107,17 @@ module alu (InA, InB, Cin, Op, invA, invB, sign, Out, Zero, Ofl);
    // Zero logic
    // TODO: Ask if carry out should affect zero flag.
    assign Zero = !(|Out);
+    
+   // A < B
+   assign lt = Out[15];
+
+   // A <= B
+   assign lte = (Out[15] || Zero);
+
+   // A > B
+   assign gt = !(Out[15] || Zero);
+
+   // A >= B
+   assign gte = !(Out[15]);
 
 endmodule
