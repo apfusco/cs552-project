@@ -24,7 +24,7 @@ module shifter_nb #(parameter SHFT) (In, Cnt, Op, Out);
 
    not1 not_In_n[N-1:0](In, In_n);
    nor2 nor_lsb[SHFT-1:0]({(SHFT){Op[0]}}, In_n[N-1:N-SHFT], lsb);
-   nor2 nor_msb[SHFT-1:0]({(SHFT){Op[0]}}, {SHFT{In_n[N-1]}}, msb);
+   assign msb = {SHFT{~Op[0]}} & In[SHFT-1:0];
 
    assign shftd_lft = {In[N-1-SHFT:0], lsb};
    assign shftd_rgt = {msb, In[N-1:SHFT]};
