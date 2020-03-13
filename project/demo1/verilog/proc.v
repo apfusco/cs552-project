@@ -23,6 +23,93 @@ module proc (/*AUTOARG*/
    
    
    /* your code here -- should include instantiations of fetch, decode, execute, mem and wb modules */
-   
+
+   // Error signals
+   wire fetch_error;
+   wire execute_error;
+   wire memory_error;
+   wire wb_error;
+
+   // PC values
+   wire [15:0] PC;
+   wire [15:0] PC_inc;
+   wire [15:0] nxt_PC;
+   wire [15:0] PC_sext_imm;
+   wire [15:0] reg_sext_imm;
+   wire PC_src;
+
+   // Other signals
+   wire [15:0] instr;
+   wire [15:0] rd_data_1;
+   wire [15:0] rd_data_2;
+   wire [15:0] oprnd_2;
+   wire [15:0] alu_out;
+   wire [15:0] mem_out;
+   wire [2:0]  alu_op;
+   wire set;
+   wire alu_invA;
+   wire alu_invB;
+   wire alu_sign;
+   wire alu_zero;
+   wire mem_en;
+   wire mem_wr;
+   wire wr_reg_sel;
+   wire wr_data;
+   wire take_br;
+
+   fetch fetch_stage(.instr(instr),
+                     .nxt_PC(nxt_PC),
+                     .PC_sext_imm(PC_sext_imm),
+                     .reg_sext_imm(),
+                     .PC_src(PC_src),
+                     .clk(clk),
+                     .rst(rst),
+                     .mem_en(mem_en),
+                     .mem_wr(mem_wr),
+                     .dump(/* TODO: ? */),
+                     .br_instr(),
+                     .take_br(),
+                     .jump_instr(),
+                     .jump_reg_instr());
+   execute execute_stage(.oprnd_1(rd_data_1),
+                         .oprnd_2(oprnd_2),
+                         .alu_Cin(alu_Cin),
+                         .alu_op(alu_op),
+                         .alu_invA(alu_invA),
+                         .alu_invB(alu_invB),
+                         .alu_sign(alu_sign),
+                         .PC_inc(PC_inc),
+                         .br_cnd_sel(br_cnd_sel),
+                         .alu_out(alu_out),
+                         .zero(alu_zero),
+                         .PC_src(PC_src),
+                         .PC_sext_imm(PC_sext_imm),
+                         .reg_sext_imm(reg_sext_imm),
+                         .take_br(take_br),
+                         .err(execute_error));
+   memory memory_stage(.data_out(mem_out),
+                       .data_in(rd_data_2),
+                       .addr(alu_out),
+                       .en(mem_en),
+                       .wr(mem_wr),
+                       .createdump(),
+                       .clk(clk),
+                       .rst(rst),
+                       .br(),
+                       .p(),
+                       .eq(),
+                       .n(),
+                       .zero(),
+                       .alu_out_msb());
+   wb wb_stage(.instr(instr),
+               .alu_out(alu_out),
+               .mem_out(mem_out),
+               .PC_inc(PC_inc),
+               .set(set),
+               .rd_data_1(rd_data_1),
+               .sext_imm(sext_imm),
+               .wr_reg_sel(wr_reg_sel),
+               .wr_data(wr_data));
+
 endmodule // proc
 // DUMMY LINE FOR REV CONTROL :0:
