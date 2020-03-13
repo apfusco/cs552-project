@@ -68,7 +68,7 @@ module proc (/*AUTOARG*/
                      .mem_wr(mem_wr),
                      .dump(/* TODO: ? */),
                      .br_instr(),
-                     .take_br(),
+                     .take_br(take_br),
                      .jump_instr(),
                      .jump_reg_instr());
    execute execute_stage(.oprnd_1(rd_data_1),
