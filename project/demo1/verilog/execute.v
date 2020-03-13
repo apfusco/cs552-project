@@ -6,16 +6,19 @@
 */
 module execute (oprnd_1,
                 oprnd_2,
+                alu_Cin,
                 alu_op,
                 alu_invA,
                 alu_invB,
                 alu_sign,
                 PC_inc,
+                br_cnd_sel,
                 alu_out,
                 zero,
                 PC_src,
                 PC_sext_imm,
                 reg_sext_imm,
+                take_br,
                 err);
 
    // I/O
