@@ -34,15 +34,15 @@ module wb (instr,
    assign SLBI = {rd_data_1[7:0], sext_imm[7:0]};
    assign dontcare = 16'hXXXX;
 
-   mux8_1 mux8_1_wr_data(.InA(alu_out),
-                         .InB(mem_out),
-                         .InC(PC_inc),
-                         .InD(set_ext),
-                         .InE(LBI),
-                         .InF(SLBI),
-                         .InG(dontcare),
-                         .InH(dontcare),
-                         .S(dontcare),
-                         .Out(dontcare));
+   mux8_1 mux8_1_wr_data[15:0](.InA(alu_out),
+                               .InB(mem_out),
+                               .InC(PC_inc),
+                               .InD(set_ext),
+                               .InE(LBI),
+                               .InF(SLBI),
+                               .InG(dontcare),
+                               .InH(dontcare),
+                               .S(wr_reg_sel),
+                               .Out(dontcare));
 
 endmodule
