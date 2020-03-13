@@ -13,12 +13,13 @@ module execute (oprnd_1,
                 alu_sign,
                 PC_inc,
                 br_cnd_sel,
+                br_instr,
+                jmp_instr,
                 alu_out,
                 zero,
                 PC_src,
                 PC_sext_imm,
                 reg_sext_imm,
-                take_br,
                 err);
 
    // I/O
@@ -31,14 +32,16 @@ module execute (oprnd_1,
    input         alu_sign;
    input  [15:0] PC_inc;
    input  [1:0]  br_cnd_sel;
+   input         br_instr;
+   input         jmp_instr;
    output [15:0] alu_out;
    output        zero;
    output        PC_src;      // High for for using PC_inc + PC_sext_imm
    output [15:0] PC_sext_imm;
    output [15:0] reg_sext_imm;
-   output        take_br;
    output        err;
 
+   wire take_br;
    wire eq;
    wire neq;
    wire lt;
@@ -64,7 +67,7 @@ module execute (oprnd_1,
    assign eq = zero;
    assign neq = ~zero;
    assign lt = oprnd_1[15];
-   assign gteq = zero | oprnd[15];
+   assign gteq = zero | oprnd_1[15];
    mux4_1 mux4_1_take_br(.InA(eq), .InB(neq), .InC(lt), .InD(gteq), .S(br_cnd_sel), .Out(take_br));
 
    // PC logic
