@@ -8,7 +8,7 @@ module control (instr,
                 wr_reg_sel,
                 oprnd_sel,
                 jmp_reg_instr,
-                jmp_inst,
+                jmp_instr,
                 br_instr,
                 sext_op,
                 alu_op,
@@ -29,7 +29,7 @@ module control (instr,
    output [1:0] wr_reg_sel;
    output       oprnd_sel;
    output       jmp_reg_instr;
-   output       jmp_inst;
+   output       jmp_instr;
    output       br_instr;
    output [2:0] sext_op;
    output [2:0] alu_op;
@@ -50,7 +50,7 @@ module control (instr,
    reg [1:0] case_wr_reg_sel;
    reg       case_oprnd_sel;
    reg       case_jmp_reg_instr;
-   reg       case_jmp_inst;
+   reg       case_jmp_instr;
    reg       case_br_instr;
    reg [2:0] case_sext_op;
    reg [2:0] case_alu_op;
@@ -93,7 +93,7 @@ module control (instr,
       case_pc_en = 1'b1;        // High when PC can be updated
       case_err = 1'b0;          // High upon error
 
-      case (opcode)
+      case (instr[15:11])
          5'b00000: begin // HALT
             case_pc_en = 1'b0;
          end
