@@ -5,7 +5,7 @@
    Description     : This is the module for the overall fetch stage of the processor.
 */
 module fetch (instr, nxt_PC, PC_sext_imm, reg_sext_imm, clk, rst,
-        mem_en, mem_wr, dump, br_instr, take_br, jump_instr, jump_reg_instr);
+        mem_en, mem_wr, dump, br_instr, take_br, jump_instr, jump_reg_instr, pc_en);
     
     output [15:0] instr;
     input [15:0] nxt_PC; 
@@ -20,6 +20,7 @@ module fetch (instr, nxt_PC, PC_sext_imm, reg_sext_imm, clk, rst,
     input take_br;
     input jump_instr;
     input jump_reg_instr;
+    input pc_en;
 
     wire [15:0] PC_reg_out;
     wire [15:0] PC_inc; // PC + 2
@@ -40,7 +41,7 @@ module fetch (instr, nxt_PC, PC_sext_imm, reg_sext_imm, clk, rst,
             .S(jump_reg_instr), .Out(nxt_PC));
 
     // TODO: add compatability with EPC and error ouput
-    register #(.N(16)) pc_reg(.clk(clk), .rst(rst), .writeEn(),
+    register #(.N(16)) pc_reg(.clk(clk), .rst(rst), .writeEn(pc_en),
             .dataIn(nxt_PC), .dataOut(PC_reg_out), .err());
     
     // TODO: unsure of what data_in should tie with
