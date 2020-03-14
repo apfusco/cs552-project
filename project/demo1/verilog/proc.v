@@ -57,7 +57,6 @@ module proc (/*AUTOARG*/
    wire wr_reg_sel;
    wire [15:0] wr_data;
    wire wr_en;
-   wire oprnd_sel;
 
    fetch fetch_stage(.instr(instr),
                      .nxt_PC(nxt_PC),
@@ -82,7 +81,6 @@ module proc (/*AUTOARG*/
                        .mem_en(mem_en),
                        .wr_sel(wr_sel),
                        .wr_reg_sel(wr_reg_sel),
-                       .oprnd_sel(oprnd_sel),
                        .jmp_reg_instr(jmp_reg_instr),
                        .jmp_instr(jmp_instr),
                        .br_instr(br_instr),
@@ -100,7 +98,6 @@ module proc (/*AUTOARG*/
                        .wr_data(wr_data),
                        .instr(instr),
                        .wr_reg_sel(wr_reg_sel),
-                       .oprnd_sel(oprnd_sel),
                        .clk(clk),
                        .rst(rst));
    execute execute_stage(.oprnd_1(rd_data_1),
