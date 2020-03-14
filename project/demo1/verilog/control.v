@@ -271,12 +271,14 @@ module control (instr,
             case_sext_op = 3'b010;
          end
          5'b00110: begin // JAL
+            case_wr_en = 1'b1;
             case_wr_sel = 3'b010;
             case_wr_reg_sel = 2'b11;
             case_jmp_instr = 1'b1;
             case_sext_op = 3'b011;
          end
          5'b00111: begin // JALR
+            case_wr_en = 1'b1;
             case_wr_sel = 3'b010;
             case_wr_reg_sel = 2'b11;
             case_sext_op = 3'b010;
