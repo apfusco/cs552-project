@@ -31,7 +31,7 @@ module fetch (instr, PC_inc, err, PC_sext_imm, reg_sext_imm, clk, rst,
     assign two = 16'h0002;
     assign PC_inc = PC_inc_wire;
 
-    assign err = (^{PC_sext_imm, reg_sext_imm, take_br, pc_en, jmp_reg_instr} == 1'bX) ? 1'b1 : 1'b0;
+    assign err = (^{PC_sext_imm, reg_sext_imm, clk, rst, take_br, pc_en, jmp_reg_instr} === 1'bX) ? 1'b1 : 1'b0;
 
     // PC + 2 since our ISA uses 16 bit instructions
     cla_16b pc_addr(.A(PC_reg_out), .B(two), .C_in(1'b0), .S(PC_inc_wire), .C_out());
