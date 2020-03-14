@@ -105,6 +105,7 @@ module proc (/*AUTOARG*/
                   .rst(rst));
    execute execute0(.oprnd_1(rd_data_1),
                     .oprnd_2(oprnd_2),
+                    .sext_imm(sext_imm),
                     .alu_Cin(alu_Cin),
                     .alu_op(alu_op),
                     .alu_invA(alu_invA),
