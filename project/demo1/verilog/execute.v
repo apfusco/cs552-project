@@ -15,11 +15,14 @@ module execute (oprnd_1,
                 br_cnd_sel,
                 br_instr,
                 jmp_instr,
+                ofl,
                 alu_out,
                 zero,
                 PC_src,
                 PC_sext_imm,
                 reg_sext_imm,
+                ltz,
+                lteq,
                 err);
 
    // I/O
@@ -34,15 +37,16 @@ module execute (oprnd_1,
    input  [1:0]  br_cnd_sel;
    input         br_instr;
    input         jmp_instr;
+   input         ofl;
    output [15:0] alu_out;
    output        zero;
    output        PC_src;      // High for for using PC_inc + PC_sext_imm
    output [15:0] PC_sext_imm;
    output [15:0] reg_sext_imm;
+   output        ltz;
+   output        lteq;
    output        err;
 
-   wire set_lt;
-   wire set_lte;
    wire take_br;
    wire br_eq;
    wire br_neq;
@@ -54,7 +58,6 @@ module execute (oprnd_1,
                     ^alu_sign, ^PC_inc, ^alu_out}} == 1'bX) ? 1'b1 : 1'b0;
 
    // ALU logic
-module alu (InA, InB, Cin, Op, invA, invB, sign, Out, Zero, Ofl, lt, lte, gt, gte);
    alu alu(.InA(oprnd_1),
            .InB(oprnd_2),
            .Cin(alu_Cin),
@@ -64,10 +67,10 @@ module alu (InA, InB, Cin, Op, invA, invB, sign, Out, Zero, Ofl, lt, lte, gt, gt
            .sign(alu_sign),
            .Out(alu_out),
            .Zero(zero),
-           .Ofl(alu_ofl)
-           .lt(set_lt),
-           .lte(set_lte),
-           .gt()
+           .Ofl(ofl),
+           .lt(ltz),
+           .lte(lteq),
+           .gt(),
            .gte());
 
    // Branching logic
