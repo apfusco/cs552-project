@@ -64,10 +64,10 @@ module control (instr,
    /*
     * Immediate extension operations.
     * Opcode | extension
-    * 000    | zext(instr[4:0])
-    * 001    | sext(instr[4:0])
-    * 010    | sext(instr[7:0])
-    * 011    | sext(instr[10:0])
+    * 00     | zext(instr[4:0])
+    * 01     | sext(instr[4:0])
+    * 10     | sext(instr[7:0])
+    * 11     | sext(instr[10:0])
     * TODO
     */
 
@@ -281,6 +281,8 @@ module control (instr,
             case_wr_en = 1'b1;
             case_wr_sel = 3'b010;
             case_wr_reg_sel = 2'b11;
+            case_jmp_reg_instr = 1'b1;
+            case_jmp_instr = 1'b1;
             case_sext_op = 3'b010;
          end
          5'b00010: begin // siic
