@@ -54,6 +54,9 @@ module proc (/*AUTOARG*/
    wire alu_invB;
    wire alu_sign;
    wire alu_zero;
+   wire alu_ofl;
+   wire alu_ltz;
+   wire alu_lteq;
    wire mem_en;
    wire mem_wr;
    wire [15:0] wr_data;
@@ -107,11 +110,16 @@ module proc (/*AUTOARG*/
                          .alu_sign(alu_sign),
                          .PC_inc(PC_inc),
                          .br_cnd_sel(br_cnd_sel),
+                         .br_instr(br_instr),
+                         .jmp_instr(jmp_instr),
+                         .ofl(alu_ofl),
                          .alu_out(alu_out),
                          .zero(alu_zero),
                          .PC_src(PC_src),
                          .PC_sext_imm(PC_sext_imm),
                          .reg_sext_imm(reg_sext_imm),
+                         .ltz(alu_ltz),
+                         .lteq(alu_lteq),
                          .err(execute_error));
    memory memory_stage(.data_out(mem_out),
                        .data_in(rd_data_2),
