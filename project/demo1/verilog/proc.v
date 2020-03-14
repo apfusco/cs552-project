@@ -63,20 +63,18 @@ module proc (/*AUTOARG*/
    wire [15:0] wr_data;
    wire wr_en;
    wire [2:0] wr_sel;
+   wire jmp_reg_instr;
 
    fetch fetch0(.instr(instr),
                 .PC_sext_imm(PC_sext_imm),
                 .reg_sext_imm(),
                 .clk(clk),
                 .rst(rst),
-                .mem_en(mem_en),
                 .mem_wr(mem_wr),
                 .dump(/* TODO: ? */),
-                .br_instr(),
                 .take_br(PC_src),
-                .jump_instr(),
-                .jump_reg_instr(),
-                .pc_en(pc_en));
+                .pc_en(pc_en),
+                .jmp_reg_instr(jmp_reg_instr));
    decode decode0(.rd_data_1(rd_data_1),
                   .rd_data_2(rd_data_2),
                   .oprnd_2(oprnd_2),
