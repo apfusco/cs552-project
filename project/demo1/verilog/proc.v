@@ -47,6 +47,7 @@ module proc (/*AUTOARG*/
    wire [15:0] alu_out;
    wire [15:0] mem_out;
    wire [2:0]  alu_op;
+   wire [1:0] br_cnd_sel;
    wire set;
    wire [1:0] set_sel;
    wire alu_invA;
