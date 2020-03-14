@@ -190,8 +190,8 @@ module control (instr,
             case_wr_en = 1'b1;
             case_alu_op = (instr[1] == 1'b0) ? 3'b100 :
                   (instr[0] == 1'b0) ? 3'b111 : 3'b101;
-            case_alu_invA = instr[1] & instr[0];
-            case_alu_invB = ~instr[1] & instr[0];
+            case_alu_invA = ~instr[1] & instr[0];
+            case_alu_invB = instr[1] & instr[0];
             case_alu_Cin = ~instr[1] & instr[0];
          end
          5'b11010: begin // ROL, SLL, ROR, SRL
