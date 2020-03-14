@@ -41,17 +41,20 @@ module execute (oprnd_1,
    output [15:0] reg_sext_imm;
    output        err;
 
+   wire set_lt;
+   wire set_lte;
    wire take_br;
-   wire eq;
-   wire neq;
-   wire lt;
-   wire gteq;
+   wire br_eq;
+   wire br_neq;
+   wire br_lt;
+   wire br_gteq;
 
    // TODO: Needs to be updated for changed inputs.
    assign err = ({^{^oprnd_1, ^oprnd_2, ^alu_op, ^alu_invA, ^alu_invB,
                     ^alu_sign, ^PC_inc, ^alu_out}} == 1'bX) ? 1'b1 : 1'b0;
 
    // ALU logic
+module alu (InA, InB, Cin, Op, invA, invB, sign, Out, Zero, Ofl, lt, lte, gt, gte);
    alu alu(.InA(oprnd_1),
            .InB(oprnd_2),
            .Cin(alu_Cin),
@@ -61,14 +64,18 @@ module execute (oprnd_1,
            .sign(alu_sign),
            .Out(alu_out),
            .Zero(zero),
-           .Ofl(alu_ofl));
+           .Ofl(alu_ofl)
+           .lt(set_lt),
+           .lte(set_lte),
+           .gt()
+           .gte());
 
    // Branching logic
-   assign eq = zero;
-   assign neq = ~zero;
-   assign lt = oprnd_1[15];
-   assign gteq = zero | oprnd_1[15];
-   mux4_1 mux4_1_take_br(.InA(eq), .InB(neq), .InC(lt), .InD(gteq), .S(br_cnd_sel), .Out(take_br));
+   assign br_eq = zero;
+   assign br_neq = ~zero;
+   assign br_lt = oprnd_1[15];
+   assign br_gteq = zero | oprnd_1[15];
+   mux4_1 mux4_1_take_br(.InA(eq), .InB(neq), .InC(lt), .InD(br_gteq), .S(br_cnd_sel), .Out(take_br));
 
    // PC logic
    assign PC_src = jmp_instr | (br_instr & take_br);
