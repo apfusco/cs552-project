@@ -83,7 +83,7 @@ module execute (oprnd_1,
 
    // PC logic
    assign PC_src = jmp_instr | (br_instr & take_br);
-   assign PC_sext_imm = PC_inc + (sext_imm << 1'b1);// TODO: Change addition logic.
+   assign PC_sext_imm = PC_inc + sext_imm;// TODO: Change addition logic.
    assign reg_sext_imm = PC_inc + oprnd_1;// TODO: Change addition logic.
    
 endmodule
