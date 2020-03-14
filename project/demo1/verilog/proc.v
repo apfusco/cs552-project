@@ -85,7 +85,6 @@ module proc (/*AUTOARG*/
                        .jmp_reg_instr(jmp_reg_instr),
                        .jmp_instr(jmp_instr),
                        .br_instr(br_instr),
-                       .sext_op(sext_op),
                        .alu_op(alu_op),
                        .alu_invA(alu_invA),
                        .alu_invB(alu_invB),

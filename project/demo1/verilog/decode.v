@@ -15,7 +15,6 @@ module decode (rd_data_1,
                jmp_reg_instr,
                jmp_instr,
                br_instr,
-               sext_op,
                alu_op,
                alu_invA,
                alu_invB,
@@ -42,7 +41,6 @@ module decode (rd_data_1,
     output jmp_reg_instr;
     output jmp_instr;
     output br_instr;
-    output sext_op;
     output [2:0] alu_op;
     output alu_invA;
     output alu_invB;
@@ -59,6 +57,7 @@ module decode (rd_data_1,
     input clk;
     input rst;
     
+    wire [2:0] sext_op;
     wire [1:0] wr_reg_sel;
     wire oprnd_sel;
     wire [15:0] sext_imm;
