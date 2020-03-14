@@ -54,7 +54,6 @@ module proc (/*AUTOARG*/
    wire alu_zero;
    wire mem_en;
    wire mem_wr;
-   wire wr_reg_sel;
    wire [15:0] wr_data;
    wire wr_en;
 
@@ -80,7 +79,6 @@ module proc (/*AUTOARG*/
                        .mem_wr_en(mem_wr_en),
                        .mem_en(mem_en),
                        .wr_sel(wr_sel),
-                       .wr_reg_sel(wr_reg_sel),
                        .jmp_reg_instr(jmp_reg_instr),
                        .jmp_instr(jmp_instr),
                        .br_instr(br_instr),
@@ -97,7 +95,6 @@ module proc (/*AUTOARG*/
                        .wr_en(wr_en),
                        .wr_data(wr_data),
                        .instr(instr),
-                       .wr_reg_sel(wr_reg_sel),
                        .clk(clk),
                        .rst(rst));
    execute execute_stage(.oprnd_1(rd_data_1),
@@ -137,7 +134,7 @@ module proc (/*AUTOARG*/
                .set(set),
                .rd_data_1(rd_data_1),
                .sext_imm(sext_imm),
-               .wr_reg_sel(wr_reg_sel),
+               .wr_sel(wr_sel),
                .wr_data(wr_data));
 
 endmodule // proc
