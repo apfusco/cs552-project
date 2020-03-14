@@ -282,7 +282,7 @@ module control (instr,
    end
 
    // Assign case outputs to module outputs
-   assign err = ((^instr ^ case_err) == 1'bX) ? 1'b1 : 1'b0;
+   assign err = ((^instr ^ case_err) === 1'bX) ? 1'b1 : 1'b0;
    assign br_cnd_sel = case_br_cnd_sel;
    assign set_sel = case_set_sel;
    assign wr_en = case_wr_en;

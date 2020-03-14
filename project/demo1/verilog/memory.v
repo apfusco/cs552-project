@@ -6,7 +6,7 @@
                      processor.
 */
 module memory (data_out, data_in, addr, en, mem_wr, createdump, clk, rst,
-               set, ofl, zero, ltz, lteq, set_sel);
+               set, ofl, zero, ltz, lteq, set_sel, err);
 
     // memory signals
     output [15:0] data_out;
@@ -25,6 +25,11 @@ module memory (data_out, data_in, addr, en, mem_wr, createdump, clk, rst,
     input       ltz;
     input       lteq;
     input [1:0] set_sel;
+
+    output err;
+
+    assign err = (^{data_in, addr, en, mem_wr, createdump, clk, rst, ofl, zero,
+          ltz, lteq, set_sel} === 1'bX) ? 1'b1 : 1'b0;
     
    // TODO: Your code here
    memory2c mem(.data_out(data_out), .data_in(data_in), .addr(addr), .enable(en), 

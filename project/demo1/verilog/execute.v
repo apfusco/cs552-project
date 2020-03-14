@@ -53,9 +53,8 @@ module execute (oprnd_1,
    wire br_lt;
    wire br_gteq;
 
-   // TODO: Needs to be updated for changed inputs.
-   assign err = ({^{^oprnd_1, ^oprnd_2, ^alu_op, ^alu_invA, ^alu_invB,
-                    ^alu_sign, ^PC_inc, ^alu_out}} == 1'bX) ? 1'b1 : 1'b0;
+   assign err = (^{oprnd_1, oprnd_2, alu_Cin, alu_op, alu_invA, alu_invB, alu_sign,
+         PC_inc, br_cnd_sel, br_instr, jmp_instr, ofl} === 1'bX) ? 1'b1 : 1'b0;
 
    // ALU logic
    alu alu(.InA(oprnd_1),
