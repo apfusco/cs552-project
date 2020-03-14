@@ -5,7 +5,7 @@
    Description     : This is the module for the overall fetch stage of the processor.
 */
 module fetch (instr, PC_inc, err, PC_sext_imm, reg_sext_imm, clk, rst,
-        dump, take_br, pc_en, jmp_reg_instr);
+        take_br, pc_en, jmp_reg_instr);
     
     output [15:0] instr;
     output [15:0] PC_inc; // PC + 2
@@ -14,7 +14,6 @@ module fetch (instr, PC_inc, err, PC_sext_imm, reg_sext_imm, clk, rst,
     input [15:0] reg_sext_imm; // immediate from a register (ex. JR instruction)
     input clk;
     input rst;
-    input dump;
     input take_br;
     input pc_en;
     input jmp_reg_instr;
@@ -32,7 +31,7 @@ module fetch (instr, PC_inc, err, PC_sext_imm, reg_sext_imm, clk, rst,
     assign two = 16'h0002;
     assign PC_inc = PC_inc_wire;
 
-    assign err = (^{PC_sext_imm, reg_sext_imm, dump, take_br, pc_en, jmp_reg_instr} == 1'bX) ? 1'b1 : 1'b0;
+    assign err = (^{PC_sext_imm, reg_sext_imm, take_br, pc_en, jmp_reg_instr} == 1'bX) ? 1'b1 : 1'b0;
 
     // PC + 2 since our ISA uses 16 bit instructions
     cla_16b pc_addr(.A(PC_reg_out), .B(two), .C_in(1'b0), .S(PC_inc_wire), .C_out());
@@ -50,6 +49,6 @@ module fetch (instr, PC_inc, err, PC_sext_imm, reg_sext_imm, clk, rst,
     
     // TODO: unsure of what data_in should tie with
     memory2c imem(.data_out(instr), .data_in(), .addr(PC_reg_out), 
-            .enable(mem_en), .wr(gnd), .createdump(dump), .clk(clk), 
+            .enable(mem_en), .wr(gnd), .createdump(~pc_en), .clk(clk), 
             .rst(rst)); 
 endmodule
