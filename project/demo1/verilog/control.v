@@ -16,7 +16,7 @@ module control (instr,
                 alu_invB,
                 alu_Cin,
                 alu_sign,
-                imem_en,
+                pc_en,
                 err);
 
    input [15:0] instr;
@@ -37,7 +37,7 @@ module control (instr,
    output       alu_invB;
    output       alu_Cin;
    output       alu_sign;
-   output       imem_en;
+   output       pc_en;
    output       err;
 
    // Control outputs
@@ -58,7 +58,7 @@ module control (instr,
    reg       case_alu_invB;
    reg       case_alu_Cin;
    reg       case_alu_sign;
-   reg       case_imem_en;
+   reg       case_pc_en;
    reg       case_err;
 
    /*
@@ -300,6 +300,6 @@ module control (instr,
    assign alu_invB = case_alu_invB;
    assign alu_Cin = case_alu_Cin;
    assign alu_sign = case_alu_sign;
-   assign imem_en = case_imem_en;
+   assign pc_en = case_pc_en;
    
 endmodule
