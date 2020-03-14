@@ -202,22 +202,34 @@ module control (instr,
             case_wr_en = 1'b1;
             case_set_sel = 2'b01;
             case_wr_sel = 3'b011;
+            case_alu_op = 3'b100;
+            case_alu_invB = 1'b1;
+            case_alu_Cin = 1'b1;
          end
          5'b11101: begin // SLT
             case_wr_en = 1'b1;
             case_set_sel = 2'b10;
             case_wr_sel = 3'b011;
+            case_alu_op = 3'b100;
+            case_alu_invB = 1'b1;
+            case_alu_Cin = 1'b1;
          end
          5'b11110: begin // SLE
             case_wr_en = 1'b1;
             case_set_sel = 2'b11;
             case_wr_sel = 3'b011;
+            case_alu_op = 3'b100;
+            case_alu_invB = 1'b1;
+            case_alu_Cin = 1'b1;
          end
          5'b11111: begin // SCO
             case_wr_en = 1'b1;
             // case_set_sel = 2'b00;
             case_wr_sel = 3'b011;
             case_alu_sign = 1'b0;
+            case_alu_op = 3'b100;
+            case_alu_invB = 1'b1;
+            case_alu_Cin = 1'b1;
          end
          5'b01100: begin // BEQZ
             // case_br_cnd_sel = 2'b00;
