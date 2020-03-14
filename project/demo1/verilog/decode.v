@@ -4,11 +4,57 @@
    Filename        : decode.v
    Description     : This is the module for the overall decode stage of the processor.
 */
-module decode (rd_data_1, rd_data_2, oprnd_2, err, rd_reg_1, rd_reg_2,
-         wr_en, wr_data, instr, wr_reg_sel, oprnd_sel, clk, rst);
+module decode (rd_data_1,
+               rd_data_2,
+               oprnd_2,
+               br_cnd_sel,
+               set_sel,
+               mem_wr_en,
+               mem_en,
+               wr_sel,
+               wr_reg_sel,
+               oprnd_sel,
+               jmp_reg_instr,
+               jmp_instr,
+               br_instr,
+               sext_op,
+               alu_op,
+               alu_invA,
+               alu_invB,
+               alu_Cin,
+               alu_sign,
+               pc_en,
+               err,
+               rd_reg_1,
+               rd_reg_2,
+               wr_en,
+               wr_data,
+               instr,
+               wr_reg_sel,
+               oprnd_sel,
+               clk,
+               rst);
+
     output [15:0] rd_data_1;
     output [15:0] rd_data_2;
     output [15:0] oprnd_2;
+    output br_cnd_sel;
+    output [1:0] set_sel;
+    output mem_wr_en;
+    output mem_en;
+    output [2:0] wr_sel;
+    output [1:0] wr_reg_sel;
+    output oprnd_sel;
+    output jmp_reg_instr;
+    output jmp_instr;
+    output br_instr;
+    output sext_op;
+    output alu_op;
+    output alu_invA;
+    output alu_invB;
+    output alu_Cin;
+    output alu_sign;
+    output pc_en;
     output err;
 
     input [2:0] rd_reg_1;
@@ -38,5 +84,26 @@ module decode (rd_data_1, rd_data_2, oprnd_2, err, rd_reg_1, rd_reg_2,
     sext sign_extender(.instr(instr), .imm(sext_imm));
     mux2_1 oprnd2_mux [15:0](.InA(rd_data_2), .InB(sext_imm), .S(oprnd_sel),
             .Out(oprnd_2));
+
+   control cntrl(.instr(instr),
+                 .br_cnd_sel(br_cnd_sel),
+                 .set_sel(set_sel),
+                 .wr_en(wr_en),
+                 .mem_wr_en(mem_wr_en),
+                 .mem_en(mem_en),
+                 .wr_sel(wr_sel),
+                 .wr_reg_sel(wr_reg_sel),
+                 .oprnd_sel(oprnd_sel),
+                 .jmp_reg_instr(jmp_reg_instr),
+                 .jmp_instr(jmp_instr),
+                 .br_instr(br_instr),
+                 .sext_op(sext_op),
+                 .alu_op(alu_op),
+                 .alu_invA(alu_invA),
+                 .alu_invB(alu_invB),
+                 .alu_Cin(alu_Cin),
+                 .alu_sign(alu_sign),
+                 .pc_en(pc_en),
+                 .err(err));
 
 endmodule
