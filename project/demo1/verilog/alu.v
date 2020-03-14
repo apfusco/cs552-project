@@ -34,7 +34,7 @@ module alu (InA, InB, Cin, Op, invA, invB, sign, Out, Zero, Ofl, lt, lte, gt, gt
    wire [N-1:0] barrelOut;
    wire [N-1:0] adderSum;
    wire [N-1:0] andOut;
-   wire [N-1:0] orOut;
+   wire [N-1:0] btrOut;
    wire [N-1:0] xorOut;
    wire [N-1:0] InA_n;
    wire [N-1:0] InB_n;
@@ -57,7 +57,7 @@ module alu (InA, InB, Cin, Op, invA, invB, sign, Out, Zero, Ofl, lt, lte, gt, gt
    * 011 = srl = shift right logical
    * 100 = ADD = A + B
    * 101 = AND = A & B
-   * 110 = OR = A | B
+   * 110 = BTR = reverse bits
    * 111 = XOR = A ^ B
    */
 
@@ -80,15 +80,33 @@ module alu (InA, InB, Cin, Op, invA, invB, sign, Out, Zero, Ofl, lt, lte, gt, gt
    // 16 bit AND
    and2 and2_andOut[N-1:0](.in1(sel_A), .in2(sel_B), .out(andOut));
 
-   // 16 bit OR
-   or2 or2_orOut[N-1:0](.in1(sel_A), .in2(sel_B), .out(orOut));
+   // 16 bit reversal
+   //or2 or2_orOut[N-1:0](.in1(sel_A), .in2(sel_B), .out(orOut));
+   assign btrOut = {
+    in1[0], 
+    in1[1], 
+    in1[2], 
+    in1[3], 
+    in1[4], 
+    in1[5], 
+    in1[6], 
+    in1[7], 
+    in1[8], 
+    in1[9], 
+    in1[10], 
+    in1[11], 
+    in1[12], 
+    in1[13], 
+    in1[14], 
+    in1[15] 
+   };
 
    // 16 bit XOR
    xor2 xor2_xorOut[N-1:0](.in1(sel_A), .in2(sel_B), .out(xorOut));
 
    // select from ADD, AND, OR, and XOR
    mux4_1 mux_logic[N-1:0](.InA(adderSum[N-1:0]), .InB(andOut[N-1:0]),
-                           .InC(orOut[N-1:0]), .InD(xorOut[N-1:0]), .S(Op[1:0]),
+                           .InC(btrOut[N-1:0]), .InD(xorOut[N-1:0]), .S(Op[1:0]),
                            .Out(logic_out[N-1:0]));
 
    // select from logic and the barrel shifter
