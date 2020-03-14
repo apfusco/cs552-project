@@ -26,6 +26,7 @@ module proc (/*AUTOARG*/
 
    // Error signals
    wire fetch_error;
+   wire decode_error;
    wire execute_error;
    wire memory_error;
    wire wb_error;
@@ -54,8 +55,9 @@ module proc (/*AUTOARG*/
    wire mem_en;
    wire mem_wr;
    wire wr_reg_sel;
-   wire wr_data;
-   wire take_br;
+   wire [15:0] wr_data;
+   wire wr_en;
+   wire oprnd_sel;
 
    fetch fetch_stage(.instr(instr),
                      .nxt_PC(nxt_PC),
@@ -68,9 +70,39 @@ module proc (/*AUTOARG*/
                      .mem_wr(mem_wr),
                      .dump(/* TODO: ? */),
                      .br_instr(),
-                     .take_br(take_br),
+                     .take_br(PC_src),
                      .jump_instr(),
                      .jump_reg_instr());
+   decode decode_stage(.rd_data_1(rd_data_1),
+                       .rd_data_2(rd_data_2),
+                       .oprnd_2(oprnd_2),
+                       .br_cnd_sel(br_cnd_sel),
+                       .set_sel(set_sel),
+                       .mem_wr_en(mem_wr_en),
+                       .mem_en(mem_en),
+                       .wr_sel(wr_sel),
+                       .wr_reg_sel(wr_reg_sel),
+                       .oprnd_sel(oprnd_sel),
+                       .jmp_reg_instr(jmp_reg_instr),
+                       .jmp_instr(jmp_instr),
+                       .br_instr(br_instr),
+                       .sext_op(sext_op),
+                       .alu_op(alu_op),
+                       .alu_invA(alu_invA),
+                       .alu_invB(alu_invB),
+                       .alu_Cin(alu_Cin),
+                       .alu_sign(alu_sign),
+                       .pc_en(pc_en),
+                       .err(decode_error),
+                       .rd_reg_1(instr[10:8]),
+                       .rd_reg_2(instr[7:5]),
+                       .wr_en(wr_en),
+                       .wr_data(wr_data),
+                       .instr(instr),
+                       .wr_reg_sel(wr_reg_sel),
+                       .oprnd_sel(oprnd_sel),
+                       .clk(clk),
+                       .rst(rst));
    execute execute_stage(.oprnd_1(rd_data_1),
                          .oprnd_2(oprnd_2),
                          .alu_Cin(alu_Cin),
@@ -85,7 +117,7 @@ module proc (/*AUTOARG*/
                          .PC_src(PC_src),
                          .PC_sext_imm(PC_sext_imm),
                          .reg_sext_imm(reg_sext_imm),
-                         .take_br(take_br),
+                         .take_br(PC_src),
                          .err(execute_error));
    memory memory_stage(.data_out(mem_out),
                        .data_in(rd_data_2),
