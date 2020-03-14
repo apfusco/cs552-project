@@ -48,6 +48,7 @@ module proc (/*AUTOARG*/
    wire [15:0] mem_out;
    wire [2:0]  alu_op;
    wire set;
+   wire [1:0] set_sel;
    wire alu_invA;
    wire alu_invB;
    wire alu_sign;
@@ -56,6 +57,7 @@ module proc (/*AUTOARG*/
    wire mem_wr;
    wire [15:0] wr_data;
    wire wr_en;
+   wire [2:0] wr_sel;
 
    fetch fetch_stage(.instr(instr),
                      .nxt_PC(nxt_PC),
