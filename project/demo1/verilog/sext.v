@@ -50,6 +50,7 @@ module sext(instr, imm);
             5'b01001:  imm = {{11{instr[4]}}, instr[4:0]};   // subi
             5'b01010:  imm = {{11{1'b0}}, instr[4:0]};       // xori
             5'b01011:  imm = {{11{1'b0}}, instr[4:0]};       // andni
+            5'b10100:  imm = {{11{1'b0}}, instr[4:0]};       //ROLI
             5'b10000:  imm = {{11{instr[4]}}, instr[4:0]};   // st
             5'b10001:  imm = {{11{instr[4]}}, instr[4:0]};   // ld
             5'b10011:  imm = {{11{instr[4]}}, instr[4:0]};   // stu
