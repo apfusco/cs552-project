@@ -43,6 +43,6 @@ module wb (instr,
                                .InG(dontcare),
                                .InH(dontcare),
                                .S(wr_sel),
-                               .Out(dontcare));
+                               .Out(wr_data));
 
 endmodule

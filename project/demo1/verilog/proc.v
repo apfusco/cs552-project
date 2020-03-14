@@ -66,8 +66,9 @@ module proc (/*AUTOARG*/
    wire jmp_reg_instr;
 
    fetch fetch0(.instr(instr),
+                .PC_inc(PC_inc),
                 .PC_sext_imm(PC_sext_imm),
-                .reg_sext_imm(),
+                .reg_sext_imm(reg_sext_imm),
                 .clk(clk),
                 .rst(rst),
                 .mem_wr(mem_wr),
