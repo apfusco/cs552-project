@@ -43,7 +43,7 @@ module decode (rd_data_1,
     output jmp_instr;
     output br_instr;
     output sext_op;
-    output alu_op;
+    output [2:0] alu_op;
     output alu_invA;
     output alu_invB;
     output alu_Cin;
