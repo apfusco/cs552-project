@@ -34,7 +34,6 @@ module proc (/*AUTOARG*/
    // PC values
    wire [15:0] PC;
    wire [15:0] PC_inc;
-   wire [15:0] nxt_PC;
    wire [15:0] PC_sext_imm;
    wire [15:0] reg_sext_imm;
    wire PC_src;
@@ -66,7 +65,6 @@ module proc (/*AUTOARG*/
    wire [2:0] wr_sel;
 
    fetch fetch0(.instr(instr),
-                .nxt_PC(nxt_PC),
                 .PC_sext_imm(PC_sext_imm),
                 .reg_sext_imm(),
                 .clk(clk),

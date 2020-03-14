@@ -4,11 +4,10 @@
    Filename        : fetch.v
    Description     : This is the module for the overall fetch stage of the processor.
 */
-module fetch (instr, nxt_PC, PC_sext_imm, reg_sext_imm, clk, rst,
+module fetch (instr, PC_sext_imm, reg_sext_imm, clk, rst,
         mem_en, mem_wr, dump, br_instr, take_br, jump_instr, jump_reg_instr, pc_en);
     
     output [15:0] instr;
-    input [15:0] nxt_PC; 
     input [15:0] PC_sext_imm; // PC + 2 + some immediate
     input [15:0] reg_sext_imm; // immediate from a register (ex. JR instruction)
     input clk;
@@ -22,6 +21,7 @@ module fetch (instr, nxt_PC, PC_sext_imm, reg_sext_imm, clk, rst,
     input jump_reg_instr;
     input pc_en;
 
+    wire [15:0] nxt_PC;
     wire [15:0] PC_reg_out;
     wire [15:0] PC_inc; // PC + 2
     wire [15:0] two;
