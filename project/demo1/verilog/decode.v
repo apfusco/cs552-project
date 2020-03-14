@@ -59,7 +59,7 @@ module decode (rd_data_1,
     input clk;
     input rst;
     
-    wire [2:0] wr_reg_sel;
+    wire [1:0] wr_reg_sel;
     wire oprnd_sel;
     wire [15:0] sext_imm;
     wire [2:0] wr_reg;
