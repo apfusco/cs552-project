@@ -64,7 +64,6 @@ module proc (/*AUTOARG*/
                      .nxt_PC(nxt_PC),
                      .PC_sext_imm(PC_sext_imm),
                      .reg_sext_imm(),
-                     .PC_src(PC_src),
                      .clk(clk),
                      .rst(rst),
                      .mem_en(mem_en),
@@ -113,7 +112,6 @@ module proc (/*AUTOARG*/
                          .PC_src(PC_src),
                          .PC_sext_imm(PC_sext_imm),
                          .reg_sext_imm(reg_sext_imm),
-                         .take_br(PC_src),
                          .err(execute_error));
    memory memory_stage(.data_out(mem_out),
                        .data_in(rd_data_2),
