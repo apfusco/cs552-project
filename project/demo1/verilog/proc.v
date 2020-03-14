@@ -65,8 +65,11 @@ module proc (/*AUTOARG*/
    wire [2:0] wr_sel;
    wire jmp_reg_instr;
 
+   assign err = fetch_error | decode_error | execute_error | memory_error | wb_error;
+
    fetch fetch0(.instr(instr),
                 .PC_inc(PC_inc),
+                .err(fetch_error),
                 .PC_sext_imm(PC_sext_imm),
                 .reg_sext_imm(reg_sext_imm),
                 .clk(clk),
@@ -134,7 +137,8 @@ module proc (/*AUTOARG*/
                   .zero(alu_zero),
                   .ltz(alu_ltz),
                   .lteq(alu_lteq),
-                  .set_sel(set_sel));
+                  .set_sel(set_sel),
+                  .err(memory_error));
    wb wb0(.instr(instr),
           .alu_out(alu_out),
           .mem_out(mem_out),
@@ -143,7 +147,8 @@ module proc (/*AUTOARG*/
           .rd_data_1(rd_data_1),
           .sext_imm(sext_imm),
           .wr_sel(wr_sel),
-          .wr_data(wr_data));
+          .wr_data(wr_data),
+          .err(wb_error));
 
 endmodule // proc
 // DUMMY LINE FOR REV CONTROL :0:

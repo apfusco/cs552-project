@@ -4,11 +4,12 @@
    Filename        : fetch.v
    Description     : This is the module for the overall fetch stage of the processor.
 */
-module fetch (instr, PC_inc, PC_sext_imm, reg_sext_imm, clk, rst,
+module fetch (instr, PC_inc, err, PC_sext_imm, reg_sext_imm, clk, rst,
         dump, take_br, pc_en, jmp_reg_instr);
     
     output [15:0] instr;
     output [15:0] PC_inc; // PC + 2
+    output err;
     input [15:0] PC_sext_imm; // PC + 2 + some immediate
     input [15:0] reg_sext_imm; // immediate from a register (ex. JR instruction)
     input clk;
@@ -30,6 +31,8 @@ module fetch (instr, PC_inc, PC_sext_imm, reg_sext_imm, clk, rst,
     assign mem_en = 1'b1;
     assign two = 16'h0002;
     assign PC_inc = PC_inc_wire;
+
+    assign err = (^{PC_sext_imm, reg_sext_imm, dump, take_br, pc_en, jmp_reg_instr} == 1'bX) ? 1'b1 : 1'b0;
 
     // PC + 2 since our ISA uses 16 bit instructions
     cla_16b pc_addr(.A(PC_reg_out), .B(two), .C_in(1'b0), .S(PC_inc_wire), .C_out());
