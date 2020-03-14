@@ -292,7 +292,7 @@ module control (instr,
    assign wr_reg_sel = case_wr_reg_sel;
    assign oprnd_sel = case_oprnd_sel;
    assign jmp_reg_instr = case_jmp_reg_instr;
-   assign jmp_instr = case_jmp_inst;
+   assign jmp_instr = case_jmp_instr;
    assign br_instr = case_br_instr;
    assign sext_op = case_sext_op;
    assign alu_op = case_alu_op;
