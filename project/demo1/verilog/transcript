@@ -1,0 +1,36 @@
+# Project file /afs/cs.wisc.edu/u/k/m/kmulligan/private/ece552/yuh/hw1_1_test.mpf was not found.
+# Unable to open project.
+# Loading project fetch-test
+# Compile of alu.v was successful.
+# Compile of carry_bit_1b.v was successful.
+# Compile of cla_4b.v was successful.
+# Compile of cla_16b.v was successful.
+# Compile of clkrst.v was successful.
+# Compile of decode.v was successful.
+# Compile of dff.v was successful.
+# Compile of execute.v was successful.
+# Compile of fetch.v was successful.
+# Compile of fullAdder_1b.v was successful.
+# Compile of generate_propagate_1b.v was successful.
+# Compile of memory.v was successful.
+# Compile of memory2c.syn.v was successful.
+# Compile of memory2c.v was successful.
+# Compile of mux2_1.v was successful.
+# Compile of mux4_1.v was successful.
+# Compile of nand2.v was successful.
+# Compile of nand3.v was successful.
+# Compile of nor2.v was successful.
+# Compile of nor3.v was successful.
+# Compile of or2.v was successful.
+# Compile of proc.v was successful.
+# Compile of proc_hier.v was successful.
+# Compile of proc_hier_bench.v was successful.
+# Compile of register.v was successful.
+# Compile of shifter.v was successful.
+# Compile of shifter_nb.v was successful.
+# Compile of wb.v was successful.
+# Compile of xor2.v was successful.
+# Compile of xor3.v was successful.
+# 30 compiles, 0 failed with no errors.
+# reading /afs/cs.wisc.edu/s/mentor-2018/amd64_rhel6/modelsim_dlx/linuxpe/../modelsim.ini
+quit
