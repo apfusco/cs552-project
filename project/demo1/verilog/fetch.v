@@ -5,7 +5,7 @@
    Description     : This is the module for the overall fetch stage of the processor.
 */
 module fetch (instr, PC_inc, PC_sext_imm, reg_sext_imm, clk, rst,
-        mem_wr, dump, take_br, pc_en, jmp_reg_instr);
+        dump, take_br, pc_en, jmp_reg_instr);
     
     output [15:0] instr;
     output [15:0] PC_inc; // PC + 2
@@ -13,7 +13,6 @@ module fetch (instr, PC_inc, PC_sext_imm, reg_sext_imm, clk, rst,
     input [15:0] reg_sext_imm; // immediate from a register (ex. JR instruction)
     input clk;
     input rst;
-    input mem_wr;
     input dump;
     input take_br;
     input pc_en;
