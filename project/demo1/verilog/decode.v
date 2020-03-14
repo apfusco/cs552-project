@@ -34,7 +34,7 @@ module decode (rd_data_1,
     output [15:0] rd_data_1;
     output [15:0] rd_data_2;
     output [15:0] oprnd_2;
-    output br_cnd_sel;
+    output [1:0] br_cnd_sel;
     output [1:0] set_sel;
     output mem_wr_en;
     output mem_en;
