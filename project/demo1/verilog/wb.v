@@ -11,7 +11,7 @@ module wb (instr,
            set,
            rd_data_1,
            sext_imm,
-           wr_reg_sel,
+           wr_sel,
            wr_data);
 
    input  [15:0] instr;
@@ -21,7 +21,7 @@ module wb (instr,
    input  set;
    input  [15:0] rd_data_1;
    input  [15:0] sext_imm;
-   input  [2:0]  wr_reg_sel;
+   input  [2:0]  wr_sel;
    output [15:0] wr_data;
 
    wire [15:0] set_ext;
@@ -42,7 +42,7 @@ module wb (instr,
                                .InF(SLBI),
                                .InG(dontcare),
                                .InH(dontcare),
-                               .S(wr_reg_sel),
+                               .S(wr_sel),
                                .Out(dontcare));
 
 endmodule
