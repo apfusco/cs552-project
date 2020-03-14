@@ -37,6 +37,7 @@ module proc (/*AUTOARG*/
    wire [15:0] PC_sext_imm;
    wire [15:0] reg_sext_imm;
    wire PC_src;
+   wire PC_en;
 
    // Other signals
    wire [15:0] instr;
@@ -50,7 +51,6 @@ module proc (/*AUTOARG*/
    wire [1:0] br_cnd_sel;
    wire set;
    wire [1:0] set_sel;
-   wire pc_en;
    wire alu_invA;
    wire alu_invB;
    wire alu_sign;
@@ -74,9 +74,8 @@ module proc (/*AUTOARG*/
                 .reg_sext_imm(reg_sext_imm),
                 .clk(clk),
                 .rst(rst),
-                .dump(/* TODO: ? */),
                 .take_br(PC_src),
-                .pc_en(pc_en),
+                .pc_en(PC_en),
                 .jmp_reg_instr(jmp_reg_instr));
    decode decode0(.rd_data_1(rd_data_1),
                   .rd_data_2(rd_data_2),
@@ -95,7 +94,7 @@ module proc (/*AUTOARG*/
                   .alu_invB(alu_invB),
                   .alu_Cin(alu_Cin),
                   .alu_sign(alu_sign),
-                  .pc_en(pc_en),
+                  .pc_en(PC_en),
                   .err(decode_error),
                   .rd_reg_1(instr[10:8]),
                   .rd_reg_2(instr[7:5]),
@@ -129,7 +128,7 @@ module proc (/*AUTOARG*/
                   .addr(alu_out),
                   .en(mem_en),
                   .mem_wr(mem_wr),
-                  .createdump(),
+                  .createdump(~PC_en),
                   .clk(clk),
                   .rst(rst),
                   .set(set),
