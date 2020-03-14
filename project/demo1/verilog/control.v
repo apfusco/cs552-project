@@ -242,12 +242,12 @@ module control (instr,
          5'b11000: begin // LBI
             case_wr_en = 1'b1;
             case_wr_sel = 3'b100;
-            case_wr_reg_sel = 2'b1;
+            case_wr_reg_sel = 2'b10;
          end
          5'b10010: begin // SLBI
             case_wr_en = 1'b1;
             case_wr_sel = 3'b101;
-            case_wr_reg_sel = 2'b1;
+            case_wr_reg_sel = 2'b10;
          end
          5'b00100: begin // J
             case_jmp_instr = 1'b1;
