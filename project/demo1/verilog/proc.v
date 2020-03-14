@@ -77,7 +77,8 @@ module proc (/*AUTOARG*/
                 .br_instr(),
                 .take_br(PC_src),
                 .jump_instr(),
-                .jump_reg_instr());
+                .jump_reg_instr(),
+                .pc_en(pc_en));
    decode decode0(.rd_data_1(rd_data_1),
                   .rd_data_2(rd_data_2),
                   .oprnd_2(oprnd_2),
