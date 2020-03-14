@@ -7,6 +7,7 @@
 module decode (rd_data_1,
                rd_data_2,
                oprnd_2,
+               sext_imm,
                br_cnd_sel,
                set_sel,
                mem_wr_en,
@@ -33,6 +34,7 @@ module decode (rd_data_1,
     output [15:0] rd_data_1;
     output [15:0] rd_data_2;
     output [15:0] oprnd_2;
+    output [15:0] sext_imm;
     output [1:0] br_cnd_sel;
     output [1:0] set_sel;
     output mem_wr_en;
@@ -60,7 +62,6 @@ module decode (rd_data_1,
     wire [2:0] sext_op;
     wire [1:0] wr_reg_sel;
     wire oprnd_sel;
-    wire [15:0] sext_imm;
     wire [2:0] wr_reg;
 
     // determine the dest register

@@ -78,7 +78,7 @@ module execute (oprnd_1,
    assign br_neq = ~zero;
    assign br_lt = oprnd_1[15];
    assign br_gteq = zero | oprnd_1[15];
-   mux4_1 mux4_1_take_br(.InA(eq), .InB(neq), .InC(lt), .InD(br_gteq), .S(br_cnd_sel), .Out(take_br));
+   mux4_1 mux4_1_take_br(.InA(br_eq), .InB(br_neq), .InC(br_lt), .InD(br_gteq), .S(br_cnd_sel), .Out(take_br));
 
    // PC logic
    assign PC_src = jmp_instr | (br_instr & take_br);

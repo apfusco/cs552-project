@@ -79,6 +79,7 @@ module proc (/*AUTOARG*/
    decode decode0(.rd_data_1(rd_data_1),
                   .rd_data_2(rd_data_2),
                   .oprnd_2(oprnd_2),
+                  .sext_imm(sext_imm),
                   .br_cnd_sel(br_cnd_sel),
                   .set_sel(set_sel),
                   .mem_wr_en(mem_wr_en),
