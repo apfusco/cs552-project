@@ -25,7 +25,7 @@ module decode (rd_data_1, rd_data_2, oprnd_2, err, rd_reg_1, rd_reg_2,
     wire [2:0] wr_reg;
 
     // determine the dest register
-    mux4_1 wr_reg_mux [2:0](.InA(instr[4:2], .InB(instr[7:5]), .InC(instr[10:8]),
+    mux4_1 wr_reg_mux [2:0](.InA(instr[4:2]), .InB(instr[7:5]), .InC(instr[10:8]),
             .InD(3'h7), .S(wr_reg_sel), .Out(wr_reg));
 
     // register file
