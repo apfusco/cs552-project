@@ -6,6 +6,7 @@
 */
 module execute (oprnd_1,
                 oprnd_2,
+                sext_imm,
                 alu_Cin,
                 alu_op,
                 alu_invA,
@@ -28,6 +29,7 @@ module execute (oprnd_1,
    // I/O
    input  [15:0] oprnd_1;
    input  [15:0] oprnd_2;
+   input  [15:0] sext_imm;
    input         alu_Cin;
    input  [2:0]  alu_op;
    input         alu_invA;
@@ -76,12 +78,12 @@ module execute (oprnd_1,
    assign br_eq = zero;
    assign br_neq = ~zero;
    assign br_lt = oprnd_1[15];
-   assign br_gteq = zero | oprnd_1[15];
+   assign br_gteq = ~oprnd_1[15];
    mux4_1 mux4_1_take_br(.InA(br_eq), .InB(br_neq), .InC(br_lt), .InD(br_gteq), .S(br_cnd_sel), .Out(take_br));
 
    // PC logic
    assign PC_src = jmp_instr | (br_instr & take_br);
-   assign PC_sext_imm = PC_inc + (oprnd_2 << 1'b1);// TODO: oprnd_2 should be sext_imm. Change addition logic.
+   assign PC_sext_imm = PC_inc + (sext_imm << 1'b1);// TODO: Change addition logic.
    assign reg_sext_imm = PC_inc + oprnd_1;// TODO: Change addition logic.
    
 endmodule
