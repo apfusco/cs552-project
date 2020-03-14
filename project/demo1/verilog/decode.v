@@ -12,7 +12,6 @@ module decode (rd_data_1,
                mem_wr_en,
                mem_en,
                wr_sel,
-               oprnd_sel,
                jmp_reg_instr,
                jmp_instr,
                br_instr,
@@ -30,7 +29,6 @@ module decode (rd_data_1,
                wr_data,
                instr,
                wr_reg_sel,
-               oprnd_sel,
                clk,
                rst);
 
@@ -43,7 +41,6 @@ module decode (rd_data_1,
     output mem_en;
     output [2:0] wr_sel;
     output [1:0] wr_reg_sel;
-    output oprnd_sel;
     output jmp_reg_instr;
     output jmp_instr;
     output br_instr;
@@ -61,10 +58,10 @@ module decode (rd_data_1,
     input wr_en;
     input [15:0] wr_data;
     input [15:0] instr;
-    input oprnd_sel;
     input clk;
     input rst;
     
+    wire oprnd_sel;
     wire [15:0] sext_imm;
     wire [2:0] wr_reg;
 
