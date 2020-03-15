@@ -83,7 +83,8 @@ module execute (oprnd_1,
 
    // PC logic
    assign PC_src = jmp_instr | (br_instr & take_br);
-   assign PC_sext_imm = PC_inc + sext_imm;// TODO: Change addition logic.
-   assign reg_sext_imm = oprnd_1 + sext_imm;// TODO: Change addition logic.
+
+   cla_16b add_PC_sext_imm(.A(PC_inc), .B(sext_imm), .C_in(1'b0), .S(PC_sext_imm), .C_out());
+   cla_16b add_reg_sext_imm(.A(oprnd_1), .B(sext_imm), .C_in(1'b0), .S(reg_sext_imm), .C_out());
    
 endmodule
