@@ -196,7 +196,7 @@ module control (instr,
          end
          5'b11010: begin // ROL, SLL, ROR, SRL
             case_wr_en = 1'b1;
-            case_alu_op = {1'b0, ~instr[1], ~instr[0]};
+            case_alu_op = {1'b0, instr[1], instr[0]};
          end
          5'b11100: begin // SEQ
             case_wr_en = 1'b1;
