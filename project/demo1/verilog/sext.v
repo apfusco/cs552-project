@@ -1,9 +1,11 @@
 /*
 * Sign-extends a given immediate to 16 bits based on the instruction.
 */
-module sext(instr, imm);
-    input [15:0] instr;
+module sext(instr, ext_op, imm, err);
+    input      [15:0] instr;
+    input      [1:0]  ext_op;
     output reg [15:0] imm;
+    output reg err;
 
     /* here are all the instructions that need sign extension:
     * 
@@ -43,32 +45,22 @@ module sext(instr, imm);
     *   - all are sign extended
     */
 
+   /*
+    * Immediate extension operations.
+    * Opcode | extension
+    * 00     | zext(instr[4:0])
+    * 01     | sext(instr[4:0])
+    * 10     | sext(instr[7:0])
+    * 11     | sext(instr[10:0])
+    */
     always @ (*) begin
-        case (instr[15:11])
-            // I1 format instructions
-            5'b01000:  imm = {{11{instr[4]}}, instr[4:0]};   // addi
-            5'b01001:  imm = {{11{instr[4]}}, instr[4:0]};   // subi
-            5'b01010:  imm = {{11{1'b0}}, instr[4:0]};       // xori
-            5'b01011:  imm = {{11{1'b0}}, instr[4:0]};       // andni
-            5'b10100:  imm = {{11{1'b0}}, instr[4:0]};       // ROLI
-            5'b10000:  imm = {{11{instr[4]}}, instr[4:0]};   // st
-            5'b10001:  imm = {{11{instr[4]}}, instr[4:0]};   // ld
-            5'b10011:  imm = {{11{instr[4]}}, instr[4:0]};   // stu
-
-            // I2 format instructions
-            5'b01100:  imm = {{8{instr[7]}}, instr[7:0]};    // beqz
-            5'b01101:  imm = {{8{instr[7]}}, instr[7:0]};    // bnez
-            5'b01110:  imm = {{8{instr[7]}}, instr[7:0]};    // bltz
-            5'b01111:  imm = {{8{instr[7]}}, instr[7:0]};    // bgez
-            5'b11000:  imm = {{8{instr[7]}}, instr[7:0]};    // lbi
-            5'b10010:  imm = {{8{1'b0}}, instr[7:0]};        // slbi
-            5'b00101:  imm = {{8{instr[7]}}, instr[7:0]};    // jr
-            5'b00111:  imm = {{8{instr[7]}}, instr[7:0]};    // jalr
-
-            // J format instructions
-            5'b00100:  imm = {{5{instr[10]}}, instr[10:0]};  // j
-            5'b00110:  imm = {{5{instr[10]}}, instr[10:0]};  // jal
-            default:   imm = {{11{1'b0}}, instr[4:0]};       // TODO
+        err = 1'b0;
+        case (ext_op)
+            2'b00: imm = {{11{1'b0}}, instr[4:0]};
+            2'b01: imm = {{11{instr[4]}}, instr[4:0]};
+            2'b10: imm = {{8{instr[7]}}, instr[7:0]};
+            2'b11: imm = {{5{instr[10]}}, instr[10:0]};
+            default: err = 1'b1;
         endcase
     end
 endmodule
