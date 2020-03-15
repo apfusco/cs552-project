@@ -31,7 +31,6 @@ module memory (data_out, data_in, addr, en, mem_wr, createdump, clk, rst,
     assign err = (^{data_in, addr, en, mem_wr, createdump, clk, rst, ofl, zero,
           ltz, lteq, set_sel} === 1'bX) ? 1'b1 : 1'b0;
     
-   // TODO: Your code here
    memory2c mem(.data_out(data_out), .data_in(data_in), .addr(addr), .enable(en), 
         .wr(mem_wr), .createdump(createdump), .clk(clk), .rst(rst));
    
