@@ -59,7 +59,7 @@ module decode (rd_data_1,
     input clk;
     input rst;
     
-    wire [2:0] sext_op;
+    wire [1:0] sext_op;
     wire [1:0] wr_reg_sel;
     wire oprnd_sel;
     wire [2:0] wr_reg;
@@ -68,9 +68,10 @@ module decode (rd_data_1,
     wire reg_error;
     wire cntrl_error;
     wire input_error;
+    wire sext_error;
 
     assign input_error = (^{rd_reg_1, rd_reg_2, wr_en, wr_data, instr, clk, rst} === 1'bX) ? 1'b1 : 1'b0;
-    assign err = reg_error | cntrl_error | input_error;
+    assign err = reg_error | cntrl_error | input_error | sext_error;
 
     // determine the dest register
     mux4_1 wr_reg_mux [2:0](.InA(instr[4:2]), .InB(instr[7:5]), .InC(instr[10:8]),
@@ -83,7 +84,7 @@ module decode (rd_data_1,
     
     // sign extension for immediates
         // TODO: this won't work for ST instructions
-    sext sign_extender(.instr(instr), .imm(sext_imm));
+    sext sign_extender(.instr(instr), .ext_op(sext_op), .imm(sext_imm), .err(sext_error));
     mux2_1 oprnd2_mux [15:0](.InA(rd_data_2), .InB(sext_imm), .S(oprnd_sel),
             .Out(oprnd_2));
 
