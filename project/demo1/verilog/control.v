@@ -31,7 +31,7 @@ module control (instr,
    output       jmp_reg_instr;
    output       jmp_instr;
    output       br_instr;
-   output [2:0] sext_op;
+   output [1:0] sext_op;
    output [2:0] alu_op;
    output       alu_invA;
    output       alu_invB;
@@ -52,7 +52,7 @@ module control (instr,
    reg       case_jmp_reg_instr;
    reg       case_jmp_instr;
    reg       case_br_instr;
-   reg [2:0] case_sext_op;
+   reg [1:0] case_sext_op;
    reg [2:0] case_alu_op;
    reg       case_alu_invA;
    reg       case_alu_invB;
@@ -68,7 +68,6 @@ module control (instr,
     * 01     | sext(instr[4:0])
     * 10     | sext(instr[7:0])
     * 11     | sext(instr[10:0])
-    * TODO
     */
 
    always @(*) begin
@@ -84,7 +83,7 @@ module control (instr,
       case_jmp_reg_instr = 1'b0;// High for reg jump instructions
       case_jmp_instr = 1'b0;    // High for jump instructions
       case_br_instr = 1'b0;     // High for branch instructions
-      case_sext_op = 3'b000;    // Sign extension opcode
+      case_sext_op = 2'b00;     // Sign extension opcode
       case_alu_op = 3'b000;     // Opcode for the ALU
       case_alu_invA = 1'b0;     // Invert input A of the ALU
       case_alu_invB = 1'b0;     // Invert input B of the ALU
@@ -107,14 +106,14 @@ module control (instr,
             case_wr_en = 1'b1;
             case_wr_reg_sel = 2'b01;
             case_oprnd_sel = 1'b1;
-            case_sext_op = 3'b001;
+            case_sext_op = 2'b01;
             case_alu_op = 3'b100;
          end
          5'b01001: begin // SUBI
             case_wr_en = 1'b1;
             case_wr_reg_sel = 2'b01;
             case_oprnd_sel = 1'b1;
-            case_sext_op = 3'b001;
+            case_sext_op = 2'b01;
             case_alu_op = 3'b100;
             case_alu_invA = 1'b1;
             case_alu_Cin = 1'b1;
@@ -161,7 +160,7 @@ module control (instr,
             case_mem_wr_en = 1'b1;
             case_wr_reg_sel = 2'b01;
             case_oprnd_sel = 1'b1;
-            case_sext_op = 3'b001;
+            case_sext_op = 2'b01;
             case_alu_op = 3'b100;
          end
          5'b10001: begin // LD
@@ -170,7 +169,7 @@ module control (instr,
             case_wr_sel = 3'b001;
             case_wr_reg_sel = 2'b01;
             case_oprnd_sel = 1'b1;
-            case_sext_op = 3'b001;
+            case_sext_op = 2'b01;
             case_alu_op = 3'b100;
          end
          5'b10011: begin // STU
@@ -179,7 +178,7 @@ module control (instr,
             case_mem_wr_en = 1'b1;
             case_wr_reg_sel = 2'b10;
             case_oprnd_sel = 1'b1;
-            case_sext_op = 3'b001;
+            case_sext_op = 2'b01;
             case_alu_op = 3'b100;
          end
          5'b11001: begin // BTR
@@ -232,22 +231,22 @@ module control (instr,
          5'b01100: begin // BEQZ
             // case_br_cnd_sel = 2'b00;
             case_br_instr = 1'b1;
-            case_sext_op = 3'b010;
+            case_sext_op = 2'b10;
          end
          5'b01101: begin // BNEZ
             case_br_cnd_sel = 2'b01;
             case_br_instr = 1'b1;
-            case_sext_op = 3'b010;
+            case_sext_op = 2'b10;
          end
          5'b01110: begin // BLTZ
             case_br_cnd_sel = 2'b10;
             case_br_instr = 1'b1;
-            case_sext_op = 3'b010;
+            case_sext_op = 2'b10;
          end
          5'b01111: begin // BEGZ
             case_br_cnd_sel = 2'b11;
             case_br_instr = 1'b1;
-            case_sext_op = 3'b010;
+            case_sext_op = 2'b10;
          end
          5'b11000: begin // LBI
             case_wr_en = 1'b1;
@@ -261,19 +260,19 @@ module control (instr,
          end
          5'b00100: begin // J
             case_jmp_instr = 1'b1;
-            case_sext_op = 3'b011;
+            case_sext_op = 2'b11;
          end
          5'b00101: begin // JR
             case_jmp_reg_instr = 1'b1;
             case_jmp_instr = 1'b1;
-            case_sext_op = 3'b010;
+            case_sext_op = 2'b10;
          end
          5'b00110: begin // JAL
             case_wr_en = 1'b1;
             case_wr_sel = 3'b010;
             case_wr_reg_sel = 2'b11;
             case_jmp_instr = 1'b1;
-            case_sext_op = 3'b011;
+            case_sext_op = 2'b11;
          end
          5'b00111: begin // JALR
             case_wr_en = 1'b1;
@@ -281,7 +280,7 @@ module control (instr,
             case_wr_reg_sel = 2'b11;
             case_jmp_reg_instr = 1'b1;
             case_jmp_instr = 1'b1;
-            case_sext_op = 3'b010;
+            case_sext_op = 2'b10;
          end
          5'b00010: begin // siic
             // TODO: Produce illegal exception.
