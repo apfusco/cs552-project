@@ -116,7 +116,7 @@ module control (instr,
             case_oprnd_sel = 1'b1;
             case_sext_op = 3'b001;
             case_alu_op = 3'b100;
-            case_alu_invB = 1'b1;
+            case_alu_invA = 1'b1;
             case_alu_Cin = 1'b1;
          end
          5'b01010: begin // XORI
@@ -228,8 +228,6 @@ module control (instr,
             case_wr_sel = 3'b011;
             case_alu_sign = 1'b0;
             case_alu_op = 3'b100;
-            case_alu_invB = 1'b1;
-            case_alu_Cin = 1'b1;
          end
          5'b01100: begin // BEQZ
             // case_br_cnd_sel = 2'b00;
