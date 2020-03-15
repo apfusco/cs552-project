@@ -53,7 +53,7 @@ module alu (InA, InB, Cin, Op, invA, invB, sign, Out, Zero, Ofl, lt, lte, gt, gt
    /* Opcodes:
    * 000 = rll = rotate left
    * 001 = sll = shift logical left
-   * 010 = sra = shift right arithmetic
+   * 010 = sra = rotate right
    * 011 = srl = shift right logical
    * 100 = ADD = A + B
    * 101 = AND = A & B
