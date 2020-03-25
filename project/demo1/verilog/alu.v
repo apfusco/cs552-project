@@ -126,15 +126,15 @@ module alu (InA, InB, Cin, Op, invA, invB, sign, Out, Zero, Ofl, lt, lte, gt, gt
    assign Zero = !(|Out);
     
    // A < B
-   assign lt = Out[15];
+   assign lt = Out[15] ^ Ofl;
 
    // A <= B
-   assign lte = (Out[15] || Zero);
+   assign lte = (Out[15] || Zero) ^ Ofl;
 
    // A > B
-   assign gt = !(Out[15] || Zero);
+   assign gt = !(Out[15] || Zero) ^ Ofl;
 
    // A >= B
-   assign gte = !(Out[15]);
+   assign gte = !(Out[15]) ^ Ofl;
 
 endmodule
