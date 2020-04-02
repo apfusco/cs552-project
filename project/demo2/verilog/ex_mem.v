@@ -1,4 +1,33 @@
-module ex_mem(/* TODO */);
+module ex_mem(
+        // outputs
+        out_ofl,
+        out_alu_out,
+        out_zero,
+        out_PC_src,
+        out_PC_sext_imm,
+        out_reg_sext_imm,
+        out_ltz,
+        out_lteq,
+        out_set_sel,
+        out_mem_wr_en,
+        out_mem_en,
+        out_wr_sel,
+        err,
+        // inputs
+        clk,
+        rst,
+        in_ofl,
+        in_alu_out,
+        in_zero,
+        in_PC_src,
+        in_PC_sext_imm,
+        in_reg_sext_imm,
+        in_ltz,
+        in_lteq,
+        in_set_sel,
+        in_mem_wr_en,
+        in_mem_en,
+        in_wr_sel);
 
    output        out_ofl;
    output [15:0] out_alu_out;
