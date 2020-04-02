@@ -1,4 +1,27 @@
-module mem_wb(/* TODO */);
+module mem_wb(
+        // outputs
+        out_wr_reg,
+        out_wr_en,
+        out_wr_sel,
+        out_alu_out,
+        out_mem_out,
+        out_PC_inc,
+        out_LBI,
+        out_SLBI,
+        out_set,
+        err,
+        // inputs
+        clk,
+        rst,
+        in_wr_reg,
+        in_wr_en,
+        in_wr_sel,
+        in_alu_out,
+        in_mem_out,
+        in_PC_inc,
+        in_LBI,
+        in_SLBI,
+        in_set);
 
    output [15:0] out_wr_reg;
    output        out_wr_en;

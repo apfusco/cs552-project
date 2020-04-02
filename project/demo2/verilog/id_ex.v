@@ -1,4 +1,45 @@
-module id_ex(/* TODO: Update when I/O is finished */);
+module id_ex(
+        // outputs
+        out_rd_data_1, 
+        out_rd_data_2, 
+        out_oprnd_2,
+        out_sext_imm,
+        out_br_cnd_sel,
+        out_set_sel,
+        out_mem_wr_en,
+        out_mem_en,
+        out_wr_sel,
+        out_jmp_reg_instr,
+        out_jmp_instr,
+        out_br_instr,
+        out_alu_op,
+        out_alu_invA,
+        out_alu_invB,
+        out_alu_Cin,
+        out_alu_sign,
+        out_pc_en,
+        err,
+        // inputs
+        clk,
+        rst,
+        in_rd_data_1,
+        in_rd_data_2,
+        in_oprnd_2,
+        in_sext_imm,
+        in_br_cnd_sel,
+        in_set_sel,
+        in_mem_wr_en,
+        in_mem_en,
+        in_wr_sel,
+        in_jmp_reg_instr,
+        in_jmp_instr,
+        in_br_instr,
+        in_alu_op,
+        in_alu_invA,
+        in_alu_invB,
+        in_alu_Cin,
+        in_alu_sign,
+        in_pc_en);
 
     output [15:0] out_rd_data_1;
     output [15:0] out_rd_data_2;
