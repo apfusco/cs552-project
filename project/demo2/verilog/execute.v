@@ -39,7 +39,7 @@ module execute (oprnd_1,
    input  [1:0]  br_cnd_sel;
    input         br_instr;
    input         jmp_instr;
-   input         ofl;
+   output        ofl;
    output [15:0] alu_out;
    output        zero;
    output        PC_src;      // High for for using PC_inc + PC_sext_imm
@@ -56,7 +56,7 @@ module execute (oprnd_1,
    wire br_gteq;
 
    assign err = (^{oprnd_1, oprnd_2, alu_Cin, alu_op, alu_invA, alu_invB, alu_sign,
-         PC_inc, br_cnd_sel, br_instr, jmp_instr, ofl} === 1'bX) ? 1'b1 : 1'b0;
+         PC_inc, br_cnd_sel, br_instr, jmp_instr} === 1'bX) ? 1'b1 : 1'b0;
 
    // ALU logic
    alu alu(.InA(oprnd_1),
