@@ -50,6 +50,10 @@ module proc (/*AUTOARG*/
    wire        id_PC_en;
    wire [15:0] id_sext_imm;
    wire [15:0] id_instr;
+   wire [15:0] id_wr_data;
+   wire        id_wr_en;
+   wire [2:0]  id_wr_reg;
+   wire [2:0]  id_wr_sel;
    // Execute stage signals
    wire [15:0] ex_PC_inc;
    wire [15:0] ex_PC_sext_imm;
@@ -75,6 +79,7 @@ module proc (/*AUTOARG*/
    wire        ex_mem_wr;
    wire [15:0] ex_wr_data;
    wire        ex_wr_en;
+   wire [2:0]  ex_wr_reg;
    wire [2:0]  ex_wr_sel;
    wire        ex_jmp_reg_instr;
    // Memory stage signals
@@ -100,6 +105,7 @@ module proc (/*AUTOARG*/
    wire        mem_mem_wr;
    wire [15:0] mem_wr_data;
    wire        mem_wr_en;
+   wire [2:0]  mem_wr_reg;
    wire [2:0]  mem_wr_sel;
    //wire        jmp_reg_instr;
    // Write back stage signals
@@ -121,6 +127,7 @@ module proc (/*AUTOARG*/
    wire        wb_mem_wr;
    wire [15:0] wb_wr_data;
    wire        wb_wr_en;
+   wire [2:0]  wb_wr_reg;
    wire [2:0]  wb_wr_sel;
    //wire        jmp_reg_instr;
 
@@ -152,6 +159,8 @@ module proc (/*AUTOARG*/
                   .sext_imm(id_sext_imm),
                   .br_cnd_sel(id_br_cnd_sel),
                   .set_sel(id_set_sel),
+                  .out_wr_en(id_wr_en),
+                  .out_wr_reg(id_wr_reg),
                   .mem_wr_en(id_mem_wr),
                   .mem_en(id_mem_en),
                   .wr_sel(id_wr_sel),
@@ -167,7 +176,8 @@ module proc (/*AUTOARG*/
                   .err(decode_error),
                   .rd_reg_1(id_instr[10:8]),
                   .rd_reg_2(id_instr[7:5]),
-                  .wr_en(id_wr_en),
+                  .in_wr_en(wb_wr_en),
+                  .in_wr_reg(wb_wr_reg),
                   .wr_data(id_wr_data),
                   .instr(id_instr),
                   .clk(clk),
