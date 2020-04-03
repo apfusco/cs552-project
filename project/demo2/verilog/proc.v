@@ -35,6 +35,9 @@ module proc (/*AUTOARG*/
    wire mem_wb_error;
    wire wb_error;
 
+   // Important signal
+   wire PC_en;
+
    // Fetch stage signals
    wire [15:0] if_PC_inc;
    wire [15:0] if_PC_sext_imm;
@@ -142,7 +145,7 @@ module proc (/*AUTOARG*/
                 .clk(clk),
                 .rst(rst),
                 .take_br(if_PC_src),
-                .pc_en(if_PC_en),
+                .pc_en(PC_en),
                 .jmp_reg_instr(if_jmp_reg_instr));
 
    if_id if_id_pipe(.out_instr(id_instr),
@@ -172,7 +175,7 @@ module proc (/*AUTOARG*/
                   .alu_invB(id_alu_invB),
                   .alu_Cin(id_alu_Cin),
                   .alu_sign(id_alu_sign),
-                  .pc_en(id_PC_en),
+                  .pc_en(PC_en),
                   .err(decode_error),
                   .rd_reg_1(id_instr[10:8]),
                   .rd_reg_2(id_instr[7:5]),
@@ -281,7 +284,7 @@ module proc (/*AUTOARG*/
                   .addr(mem_alu_out),
                   .en(mem_mem_en),
                   .mem_wr(mem_mem_wr),
-                  .createdump(~mem_PC_en),
+                  .createdump(~PC_en),
                   .clk(clk),
                   .rst(rst),
                   .set(mem_set),
