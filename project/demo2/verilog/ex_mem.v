@@ -1,5 +1,7 @@
 module ex_mem(
         // outputs
+        out_rd_data_1,
+        out_rd_data_2,
         out_ofl,
         out_alu_out,
         out_zero,
@@ -18,6 +20,8 @@ module ex_mem(
         // inputs
         clk,
         rst,
+        in_rd_data_1,
+        in_rd_data_2,
         in_ofl,
         in_alu_out,
         in_zero,
@@ -33,6 +37,8 @@ module ex_mem(
         in_wr_reg,
         in_wr_sel);
 
+   output [15:0] out_rd_data_1;
+   output [15:0] out_rd_data_2;
    output        out_ofl;
    output [15:0] out_alu_out;
    output        out_zero;
@@ -51,6 +57,8 @@ module ex_mem(
 
    input        clk;
    input        rst;
+   input [15:0] in_rd_data_1;
+   input [15:0] in_rd_data_2;
    input        in_ofl;
    input [15:0] in_alu_out;
    input        in_zero;
