@@ -64,6 +64,6 @@ module mem_wb(
    register #(.N(16)) LBI_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(in_LBI), .dataOut(out_LBI), .err());
    register #(.N(16)) SLBI_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(in_SLBI), .dataOut(out_SLBI), .err());
    register #(.N(16)) sext_imm_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(in_sext_imm), .dataOut(out_sext_imm), .err());
-   register #(.N(1)) set_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(in_set), .dataOut(out_set), .err()));
+   register #(.N(1)) set_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(in_set), .dataOut(out_set), .err());
 
 endmodule
