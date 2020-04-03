@@ -4,8 +4,7 @@
    Filename        : wb.v
    Description     : This is the module for the overall Write Back stage of the processor.
 */
-module wb (instr,
-           alu_out,
+module wb (alu_out,
            mem_out,
            PC_inc,
            set,
@@ -15,7 +14,6 @@ module wb (instr,
            wr_data,
            err);
 
-   input  [15:0] instr;
    input  [15:0] alu_out;
    input  [15:0] mem_out;
    input  [15:0] PC_inc;
@@ -35,8 +33,8 @@ module wb (instr,
    assign LBI = sext_imm;
    assign SLBI = {rd_data_1[7:0], sext_imm[7:0]};
    assign dontcare = 16'hXXXX;
-   assign err = (^{instr, alu_out, mem_out, PC_inc, set, rd_data_1, sext_imm,
-         wr_sel} === 1'bX) ? 1'b1 : 1'b0;
+   assign err = (^{alu_out, mem_out, PC_inc, set, rd_data_1, sext_imm, wr_sel}
+         === 1'bX) ? 1'b1 : 1'b0;
 
    mux8_1 mux8_1_wr_data[15:0](.InA(alu_out),
                                .InB(mem_out),
