@@ -4,6 +4,7 @@ module ex_mem(
         out_alu_out,
         out_zero,
         out_PC_src,
+        out_sext_imm, 
         out_PC_sext_imm,
         out_reg_sext_imm,
         out_ltz,
@@ -20,6 +21,7 @@ module ex_mem(
         in_alu_out,
         in_zero,
         in_PC_src,
+        in_sext_imm,
         in_PC_sext_imm,
         in_reg_sext_imm,
         in_ltz,
@@ -33,6 +35,7 @@ module ex_mem(
    output [15:0] out_alu_out;
    output        out_zero;
    output        out_PC_src;      // High for for using PC_inc + PC_sext_imm
+   output [15:0] out_sext_imm,
    output [15:0] out_PC_sext_imm;
    output [15:0] out_reg_sext_imm;
    output        out_ltz;
@@ -49,6 +52,7 @@ module ex_mem(
    input [15:0] in_alu_out;
    input        in_zero;
    input        in_PC_src;      // High for for using PC_inc + PC_sext_imm
+   input [15:0] in_sext_imm;
    input [15:0] in_PC_sext_imm;
    input [15:0] in_reg_sext_imm;
    input        in_ltz;
@@ -64,6 +68,7 @@ module ex_mem(
    register #(.N(16)) alu_out_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(in_alu_out), .dataOut(out_alu_out), .err()));
    register #(.N(1)) zero_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(in_zero), .dataOut(out_zero), .err()));
    register #(.N(1)) PC_src_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(in_PC_src), .dataOut(out_PC_src), .err()));
+   register #(.N(16)) sext_imm_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(in_sext_imm), .dataOut(out_sext_imm), .err()));
    register #(.N(16)) PC_sext_imm_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(in_PC_sext_imm), .dataOut(out_PC_sext_imm), .err()));
    register #(.N(16)) reg_sext_imm_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(in_reg_sext_imm), .dataOut(out_reg_sext_imm), .err()));
    register #(.N(1)) ltz_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(in_ltz), .dataOut(out_ltz), .err()));
