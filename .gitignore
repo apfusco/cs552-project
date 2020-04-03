@@ -1,3 +1,8 @@
 *.img
 loadfile*
 *.lst
+*archsim*
+*verilogsim*
+*.trace
+*dump*
+summary.log
