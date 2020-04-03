@@ -37,7 +37,7 @@ module ex_mem(
    output [15:0] out_alu_out;
    output        out_zero;
    output        out_PC_src;      // High for for using PC_inc + PC_sext_imm
-   output [15:0] out_sext_imm,
+   output [15:0] out_sext_imm;
    output [15:0] out_PC_sext_imm;
    output [15:0] out_reg_sext_imm;
    output        out_ltz;
