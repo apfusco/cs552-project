@@ -2,6 +2,7 @@ module mem_wb(
         // outputs
         out_wr_data,
         out_wr_en,
+        out_wr_reg,
         out_wr_sel,
         out_alu_out,
         out_mem_out,
@@ -16,6 +17,7 @@ module mem_wb(
         rst,
         in_wr_data,
         in_wr_en,
+        in_wr_reg,
         in_wr_sel,
         in_alu_out,
         in_mem_out,
