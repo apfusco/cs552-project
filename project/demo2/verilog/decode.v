@@ -37,6 +37,8 @@ module decode (rd_data_1,
     output [15:0] sext_imm;
     output [1:0] br_cnd_sel;
     output [1:0] set_sel;
+    output out_wr_en;
+    output [2:0] out_wr_reg;
     output mem_wr_en;
     output mem_en;
     output [2:0] wr_sel;
@@ -53,7 +55,8 @@ module decode (rd_data_1,
 
     input [2:0] rd_reg_1;
     input [2:0] rd_reg_2;
-    input wr_en;
+    input in_wr_en;
+    input [2:0] in_wr_reg;
     input [15:0] wr_data;
     input [15:0] instr;
     input clk;
@@ -70,17 +73,17 @@ module decode (rd_data_1,
     wire input_error;
     wire sext_error;
 
-    assign input_error = (^{rd_reg_1, rd_reg_2, wr_en, wr_data, instr, clk, rst} === 1'bX) ? 1'b1 : 1'b0;
+    assign input_error = (^{rd_reg_1, rd_reg_2, in_wr_en, wr_data, instr, clk, rst} === 1'bX) ? 1'b1 : 1'b0;
     assign err = reg_error | cntrl_error | input_error | sext_error;
 
     // determine the dest register
     mux4_1 wr_reg_mux [2:0](.InA(instr[4:2]), .InB(instr[7:5]), .InC(instr[10:8]),
-            .InD(3'h7), .S(wr_reg_sel), .Out(wr_reg));
+            .InD(3'h7), .S(wr_reg_sel), .Out(out_wr_reg));
 
     // register file
     regFile registers(.read1Data(rd_data_1), .read2Data(rd_data_2), .err(reg_error), 
             .clk(clk), .rst(rst), .read1RegSel(rd_reg_1), .read2RegSel(rd_reg_2), 
-            .writeRegSel(wr_reg), .writeData(wr_data), .writeEn(wr_en));
+            .writeRegSel(in_wr_reg), .writeData(wr_data), .writeEn(in_wr_en));
     
     // sign extension for immediates
         // TODO: this won't work for ST instructions
@@ -91,7 +94,7 @@ module decode (rd_data_1,
    control cntrl(.instr(instr),
                  .br_cnd_sel(br_cnd_sel),
                  .set_sel(set_sel),
-                 .wr_en(wr_en),
+                 .wr_en(out_wr_en),
                  .mem_wr_en(mem_wr_en),
                  .mem_en(mem_en),
                  .wr_sel(wr_sel),
