@@ -1,4 +1,6 @@
 *.img
+*.mpf
+*.mti
 loadfile*
 *.lst
 *archsim*
