@@ -86,9 +86,16 @@ module decode (rd_data_1,
             .InD(3'h7), .S(wr_reg_sel), .Out(out_wr_reg));
 
     // register file
-    regFile registers(.read1Data(rd_data_1), .read2Data(rd_data_2), .err(reg_error), 
-            .clk(clk), .rst(rst), .read1RegSel(rd_reg_1), .read2RegSel(rd_reg_2), 
-            .writeRegSel(in_wr_reg), .writeData(wr_data), .writeEn(in_wr_en));
+    regFile_bypass registers(.read1Data(rd_data_1),
+                             .read2Data(rd_data_2),
+                             .err(reg_error),
+                             .clk(clk),
+                             .rst(rst),
+                             .read1RegSel(rd_reg_1),
+                             .read2RegSel(rd_reg_2),
+                             .writeRegSel(in_wr_reg),
+                             .writeData(wr_data),
+                             .writeEn(in_wr_en));
     
     // sign extension for immediates
         // TODO: this won't work for ST instructions
