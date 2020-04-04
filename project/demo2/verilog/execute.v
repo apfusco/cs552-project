@@ -29,8 +29,6 @@ module execute (oprnd_1,
                 ofl,
                 alu_out,
                 zero,
-                PC_sext_imm,
-                reg_sext_imm,
                 ltz,
                 lteq,
                 take_new_PC,
@@ -67,8 +65,6 @@ module execute (oprnd_1,
    output        ofl;
    output [15:0] alu_out;
    output        zero;
-   output [15:0] PC_sext_imm;
-   output [15:0] reg_sext_imm;
    output        ltz;
    output        lteq;
    output        take_new_PC;
@@ -83,6 +79,9 @@ module execute (oprnd_1,
    wire br_neq;
    wire br_lt;
    wire br_gteq;
+   wire [15:0] PC_sext_imm;
+   // wire [15:0] reg_sext_imm; // TODO: This signal shouldn't be needed
+   // anymore now that the ALU is used for the addition.
 
    wire [15:0] fwd_op_1;
    wire [15:0] fwd_op_2;
