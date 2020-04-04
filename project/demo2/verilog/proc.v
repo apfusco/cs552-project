@@ -41,17 +41,11 @@ module proc (/*AUTOARG*/
 
    // Fetch stage signals
    wire [15:0] if_PC_inc;
-   wire [15:0] if_PC_sext_imm;
-   wire [15:0] if_reg_sext_imm;
-   wire        if_PC_src;
    wire        if_halt;
    wire [15:0] if_instr;
    // Decode stage signals
    wire [15:0] id_PC_inc;
    wire        id_stall_n;
-   wire [15:0] id_PC_sext_imm;
-   wire [15:0] id_reg_sext_imm;
-   wire        id_PC_src;
    wire        id_halt;
    wire [15:0] id_rd_data_1;
    wire [15:0] id_rd_data_2;
@@ -69,9 +63,6 @@ module proc (/*AUTOARG*/
    wire        id_jmp_reg_instr;
    // Execute stage signals
    wire [15:0] ex_PC_inc;
-   wire [15:0] ex_PC_sext_imm;
-   wire [15:0] ex_reg_sext_imm;
-   wire        ex_PC_src;
    wire        ex_halt;
    wire [15:0] ex_rd_data_1;
    wire [15:0] ex_rd_data_2;
@@ -102,9 +93,6 @@ module proc (/*AUTOARG*/
    wire [15:0] ex_SLBI;
    // Memory stage signals
    wire [15:0] mem_PC_inc;
-   wire [15:0] mem_PC_sext_imm;
-   wire [15:0] mem_reg_sext_imm;
-   wire        mem_PC_src;
    wire        mem_halt;
    wire [15:0] mem_rd_data_1;
    wire [15:0] mem_rd_data_2;
@@ -131,9 +119,6 @@ module proc (/*AUTOARG*/
    //wire        jmp_reg_instr;
    // Write back stage signals
    wire [15:0] wb_PC_inc;
-   wire [15:0] wb_PC_sext_imm;
-   wire [15:0] wb_reg_sext_imm;
-   wire        wb_PC_src;
    wire        wb_halt;
    wire [15:0] wb_rd_data_1;
    wire [15:0] wb_alu_out;
@@ -228,6 +213,7 @@ module proc (/*AUTOARG*/
                   .clk(clk),
                   .rst(rst));
 
+   // FIXME: PC_inc needs to be pipelined through
    id_ex id_ex_pipe(.out_rd_data_1(ex_rd_data_1),
                     .out_rd_data_2(ex_rd_data_2), 
                     .out_rd_reg_1(ex_rd_reg_1),
@@ -314,8 +300,6 @@ module proc (/*AUTOARG*/
                     .ofl(ex_alu_ofl),
                     .alu_out(ex_alu_out),
                     .zero(ex_alu_zero),
-                    .PC_sext_imm(ex_PC_sext_imm),
-                    .reg_sext_imm(ex_reg_sext_imm),
                     .ltz(ex_alu_ltz),
                     .lteq(ex_alu_lteq),
                     .take_new_PC(take_new_PC),
@@ -331,10 +315,7 @@ module proc (/*AUTOARG*/
                       .out_alu_ofl(mem_alu_ofl),
                       .out_alu_out(mem_alu_out),
                       .out_alu_zero(mem_alu_zero),
-                      .out_PC_src(mem_PC_src),
                       .out_sext_imm(mem_sext_imm),
-                      .out_PC_sext_imm(mem_PC_sext_imm),
-                      .out_reg_sext_imm(mem_reg_sext_imm),
                       .out_alu_ltz(mem_alu_ltz),
                       .out_alu_lteq(mem_alu_lteq),
                       .out_set_sel(mem_set_sel),
@@ -355,9 +336,6 @@ module proc (/*AUTOARG*/
                       .in_alu_ofl(ex_alu_ofl),
                       .in_alu_out(ex_alu_out),
                       .in_alu_zero(ex_alu_zero),
-                      .in_PC_src(ex_PC_src),
-                      .in_PC_sext_imm(ex_PC_sext_imm),
-                      .in_reg_sext_imm(ex_reg_sext_imm),
                       .in_alu_ltz(ex_alu_ltz),
                       .in_alu_lteq(ex_alu_lteq),
                       .in_set_sel(ex_set_sel),
