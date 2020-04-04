@@ -41,7 +41,7 @@ module proc (/*AUTOARG*/
 
    // Fetch stage signals
    wire [15:0] if_PC_inc;
-   //wire        if_halt;
+   wire        if_halt;
    wire [15:0] if_instr;
    // Decode stage signals
    wire [15:0] id_PC_inc;
@@ -165,6 +165,7 @@ module proc (/*AUTOARG*/
 
    fetch fetch0(.instr(if_instr),
                 .PC_inc(if_PC_inc),
+                .halt(if_halt),
                 .err(fetch_error),
                 .clk(clk),
                 .rst(rst),
@@ -175,12 +176,14 @@ module proc (/*AUTOARG*/
    if_id if_id_pipe(.out_instr(id_instr),
                     .out_PC_inc(id_PC_inc),
                     .out_stall_n(id_stall_n),
+                    .out_halt(id_halt),
                     .err(if_id_error),
                     .clk(clk),
                     .rst(rst),
                     .in_instr(if_instr),
                     .in_stall_n(~stall), // turns stall into an active low
-                    .in_PC_inc(if_PC_inc));
+                    .in_PC_inc(if_PC_inc),
+                    .in_halt(if_halt));
 
    decode decode0(.rd_data_1(id_rd_data_1),
                   .rd_data_2(id_rd_data_2),
@@ -202,7 +205,7 @@ module proc (/*AUTOARG*/
                   .alu_invB(id_alu_invB),
                   .alu_Cin(id_alu_Cin),
                   .alu_sign(id_alu_sign),
-                  .halt(id_halt),
+                  .halt(/* TODO */),
                   .err(decode_error),
                   .rd_reg_1(id_instr[10:8]),
                   .rd_reg_2(id_instr[7:5]),

@@ -4,10 +4,11 @@
    Filename        : fetch.v
    Description     : This is the module for the overall fetch stage of the processor.
 */
-module fetch (instr, PC_inc, err, clk, rst, new_PC, take_new_PC, stall);
+module fetch (instr, PC_inc, halt, err, clk, rst, new_PC, take_new_PC, stall);
     
     output [15:0] instr;
     output [15:0] PC_inc; // PC + 2
+    output halt;
     output err;
     input clk;
     input rst;
@@ -26,6 +27,7 @@ module fetch (instr, PC_inc, err, clk, rst, new_PC, take_new_PC, stall);
     wire halt_n;
 
     assign halt_n = |instr[15:11]; // HALT is decoded in fetch for immediate feedback.
+    assign halt = ~halt_n;
     assign update_PC = halt_n & ~stall;
     assign gnd = 1'b0;
     assign mem_en = 1'b1;
