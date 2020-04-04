@@ -328,6 +328,7 @@ module proc (/*AUTOARG*/
                       .out_LBI(mem_LBI),
                       .out_SLBI(mem_SLBI),
                       .out_stall_n(mem_stall_n),
+                      .out_halt(mem_halt),
                       .err(ex_mem_error),
                       .clk(clk),
                       .rst(rst),
@@ -349,10 +350,11 @@ module proc (/*AUTOARG*/
                       .in_LBI(ex_LBI),
                       .in_SLBI(ex_SLBI),
                       .in_stall_n(ex_stall_n), 
+                      .in_halt(ex_halt),
                       .take_new_PC(take_new_PC));
 
    memory memory0(.data_out(mem_mem_out),
-                  .data_in(mem_rd_data_2),
+                  .data_in(mem_rd_data_2),// FIXME: Currenty high Z
                   .addr(mem_alu_out),
                   .en(mem_mem_en),
                   .mem_wr(mem_mem_wr),
