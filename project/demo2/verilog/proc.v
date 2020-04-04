@@ -41,7 +41,7 @@ module proc (/*AUTOARG*/
 
    // Fetch stage signals
    wire [15:0] if_PC_inc;
-   wire        if_halt;
+   //wire        if_halt;
    wire [15:0] if_instr;
    // Decode stage signals
    wire [15:0] id_PC_inc;
@@ -119,19 +119,19 @@ module proc (/*AUTOARG*/
    //wire        jmp_reg_instr;
    // Write back stage signals
    wire [15:0] wb_PC_inc;
-   wire        wb_halt;
+   //wire        wb_halt;
    wire [15:0] wb_rd_data_1;
    wire [15:0] wb_alu_out;
    wire [15:0] wb_mem_out;
    wire [15:0] wb_sext_imm;
-   wire [2:0]  wb_alu_op;
+   //wire [2:0]  wb_alu_op;
    wire        wb_set;
    //wire        alu_zero;
    //wire        alu_ofl;
    //wire        alu_ltz;
    //wire        alu_lteq;
-   wire        wb_mem_en;
-   wire        wb_mem_wr;
+   //wire        wb_mem_en;
+   //wire        wb_mem_wr;
    wire [15:0] wb_wr_data;
    wire        wb_wr_en;
    wire [2:0]  wb_wr_reg;
@@ -310,7 +310,8 @@ module proc (/*AUTOARG*/
                     .SLBI(ex_SLBI),
                     .err(execute_error));
 
-   ex_mem ex_mem_pipe(.out_rd_data_1(mem_rd_data_1),
+   ex_mem ex_mem_pipe(.out_PC_inc(mem_PC_inc),
+                      .out_rd_data_1(mem_rd_data_1),
                       .out_rd_data_2(mem_rd_data_2),
                       .out_alu_ofl(mem_alu_ofl),
                       .out_alu_out(mem_alu_out),
@@ -332,6 +333,7 @@ module proc (/*AUTOARG*/
                       .err(ex_mem_error),
                       .clk(clk),
                       .rst(rst),
+                      .in_PC_inc(ex_PC_inc),
                       .in_rd_data_1(ex_rd_data_1),
                       .in_rd_data_2(ex_rd_data_2),
                       .in_alu_ofl(ex_alu_ofl),
@@ -354,7 +356,7 @@ module proc (/*AUTOARG*/
                       .take_new_PC(take_new_PC));
 
    memory memory0(.data_out(mem_mem_out),
-                  .data_in(mem_rd_data_2),// FIXME: Currenty high Z
+                  .data_in(mem_rd_data_2),
                   .addr(mem_alu_out),
                   .en(mem_mem_en),
                   .mem_wr(mem_mem_wr),
@@ -363,7 +365,8 @@ module proc (/*AUTOARG*/
                   .rst(rst),
                   .err(memory_error));
 
-   mem_wb mem_wb_pipe(.out_wr_reg(wb_wr_reg),
+   mem_wb mem_wb_pipe(.out_rd_data_1(wb_rd_data_1),
+                      .out_wr_reg(wb_wr_reg),
                       .out_wr_en(wb_wr_en),
                       .out_wr_sel(wb_wr_sel),
                       .out_alu_out(wb_alu_out),
@@ -376,6 +379,7 @@ module proc (/*AUTOARG*/
                       .err(mem_wb_error),
                       .clk(clk),
                       .rst(rst),
+                      .in_rd_data_1(mem_rd_data_1),
                       .in_wr_reg(mem_wr_reg),
                       .in_wr_en(mem_wr_en),
                       .in_wr_sel(mem_wr_sel),

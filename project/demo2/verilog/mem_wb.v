@@ -1,5 +1,6 @@
 module mem_wb(
         // outputs
+        out_rd_data_1,
         out_wr_en,
         out_wr_reg,
         out_wr_sel,
@@ -14,6 +15,7 @@ module mem_wb(
         // inputs
         clk,
         rst,
+        in_rd_data_1,
         in_wr_en,
         in_wr_reg,
         in_wr_sel,
@@ -26,6 +28,7 @@ module mem_wb(
         in_set,
         in_stall_n);
 
+   output [15:0] out_rd_data_1;
    output        out_wr_en;
    output [2:0]  out_wr_reg;
    output [2:0]  out_wr_sel;
@@ -40,6 +43,7 @@ module mem_wb(
 
    input        clk;
    input        rst;
+   input [15:0] in_rd_data_1;
    input        in_wr_en;
    input [2:0]  in_wr_reg;
    input [2:0]  in_wr_sel;
@@ -54,6 +58,7 @@ module mem_wb(
 
     assign err = (^{clk,
                     rst,
+                    in_rd_data_1,
                     in_wr_en,
                     in_wr_reg,
                     in_wr_sel,
@@ -69,6 +74,7 @@ module mem_wb(
 
    // TODO: writeEn needs to be low in the event of a stall.
    // TODO: wr_en needs to be low in the event of a stall.
+   register #(.N(16)) rd_data_1_reg(.clk(clk), .rst(rst), .writeEn(in_stall_n), .dataIn(in_rd_data_1), .dataOut(out_rd_data_1), .err());
    register #(.N(1)) wr_en_reg(.clk(clk), .rst(rst), .writeEn(in_stall_n), .dataIn(in_wr_en), .dataOut(out_wr_en), .err());
    register #(.N(3)) wr_reg_reg(.clk(clk), .rst(rst), .writeEn(in_stall_n), .dataIn(in_wr_reg), .dataOut(out_wr_reg), .err());
    register #(.N(3)) wr_sel_reg(.clk(clk), .rst(rst), .writeEn(in_stall_n), .dataIn(in_wr_sel), .dataOut(out_wr_sel), .err());
