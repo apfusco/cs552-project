@@ -16,7 +16,15 @@ module execute (oprnd_1,
                 br_cnd_sel,
                 br_instr,
                 jmp_instr,
-                jmp_reg_instr;
+                jmp_reg_instr,
+                ex_fwd_Rs,
+                ex_fwd_Rt,
+                mem_fwd_Rs,
+                mem_fwd_Rt,
+                ex_Rs_val,
+                ex_Rt_val,
+                mem_Rs_val,
+                mem_Rt_val,
                 ofl,
                 alu_out,
                 zero,
@@ -42,6 +50,15 @@ module execute (oprnd_1,
    input         br_instr;
    input         jmp_instr;
    input         jmp_reg_instr;
+   input         ex_fwd_Rs;
+   input         ex_fwd_Rt;
+   input         mem_fwd_Rs;
+   input         mem_fwd_Rt;
+   input [15:0]  ex_Rs_val;
+   input [15:0]  ex_Rt_val;
+   input [15:0]  mem_Rs_val;
+   input [15:0]  mem_Rt_val;
+
    output        ofl;
    output [15:0] alu_out;
    output        zero;
@@ -59,13 +76,24 @@ module execute (oprnd_1,
    wire br_lt;
    wire br_gteq;
 
-   assign err = (^{oprnd_1, oprnd_2, alu_Cin, alu_op, alu_invA, alu_invB, alu_sign,
-         PC_inc, br_cnd_sel, br_instr, jmp_instr, jmp_reg_instr} === 1'bX) ?
+   wire [15:0] fwd_op_1;
+   wire [15:0] fwd_op_2;
+
+   assign fwd_op_1 = (ex_fwd_Rs == 1'b1) ? ex_Rs_val :
+                        (mem_fwd_Rs == 1'b1) ? mem_Rs_val :
+                        oprnd_1;
+   assign fwd_op_2 = (ex_fwd_Rt == 1'b1) ? ex_Rt_val :
+                        (mem_fwd_Rt == 1'b1) ? mem_Rt_val :
+                        oprnd_2;
+
+   assign err = (^{oprnd_1, oprnd_2, alu_Cin, alu_op, alu_invA, alu_invB,
+         alu_sign, fwd_op_1, fwd_op_2, PC_inc, br_cnd_sel, br_instr, 
+         jmp_instr, jmp_reg_instr} === 1'bX) ?
          1'b1 : 1'b0;
 
    // ALU logic
-   alu alu(.InA(oprnd_1),
-           .InB(oprnd_2),
+   alu alu(.InA(fwd_op_1),
+           .InB(fwd_op_2),
            .Cin(alu_Cin),
            .Op(alu_op),
            .invA(alu_invA),
@@ -82,8 +110,8 @@ module execute (oprnd_1,
    // Branching logic
    assign br_eq = zero;
    assign br_neq = ~zero;
-   assign br_lt = oprnd_1[15];
-   assign br_gteq = ~oprnd_1[15];
+   assign br_lt = fwd_op_1[15];
+   assign br_gteq = ~fwd_op_1[15];
    mux4_1 mux4_1_take_br(.InA(br_eq), .InB(br_neq), .InC(br_lt), .InD(br_gteq), .S(br_cnd_sel), .Out(take_br));
 
    // PC logic

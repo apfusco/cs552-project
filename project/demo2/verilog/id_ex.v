@@ -49,6 +49,14 @@ module id_ex(
         in_alu_Cin,
         in_alu_sign,
         in_stall_n,
+        in_ex_fwd_Rs,
+        in_ex_fwd_Rt,
+        in_mem_fwd_Rs,
+        in_mem_fwd_Rt,
+        in_ex_Rs,
+        in_ex_Rt,
+        in_mem_Rs,
+        in_mem_Rt,
         in_pc_en);
 
     output [15:0] out_rd_data_1;
@@ -100,6 +108,14 @@ module id_ex(
     input        in_alu_Cin;
     input        in_alu_sign;
     input        in_stall_n; // low if stage should stall
+    input        in_ex_fwd_Rs; // fwd on Rs from ex
+    input        in_ex_fwd_Rt; // fwd on Rt from ex
+    input        in_mem_fwd_Rs; // fwd on Rs from mem
+    input        in_mem_fwd_Rt; // fwd on Rt from mem
+    input [2:0]  in_ex_Rs;
+    input [2:0]  in_ex_Rt;
+    input [2:0]  in_mem_Rs;
+    input [2:0]  in_mem_Rt;
     input        in_pc_en;
 
 
