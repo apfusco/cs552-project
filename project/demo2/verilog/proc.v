@@ -36,7 +36,6 @@ module proc (/*AUTOARG*/
    wire wb_error;
 
    // Important signal
-   wire        PC_en;
    wire [15:0] new_PC;
    wire        take_new_PC;
 
@@ -45,7 +44,7 @@ module proc (/*AUTOARG*/
    wire [15:0] if_PC_sext_imm;
    wire [15:0] if_reg_sext_imm;
    wire        if_PC_src;
-   wire        if_PC_en;
+   wire        if_halt;
    wire [15:0] if_instr;
    // Decode stage signals
    wire [15:0] id_PC_inc;
@@ -53,7 +52,7 @@ module proc (/*AUTOARG*/
    wire [15:0] id_PC_sext_imm;
    wire [15:0] id_reg_sext_imm;
    wire        id_PC_src;
-   wire        id_PC_en;
+   wire        id_halt;
    wire [15:0] id_rd_data_1;
    wire [15:0] id_rd_data_2;
    wire [15:0] id_oprnd_2;
@@ -73,7 +72,7 @@ module proc (/*AUTOARG*/
    wire [15:0] ex_PC_sext_imm;
    wire [15:0] ex_reg_sext_imm;
    wire        ex_PC_src;
-   wire        ex_PC_en;
+   wire        ex_halt;
    wire [15:0] ex_rd_data_1;
    wire [15:0] ex_rd_data_2;
    wire [2:0]  ex_rd_reg_1;
@@ -106,7 +105,7 @@ module proc (/*AUTOARG*/
    wire [15:0] mem_PC_sext_imm;
    wire [15:0] mem_reg_sext_imm;
    wire        mem_PC_src;
-   wire        mem_PC_en;
+   wire        mem_halt;
    wire [15:0] mem_rd_data_1;
    wire [15:0] mem_rd_data_2;
    //wire [15:0] oprnd_2;
@@ -135,7 +134,7 @@ module proc (/*AUTOARG*/
    wire [15:0] wb_PC_sext_imm;
    wire [15:0] wb_reg_sext_imm;
    wire        wb_PC_src;
-   wire        wb_PC_en;
+   wire        wb_halt;
    wire [15:0] wb_rd_data_1;
    wire [15:0] wb_alu_out;
    wire [15:0] wb_mem_out;
@@ -186,7 +185,7 @@ module proc (/*AUTOARG*/
                 .rst(rst),
                 .new_PC(new_PC),
                 .take_new_PC(take_new_PC),
-                .pc_en(PC_en));
+                .stall(stall));
 
    if_id if_id_pipe(.out_instr(id_instr),
                     .out_PC_inc(id_PC_inc),
@@ -218,7 +217,7 @@ module proc (/*AUTOARG*/
                   .alu_invB(id_alu_invB),
                   .alu_Cin(id_alu_Cin),
                   .alu_sign(id_alu_sign),
-                  .pc_en(/* TODO: PC_en */),
+                  .halt(id_halt),
                   .err(decode_error),
                   .rd_reg_1(id_instr[10:8]),
                   .rd_reg_2(id_instr[7:5]),
@@ -252,7 +251,7 @@ module proc (/*AUTOARG*/
                     .out_alu_Cin(ex_alu_Cin),
                     .out_alu_sign(ex_alu_sign),
                     .out_stall_n(ex_stall_n),
-                    .out_pc_en(ex_PC_en),
+                    .out_halt(ex_halt),
                     .err(id_ex_error),
                     .clk(clk),
                     .rst(rst),
@@ -280,7 +279,6 @@ module proc (/*AUTOARG*/
                     .in_alu_sign(id_alu_sign),
                     .in_stall_n(id_stall_n), 
                     .take_new_PC(take_new_PC),
-                    // TODO: Attach all of these signals
                     .in_ex_fwd_Rs(ex_fwd_Rs),
                     .in_ex_fwd_Rt(ex_fwd_Rt),
                     .in_mem_fwd_Rs(mem_fwd_Rs),
@@ -289,7 +287,7 @@ module proc (/*AUTOARG*/
                     .in_ex_Rt(ex_Rt),
                     .in_mem_Rs(mem_Rs),
                     .in_mem_Rt(mem_Rt),
-                    .in_pc_en(id_PC_en));
+                    .in_halt(id_halt));
 
    execute execute0(.oprnd_1(ex_rd_data_1),
                     .oprnd_2(ex_oprnd_2),
@@ -380,7 +378,7 @@ module proc (/*AUTOARG*/
                   .addr(mem_alu_out),
                   .en(mem_mem_en),
                   .mem_wr(mem_mem_wr),
-                  .createdump(~PC_en),
+                  .createdump(mem_halt),
                   .clk(clk),
                   .rst(rst),
                   .err(memory_error));

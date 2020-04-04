@@ -23,7 +23,7 @@ module id_ex(
         out_alu_Cin,
         out_alu_sign,
         out_stall_n,
-        out_pc_en,
+        out_halt,
         err,
         // inputs
         clk,
@@ -60,7 +60,7 @@ module id_ex(
         in_ex_Rt,
         in_mem_Rs,
         in_mem_Rt,
-        in_pc_en);
+        in_halt);
 
     output [15:0] out_rd_data_1;
     output [15:0] out_rd_data_2;
@@ -85,7 +85,7 @@ module id_ex(
     output        out_alu_Cin;
     output        out_alu_sign;
     output        out_stall_n;
-    output        out_pc_en;
+    output        out_halt;
     output        err;
 
     input        clk;
@@ -123,7 +123,7 @@ module id_ex(
     input [15:0] in_ex_Rt;
     input [15:0] in_mem_Rs;
     input [15:0] in_mem_Rt;
-    input        in_pc_en;
+    input        in_halt;
 
     wire stall_n;
 
@@ -161,7 +161,7 @@ module id_ex(
                     in_ex_Rt,
                     in_mem_Rs,
                     in_mem_Rt,
-                    in_pc_en
+                    in_halt
                     } === 1'bX) ? 1'b1 : 1'b0;
 
     assign stall_n = (take_new_PC == 1'b0) ? in_stall_n : 1'b0;
@@ -189,6 +189,6 @@ module id_ex(
     register #(.N(1)) alu_Cin_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_alu_Cin), .dataOut(out_alu_Cin), .err());
     register #(.N(1)) alu_sign_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_alu_sign), .dataOut(out_alu_sign), .err());
     register #(.N(1)) stall_n_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(stall_n), .dataOut(out_stall_n), .err());
-    register #(.N(1)) pc_en_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_pc_en), .dataOut(out_pc_en), .err());
+    register #(.N(1)) halt_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_halt), .dataOut(out_halt), .err());
 
 endmodule

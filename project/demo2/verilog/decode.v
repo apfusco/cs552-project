@@ -24,7 +24,7 @@ module decode (rd_data_1,
                alu_invB,
                alu_Cin,
                alu_sign,
-               pc_en,
+               halt,
                err,
                rd_reg_1,
                rd_reg_2,
@@ -55,7 +55,7 @@ module decode (rd_data_1,
     output alu_invB;
     output alu_Cin;
     output alu_sign;
-    output pc_en;
+    output halt;
     output err;
 
     input [2:0] rd_reg_1;
@@ -122,7 +122,7 @@ module decode (rd_data_1,
                  .alu_invB(alu_invB),
                  .alu_Cin(alu_Cin),
                  .alu_sign(alu_sign),
-                 .pc_en(pc_en),
+                 .halt(halt),
                  .err(cntrl_error));
 
 endmodule

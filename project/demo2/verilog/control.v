@@ -17,7 +17,7 @@ module control (instr,
                 alu_invB,
                 alu_Cin,
                 alu_sign,
-                pc_en,
+                halt,
                 err);
 
    input [15:0] instr;
@@ -39,7 +39,7 @@ module control (instr,
    output       alu_invB;
    output       alu_Cin;
    output       alu_sign;
-   output       pc_en;
+   output       halt;
    output       err;
 
    // Control outputs
@@ -61,7 +61,7 @@ module control (instr,
    reg       case_alu_invB;
    reg       case_alu_Cin;
    reg       case_alu_sign;
-   reg       case_pc_en;
+   reg       case_halt;
    reg       case_err;
 
    /*
@@ -93,12 +93,12 @@ module control (instr,
       case_alu_invB = 1'b0;     // Invert input B of the ALU
       case_alu_Cin = 1'b0;      // Carry in for the ALU
       case_alu_sign = 1'b1;     // Treat operands as signed
-      case_pc_en = 1'b1;        // High when PC can be updated
+      case_halt = 1'b0;         // High when PC can be updated
       case_err = 1'b0;          // High upon error
 
       case (instr[15:11])
          5'b00000: begin // HALT
-            case_pc_en = 1'b0;
+            case_halt = 1'b1;
          end
          5'b00001: begin // NOP
             /**
@@ -329,6 +329,6 @@ module control (instr,
    assign alu_invB = case_alu_invB;
    assign alu_Cin = case_alu_Cin;
    assign alu_sign = case_alu_sign;
-   assign pc_en = case_pc_en;
+   assign halt = case_halt;
    
 endmodule
