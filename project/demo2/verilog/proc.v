@@ -92,7 +92,7 @@ module proc (/*AUTOARG*/
    wire        ex_alu_ofl;
    wire        ex_alu_ltz;
    wire        ex_alu_lteq;
-   wire        ex_take_new_PC;
+   wire        take_new_PC;
    wire        ex_mem_en;
    wire        ex_mem_wr;
    wire        ex_wr_en;
@@ -266,7 +266,7 @@ module proc (/*AUTOARG*/
                     .in_alu_invB(id_alu_invB),
                     .in_alu_Cin(id_alu_Cin),
                     .in_alu_sign(id_alu_sign),
-                    .in_stall_n(~ex_take_new_PC), // input is active low
+                    .in_stall_n(~take_new_PC), // input is active low
                     .in_pc_en(id_PC_en));
 
    execute execute0(.oprnd_1(ex_rd_data_1),
@@ -334,7 +334,7 @@ module proc (/*AUTOARG*/
                       .in_wr_reg(ex_wr_reg), 
                       .in_wr_sel(ex_wr_sel),
                       .in_stall_n(ex_stall_n), 
-                      .in_take_new_PC(ex_take_new_PC));
+                      .in_take_new_PC(take_new_PC));
 
    memory memory0(.data_out(mem_mem_out),
                   .data_in(mem_rd_data_2),
