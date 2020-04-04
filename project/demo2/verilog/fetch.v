@@ -4,8 +4,7 @@
    Filename        : fetch.v
    Description     : This is the module for the overall fetch stage of the processor.
 */
-module fetch (instr, PC_inc, err, PC_sext_imm, reg_sext_imm, clk, rst,
-        new_PC, take_new_PC, pc_en);
+module fetch (instr, PC_inc, err, clk, rst, new_PC, take_new_PC, pc_en);
     
     output [15:0] instr;
     output [15:0] PC_inc; // PC + 2
@@ -29,7 +28,7 @@ module fetch (instr, PC_inc, err, PC_sext_imm, reg_sext_imm, clk, rst,
     assign two = 16'h0002;
     assign PC_inc = PC_inc_wire;
 
-    assign err = (^{PC_sext_imm, reg_sext_imm, clk, rst, new_PC, take_new_PC, pc_en} === 1'bX) ? 1'b1 : 1'b0;
+    assign err = (^{clk, rst, new_PC, take_new_PC, pc_en} === 1'bX) ? 1'b1 : 1'b0;
 
     // PC + 2 since our ISA uses 16 bit instructions
     cla_16b pc_addr(.A(PC_reg_out), .B(two), .C_in(1'b0), .S(PC_inc_wire), .C_out());

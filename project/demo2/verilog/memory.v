@@ -5,8 +5,7 @@
    Description     : This module contains all components in the Memory stage of the 
                      processor.
 */
-module memory (data_out, data_in, addr, en, mem_wr, createdump, clk, rst,
-               set, err);
+module memory (data_out, data_in, addr, en, mem_wr, createdump, clk, rst, err);
 
     // memory signals
     output [15:0] data_out;
