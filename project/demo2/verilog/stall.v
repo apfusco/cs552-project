@@ -5,6 +5,7 @@ module stall(
         // outputs
         id_ex_stall,
         // inputs
+        id_ex_mem_en,
         id_ex_mem_wr,
         id_ex_Rd,
         if_id_Rs,
@@ -12,6 +13,7 @@ module stall(
 
     output      id_ex_stall;
 
+    input       id_ex_mem_en;
     input       id_ex_mem_wr;
     input [2:0] id_ex_Rd;
     input [2:0] if_id_Rs;
@@ -28,7 +30,7 @@ module stall(
     // stall if there is a mem read and either one of the operands in the curr
     // instruction rely upon the prior insruction's result from a read
         // d/e_mem_rd & (d/e_Rt == f/d_Rs | d/e_Rt == f/d_Rt)
-    assign id_ex_stall = id_ex_mem_rd & (
+    assign id_ex_stall = id_ex_mem_en & id_ex_mem_rd & (
         ~|(id_ex_Rd ^ if_id_Rs) | 
         ~|(id_ex_Rd ^ if_id_Rt));
 

@@ -436,6 +436,7 @@ module proc (/*AUTOARG*/
                     .mem_wb_wr_sel(wb_wr_sel));
 
    stall stall0(.id_ex_stall(stall),
+                .id_ex_mem_en(ex_mem_en),
                 .id_ex_mem_wr(ex_mem_wr), 
                 .id_ex_Rd(ex_wr_reg),
                 .if_id_Rs(id_instr[10:8]), // TODO: only check if Rs/Rt are present?
