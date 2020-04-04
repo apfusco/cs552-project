@@ -162,6 +162,10 @@ module proc (/*AUTOARG*/
    wire        ex_fwd_Rt;
    wire        mem_fwd_Rs;
    wire        mem_fwd_Rt;
+   wire [15:0] ex_Rs;
+   wire [15:0] ex_Rt;
+   wire [15:0] mem_Rs;
+   wire [15:0] mem_Rt;
 
    // stall signals
    wire        id_ex_stall;
@@ -284,14 +288,14 @@ module proc (/*AUTOARG*/
                     .br_instr(ex_br_instr),
                     .jmp_instr(ex_jmp_instr),
                     .jmp_reg_instr(ex_jmp_reg_instr),
-                    .ex_fwd_Rs(ex_fwd_Rs), // TODO:asdfadsf
+                    .ex_fwd_Rs(ex_fwd_Rs),
                     .ex_fwd_Rt(ex_fwd_Rt),
                     .mem_fwd_Rs(mem_fwd_Rs),
                     .mem_fwd_Rt(mem_fwd_Rt),
-                    .ex_Rs_val(),
-                    .ex_Rt_val(),
-                    .mem_Rs_val(),
-                    .mem_Rt_val(),
+                    .ex_Rs_val(ex_Rs),
+                    .ex_Rt_val(ex_Rt),
+                    .mem_Rs_val(mem_Rs),
+                    .mem_Rt_val(mem_Rt),
                     .ofl(ex_alu_ofl),
                     .alu_out(ex_alu_out),
                     .zero(ex_alu_zero),
@@ -405,10 +409,10 @@ module proc (/*AUTOARG*/
                     .ex_fwd_Rt(ex_fwd_Rt),
                     .mem_fwd_Rs(mem_fwd_Rs),
                     .mem_fwd_Rt(mem_fwd_Rt),
-                    .ex_Rs(),
-                    .ex_Rt(),
-                    .mem_Rs(),
-                    .mem_Rt(),
+                    .ex_Rs(ex_Rs),
+                    .ex_Rt(ex_Rt),
+                    .mem_Rs(mem_Rs),
+                    .mem_Rt(mem_Rt),
                     .mem_wr_en(mem_wr_en), // reg write signal from ex/mem
                     .ex_mem_Rd(mem_wr_reg),
                     .id_ex_has_Rt(ex_has_Rt),
@@ -416,17 +420,17 @@ module proc (/*AUTOARG*/
                     .id_ex_Rt(ex_rd_reg_2),
                     .wb_wr_en(wb_wr_en),
                     .mem_wb_Rd(wb_wr_reg),
-                    .ex_alu_result(),
-                    .ex_set_result(),
-                    .ex_lbi_result(),
-                    .ex_slbi_result(),
-                    .ex_wr_sel(),
-                    .mem_alu_result(),
-                    .mem_result(),
-                    .mem_set_result(),
-                    .mem_lbi_result(),
-                    .mem_slbi_result(),
-                    .mem_wr_sel());
+                    .ex_mem_alu_result(mem_alu_out),
+                    .ex_mem_set_result(mem_set),
+                    .ex_mem_lbi_result(mem_LBI),
+                    .ex_mem_slbi_result(mem_SLBI),
+                    .ex_mem_wr_sel(mem_wr_sel),
+                    .mem_wb_alu_result(wb_alu_out),
+                    .mem_wb_mem_result(wb_mem_out),
+                    .mem_wb_set_result(wb_set),
+                    .mem_wb_lbi_result(wb_LBI),
+                    .mem_wb_slbi_result(wb_SLBI),
+                    .mem_wb_wr_sel(wb_wr_sel));
 
    stall stall0(.id_ex_stall(id_ex_stall),
                 .id_ex_mem_wr(ex_mem_wr), 
