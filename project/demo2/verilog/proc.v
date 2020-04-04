@@ -49,6 +49,7 @@ module proc (/*AUTOARG*/
    wire [15:0] if_instr;
    // Decode stage signals
    wire [15:0] id_PC_inc;
+   wire        id_stall_n;
    wire [15:0] id_PC_sext_imm;
    wire [15:0] id_reg_sext_imm;
    wire        id_PC_src;
@@ -168,7 +169,7 @@ module proc (/*AUTOARG*/
    wire [15:0] mem_Rt;
 
    // stall signals
-   wire        id_ex_stall;
+   wire        stall;
 
    // TODO: Add pipeline module error signals.
    assign err = fetch_error | decode_error | execute_error | memory_error | wb_error;
@@ -184,10 +185,12 @@ module proc (/*AUTOARG*/
 
    if_id if_id_pipe(.out_instr(id_instr),
                     .out_PC_inc(id_PC_inc),
+                    .out_stall_n(id_stall_n),
                     .err(if_id_error),
                     .clk(clk),
                     .rst(rst),
                     .in_instr(if_instr),
+                    .in_stall_n(~stall), // turns stall into an active low
                     .in_PC_inc(if_PC_inc));
 
    decode decode0(.rd_data_1(id_rd_data_1),
@@ -271,7 +274,8 @@ module proc (/*AUTOARG*/
                     .in_alu_invB(id_alu_invB),
                     .in_alu_Cin(id_alu_Cin),
                     .in_alu_sign(id_alu_sign),
-                    .in_stall_n(~take_new_PC), // input is active low
+                    .take_new_PC(take_new_PC),
+                    .in_stall_n(id_stall_n), 
                     .in_pc_en(id_PC_en));
 
    execute execute0(.oprnd_1(ex_rd_data_1),
@@ -355,7 +359,7 @@ module proc (/*AUTOARG*/
                       .in_LBI(ex_LBI),
                       .in_SLBI(ex_SLBI),
                       .in_stall_n(ex_stall_n), 
-                      .in_take_new_PC(take_new_PC));
+                      .take_new_PC(take_new_PC));
 
    memory memory0(.data_out(mem_mem_out),
                   .data_in(mem_rd_data_2),
@@ -432,7 +436,7 @@ module proc (/*AUTOARG*/
                     .mem_wb_slbi_result(wb_SLBI),
                     .mem_wb_wr_sel(wb_wr_sel));
 
-   stall stall0(.id_ex_stall(id_ex_stall),
+   stall stall0(.id_ex_stall(stall),
                 .id_ex_mem_wr(ex_mem_wr), 
                 .id_ex_Rd(ex_wr_reg),
                 .if_id_Rs(id_instr[10:8]), // TODO: only check if Rs/Rt are present?
