@@ -31,6 +31,7 @@ module forward(
         mem_wb_slbi_result,
         mem_wb_wr_sel,
         );
+// TODO: make set_inputs be 1 bit and then add zeros
 
     output        ex_fwd_Rs; // forward Rs to ex from ex
     output        ex_fwd_Rt; // forward Rt to ex from ex

@@ -86,12 +86,12 @@ module ex_mem(
    input [15:0] in_LBI;
    input [15:0] in_SLBI;
    input        in_stall_n; // low if stage should stall
-   input        in_take_new_PC; // arrives from execute, low if stall
+   input        take_new_PC; // arrives from execute, low if stall
 
    wire         stall_n;
    
    // control stall takes priority over the stall from previous stage
-   assign stall_n = (in_take_new_PC == 1'b0) ? in_stall_n : 1'b0;
+   assign stall_n = (take_new_PC == 1'b0) ? in_stall_n : 1'b0;
 
    // TODO: writeEn needs to be low in the event of a stall.
    // TODO: mem_wr_en needs to be low in the event of a stall.

@@ -1,7 +1,7 @@
 /*
 * Logic for detecting when to stall in the pipelined processor. 
 */
-module stall(/* TODO: add branch and jump stall in this module */
+module stall(
         // outputs
         id_ex_stall,
         // inputs
