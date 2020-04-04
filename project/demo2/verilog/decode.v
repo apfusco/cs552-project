@@ -10,6 +10,7 @@ module decode (rd_data_1,
                sext_imm,
                br_cnd_sel,
                set_sel,
+               has_Rt,
                out_wr_en,
                out_wr_reg,
                mem_wr_en,
@@ -40,6 +41,7 @@ module decode (rd_data_1,
     output [15:0] sext_imm;
     output [1:0] br_cnd_sel;
     output [1:0] set_sel;
+    output has_Rt;
     output out_wr_en;
     output [2:0] out_wr_reg;
     output mem_wr_en;
@@ -98,6 +100,7 @@ module decode (rd_data_1,
                  .br_cnd_sel(br_cnd_sel),
                  .set_sel(set_sel),
                  .wr_en(out_wr_en),
+                 .has_Rt(has_Rt),
                  .mem_wr_en(mem_wr_en),
                  .mem_en(mem_en),
                  .wr_sel(wr_sel),
