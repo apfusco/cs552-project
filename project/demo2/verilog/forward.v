@@ -62,8 +62,8 @@ module forward(
     input [2:0]  mem_wb_wr_sel;
     // TODO: PC_inc results needed or no?
 
-    wire ex_mem_reg_wr;
-    wire mem_wb_reg_wr;
+    wire ex_mem_reg_wr;// TODO: This signal isn't used...?
+    wire mem_wb_reg_wr;// TODO: This signal isn't used...?
     wire [15:0] dontcare;
     wire [15:0] ex_wr_data;
     wire [15:0] mem_wr_data;
@@ -108,9 +108,16 @@ module forward(
                              .Out(mem_wr_data));
 
     // TODO: probably a better way to do this, but I'm tired
-    assign ex_Rs = (ex_fwd_Rs == 1'b1) ? ex_wr_data : dontcare;
-    assign ex_Rt = (ex_fwd_Rt == 1'b1) ? ex_wr_data : dontcare;
-    assign mem_Rs = (mem_fwd_Rs == 1'b1) ? mem_wr_data : dontcare;
-    assign mem_Rt = (mem_fwd_Rt == 1'b1) ? mem_wr_data : dontcare;
+    // TODO: There can't be don't cares in the processor, so idk how this
+    // should be implemented.
+//    assign ex_Rs = (ex_fwd_Rs == 1'b1) ? ex_wr_data : dontcare;
+//    assign ex_Rt = (ex_fwd_Rt == 1'b1) ? ex_wr_data : dontcare;
+//    assign mem_Rs = (mem_fwd_Rs == 1'b1) ? mem_wr_data : dontcare;
+//    assign mem_Rt = (mem_fwd_Rt == 1'b1) ? mem_wr_data : dontcare;
+
+    assign ex_Rs = ex_fwd_Rs ? ex_wr_data : 16'h0;
+    assign ex_Rt = ex_fwd_Rt ? ex_wr_data : 16'h0;
+    assign mem_Rs = mem_fwd_Rs ? mem_wr_data : 16'h0;
+    assign mem_Rt = mem_fwd_Rt ? mem_wr_data : 16'h0;
 
 endmodule
