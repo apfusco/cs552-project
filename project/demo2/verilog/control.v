@@ -315,6 +315,7 @@ module control (instr,
    assign br_cnd_sel = case_br_cnd_sel;
    assign set_sel = case_set_sel;
    assign wr_en = case_wr_en;
+   assign has_Rt = case_has_Rt;
    assign mem_wr_en = case_mem_wr_en;
    assign mem_en = case_mem_en;
    assign wr_sel = case_wr_sel;
