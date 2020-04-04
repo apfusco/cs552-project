@@ -1,5 +1,6 @@
 module id_ex(
         // outputs
+        out_PC_inc,
         out_rd_data_1, 
         out_rd_data_2, 
         out_rd_reg_1,
@@ -28,6 +29,7 @@ module id_ex(
         // inputs
         clk,
         rst,
+        in_PC_inc,
         in_rd_data_1,
         in_rd_data_2,
         in_rd_reg_1,
@@ -62,6 +64,7 @@ module id_ex(
         in_mem_Rt,
         in_halt);
 
+    output [15:0] out_PC_inc;
     output [15:0] out_rd_data_1;
     output [15:0] out_rd_data_2;
     output [2:0]  out_rd_reg_1;
@@ -90,6 +93,7 @@ module id_ex(
 
     input        clk;
     input        rst;
+    input [15:0] in_PC_inc;
     input [15:0] in_rd_data_1;
     input [15:0] in_rd_data_2;
     input [2:0]  in_rd_reg_1;
@@ -129,6 +133,7 @@ module id_ex(
 
     assign err = (^{clk,
                     rst,
+                    in_PC_inc,
                     in_rd_data_1,
                     in_rd_data_2,
                     in_rd_reg_1,
@@ -166,6 +171,7 @@ module id_ex(
 
     assign stall_n = (take_new_PC == 1'b0) ? in_stall_n : 1'b0;
 
+    register #(.N(16)) PC_inc_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_PC_inc), .dataOut(out_PC_inc), .err());
     register #(.N(16)) rd_data_1_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_rd_data_1), .dataOut(out_rd_data_1), .err());
     register #(.N(16)) rd_data_2_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_rd_data_2), .dataOut(out_rd_data_2), .err());
     register #(.N(3)) rd_reg_1_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_rd_reg_1), .dataOut(out_rd_reg_1), .err());

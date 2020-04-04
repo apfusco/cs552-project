@@ -213,8 +213,8 @@ module proc (/*AUTOARG*/
                   .clk(clk),
                   .rst(rst));
 
-   // FIXME: PC_inc needs to be pipelined through
-   id_ex id_ex_pipe(.out_rd_data_1(ex_rd_data_1),
+   id_ex id_ex_pipe(.out_PC_inc(ex_PC_inc),
+                    .out_rd_data_1(ex_rd_data_1),
                     .out_rd_data_2(ex_rd_data_2), 
                     .out_rd_reg_1(ex_rd_reg_1),
                     .out_rd_reg_2(ex_rd_reg_2),
@@ -241,6 +241,7 @@ module proc (/*AUTOARG*/
                     .err(id_ex_error),
                     .clk(clk),
                     .rst(rst),
+                    .in_PC_inc(id_PC_inc),
                     .in_rd_data_1(id_rd_data_1),
                     .in_rd_data_2(id_rd_data_2),
                     .in_rd_reg_1(id_instr[10:8]), // TODO: handle when these are garbage (i.e. the instruction doesn't have an Rs or Rt)
@@ -309,7 +310,6 @@ module proc (/*AUTOARG*/
                     .SLBI(ex_SLBI),
                     .err(execute_error));
 
-   // TODO: Needs rd_data_1 and rd_data_2 pipelined through
    ex_mem ex_mem_pipe(.out_rd_data_1(mem_rd_data_1),
                       .out_rd_data_2(mem_rd_data_2),
                       .out_alu_ofl(mem_alu_ofl),
