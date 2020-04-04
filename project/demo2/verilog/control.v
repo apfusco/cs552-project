@@ -1,6 +1,7 @@
 module control (instr,
                 br_cnd_sel,
                 set_sel,
+                has_Rt,
                 wr_en,
                 mem_wr_en,
                 mem_en,
@@ -23,6 +24,7 @@ module control (instr,
    output [1:0] br_cnd_sel;
    output [1:0] set_sel;
    output       wr_en;
+   output       has_Rt;
    output       mem_wr_en;
    output       mem_en;
    output [2:0] wr_sel;
@@ -44,6 +46,7 @@ module control (instr,
    reg [1:0] case_br_cnd_sel;
    reg [1:0] case_set_sel;
    reg       case_wr_en;
+   reg       case_has_Rt; // used by forwarding unit
    reg       case_mem_wr_en;
    reg       case_mem_en;
    reg [2:0] case_wr_sel;
@@ -75,6 +78,7 @@ module control (instr,
       case_br_cnd_sel = 2'b00;
       case_set_sel = 2'b00;
       case_wr_en = 1'b0;        // High for writing back to register
+      case_has_Rt = 1'b0;       // High for presence of Rt (used by forwarding)
       case_mem_wr_en = 1'b0;    // High for writing to memory
       case_mem_en = 1'b0;       // High for accessing memory
       case_wr_sel = 3'b000;      // High for selecting ALU output
@@ -187,6 +191,7 @@ module control (instr,
          end
          5'b11011: begin // ADD, SUB, XOR, ANDN
             case_wr_en = 1'b1;
+            case_has_Rt = 1'b1;
             case_alu_op = (instr[1] == 1'b0) ? 3'b100 :
                   (instr[0] == 1'b0) ? 3'b111 : 3'b101;
             case_alu_invA = ~instr[1] & instr[0];
@@ -195,10 +200,12 @@ module control (instr,
          end
          5'b11010: begin // ROL, SLL, ROR, SRL
             case_wr_en = 1'b1;
+            case_has_Rt = 1'b1;
             case_alu_op = {1'b0, instr[1], instr[0]};
          end
          5'b11100: begin // SEQ
             case_wr_en = 1'b1;
+            case_has_Rt = 1'b1;
             case_set_sel = 2'b01;
             case_wr_sel = 3'b011;
             case_alu_op = 3'b100;
@@ -207,6 +214,7 @@ module control (instr,
          end
          5'b11101: begin // SLT
             case_wr_en = 1'b1;
+            case_has_Rt = 1'b1;
             case_set_sel = 2'b10;
             case_wr_sel = 3'b011;
             case_alu_op = 3'b100;
@@ -215,6 +223,7 @@ module control (instr,
          end
          5'b11110: begin // SLE
             case_wr_en = 1'b1;
+            case_has_Rt = 1'b1;
             case_set_sel = 2'b11;
             case_wr_sel = 3'b011;
             case_alu_op = 3'b100;
@@ -223,6 +232,7 @@ module control (instr,
          end
          5'b11111: begin // SCO
             case_wr_en = 1'b1;
+            case_has_Rt = 1'b1;
             // case_set_sel = 2'b00;
             case_wr_sel = 3'b011;
             case_alu_sign = 1'b0;
