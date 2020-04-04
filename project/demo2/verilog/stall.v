@@ -13,7 +13,7 @@ module stall(
     output      id_ex_stall;
 
     input       id_ex_mem_wr;
-    input [2:0] id_ex_Rt;
+    input [2:0] id_ex_Rd;
     input [2:0] if_id_Rs;
     input [2:0] if_id_Rt;
 
@@ -30,6 +30,6 @@ module stall(
         // d/e_mem_rd & (d/e_Rt == f/d_Rs | d/e_Rt == f/d_Rt)
     assign id_ex_stall = id_ex_mem_rd & (
         ~|(id_ex_Rd ^ if_id_Rs) | 
-        ~|(id_ex_Rd ^ if_id_Rt))
+        ~|(id_ex_Rd ^ if_id_Rt));
 
 endmodule

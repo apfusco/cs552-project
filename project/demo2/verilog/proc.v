@@ -93,7 +93,6 @@ module proc (/*AUTOARG*/
    wire        ex_alu_ofl;
    wire        ex_alu_ltz;
    wire        ex_alu_lteq;
-   wire        take_new_PC;
    wire        ex_mem_en;
    wire        ex_mem_wr;
    wire        ex_wr_en;
@@ -120,10 +119,10 @@ module proc (/*AUTOARG*/
    wire        mem_alu_ofl;
    wire        mem_alu_ltz;
    wire        mem_alu_lteq;
+   wire [1:0]  mem_set_sel;
    wire        mem_mem_en;
    wire        mem_mem_wr;
    wire [15:0] mem_wr_data;
-   wire        mem_mem_wr;
    wire        mem_wr_en;
    wire [2:0]  mem_wr_reg;
    wire [2:0]  mem_wr_sel;
@@ -150,7 +149,6 @@ module proc (/*AUTOARG*/
    wire        wb_mem_en;
    wire        wb_mem_wr;
    wire [15:0] wb_wr_data;
-   wire        wb_mem_wr;
    wire        wb_wr_en;
    wire [2:0]  wb_wr_reg;
    wire [2:0]  wb_wr_sel;
@@ -224,7 +222,6 @@ module proc (/*AUTOARG*/
                   .clk(clk),
                   .rst(rst));
 
-    // TODO: ex_rd_data_2 is never used, why is it an output of decode?
    id_ex id_ex_pipe(.out_rd_data_1(ex_rd_data_1),
                     .out_rd_data_2(ex_rd_data_2), 
                     .out_rd_reg_1(ex_rd_reg_1),
@@ -247,7 +244,7 @@ module proc (/*AUTOARG*/
                     .out_alu_invB(ex_alu_invB),
                     .out_alu_Cin(ex_alu_Cin),
                     .out_alu_sign(ex_alu_sign),
-                    .out_stall_n(ex_stall_n);
+                    .out_stall_n(ex_stall_n),
                     .out_pc_en(ex_PC_en),
                     .err(id_ex_error),
                     .clk(clk),
@@ -274,8 +271,17 @@ module proc (/*AUTOARG*/
                     .in_alu_invB(id_alu_invB),
                     .in_alu_Cin(id_alu_Cin),
                     .in_alu_sign(id_alu_sign),
-                    .take_new_PC(take_new_PC),
                     .in_stall_n(id_stall_n), 
+                    .take_new_PC(take_new_PC),
+                    // TODO: Attach all of these signals
+                    .in_ex_fwd_Rs(ex_fwd_Rs),
+                    .in_ex_fwd_Rt(ex_fwd_Rt),
+                    .in_mem_fwd_Rs(mem_fwd_Rs),
+                    .in_mem_fwd_Rt(mem_fwd_Rt),
+                    .in_ex_Rs(ex_Rs),
+                    .in_ex_Rt(ex_Rt),
+                    .in_mem_Rs(mem_Rs),
+                    .in_mem_Rt(mem_Rt),
                     .in_pc_en(id_PC_en));
 
    execute execute0(.oprnd_1(ex_rd_data_1),
@@ -326,9 +332,9 @@ module proc (/*AUTOARG*/
                       .out_reg_sext_imm(mem_reg_sext_imm),
                       .out_alu_ltz(mem_alu_ltz),
                       .out_alu_lteq(mem_alu_lteq),
-                      .out_sext_imm(mem_sext_imm),
+                      .out_set_sel(mem_set_sel),
                       .out_mem_wr(mem_mem_wr),
-                      .out_mem_en(mem_en),
+                      .out_mem_en(mem_mem_en),
                       .out_wr_en(mem_wr_en),
                       .out_wr_reg(mem_wr_reg), 
                       .out_wr_sel(mem_wr_sel),
@@ -349,6 +355,7 @@ module proc (/*AUTOARG*/
                       .in_reg_sext_imm(ex_reg_sext_imm),
                       .in_alu_ltz(ex_alu_ltz),
                       .in_alu_lteq(ex_alu_lteq),
+                      .in_set_sel(ex_set_sel),
                       .in_sext_imm(ex_sext_imm),
                       .in_mem_wr(ex_mem_wr),
                       .in_mem_en(ex_mem_en),
@@ -391,7 +398,7 @@ module proc (/*AUTOARG*/
                       .in_mem_out(mem_mem_out),
                       .in_sext_imm(mem_sext_imm),
                       .in_PC_inc(mem_PC_inc),
-                      .in_set(mem_set)
+                      .in_set(mem_set),
                       .in_LBI(mem_LBI),
                       .in_SLBI(mem_SLBI),
                       .in_stall_n(mem_stall_n));
@@ -425,13 +432,13 @@ module proc (/*AUTOARG*/
                     .wb_wr_en(wb_wr_en),
                     .mem_wb_Rd(wb_wr_reg),
                     .ex_mem_alu_result(mem_alu_out),
-                    .ex_mem_set_result(mem_set),
+                    .ex_mem_set_result({15'h0000, mem_set}),
                     .ex_mem_lbi_result(mem_LBI),
                     .ex_mem_slbi_result(mem_SLBI),
                     .ex_mem_wr_sel(mem_wr_sel),
                     .mem_wb_alu_result(wb_alu_out),
                     .mem_wb_mem_result(wb_mem_out),
-                    .mem_wb_set_result(wb_set),
+                    .mem_wb_set_result({15'h0000, wb_set}),
                     .mem_wb_lbi_result(wb_LBI),
                     .mem_wb_slbi_result(wb_SLBI),
                     .mem_wb_wr_sel(wb_wr_sel));

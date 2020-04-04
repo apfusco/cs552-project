@@ -11,6 +11,7 @@ module id_ex(
         out_set_sel,
         out_mem_wr,
         out_mem_en,
+        out_wr_en,
         out_wr_reg,
         out_wr_sel,
         out_jmp_reg_instr,
@@ -38,6 +39,7 @@ module id_ex(
         in_set_sel,
         in_mem_wr,
         in_mem_en,
+        in_wr_en,
         in_wr_reg,
         in_wr_sel,
         in_jmp_reg_instr,
@@ -71,6 +73,7 @@ module id_ex(
     output [1:0]  out_set_sel;
     output        out_mem_wr;
     output        out_mem_en;
+    output        out_wr_en;
     output [2:0]  out_wr_reg;
     output [2:0]  out_wr_sel;
     output        out_jmp_reg_instr;
@@ -98,6 +101,7 @@ module id_ex(
     input [1:0]  in_set_sel;
     input        in_mem_wr;
     input        in_mem_en;
+    input        in_wr_en;
     input [2:0]  in_wr_reg;
     input [2:0]  in_wr_sel;
     input        in_jmp_reg_instr;
@@ -114,10 +118,11 @@ module id_ex(
     input        in_ex_fwd_Rt; // fwd on Rt from ex
     input        in_mem_fwd_Rs; // fwd on Rs from mem
     input        in_mem_fwd_Rt; // fwd on Rt from mem
-    input [2:0]  in_ex_Rs;
-    input [2:0]  in_ex_Rt;
-    input [2:0]  in_mem_Rs;
-    input [2:0]  in_mem_Rt;
+    // TODO: These inputs don't seem to do anything...?
+    input [15:0] in_ex_Rs;
+    input [15:0] in_ex_Rt;
+    input [15:0] in_mem_Rs;
+    input [15:0] in_mem_Rt;
     input        in_pc_en;
 
     wire stall_n;
@@ -135,6 +140,7 @@ module id_ex(
     register #(.N(2)) set_sel_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_set_sel), .dataOut(out_set_sel), .err());
     register #(.N(1)) mem_wr_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_mem_wr), .dataOut(out_mem_wr), .err());
     register #(.N(1)) mem_en_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_mem_en), .dataOut(out_mem_en), .err());
+    register #(.N(1)) wr_en_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_wr_en), .dataOut(out_wr_en), .err());
     register #(.N(3)) wr_reg_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_wr_reg), .dataOut(out_wr_reg), .err());
     register #(.N(3)) wr_sel_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_wr_sel), .dataOut(out_wr_sel), .err());
     register #(.N(1)) jmp_reg_instr_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_jmp_reg_instr), .dataOut(out_jmp_reg_instr), .err());

@@ -17,7 +17,7 @@ module forward(
         id_ex_has_Rt,
         id_ex_Rs, 
         id_ex_Rt,
-        wb_wr_en
+        wb_wr_en,
         mem_wb_Rd,
         ex_mem_alu_result,
         ex_mem_set_result,
@@ -29,7 +29,7 @@ module forward(
         mem_wb_set_result,
         mem_wb_lbi_result,
         mem_wb_slbi_result,
-        mem_wb_wr_sel,
+        mem_wb_wr_sel
         );
 // TODO: make set_inputs be 1 bit and then add zeros
 
