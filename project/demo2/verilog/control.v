@@ -275,6 +275,8 @@ module control (instr,
             case_sext_op = 2'b11;
          end
          5'b00101: begin // JR
+            case_oprnd_sel = 1'b1;
+            case_alu_op = 3'b100;
             case_jmp_reg_instr = 1'b1;
             case_jmp_instr = 1'b1;
             case_sext_op = 2'b10;
@@ -288,6 +290,8 @@ module control (instr,
          end
          5'b00111: begin // JALR
             case_wr_en = 1'b1;
+            case_oprnd_sel = 1'b1;
+            case_alu_op = 3'b100;
             case_wr_sel = 3'b010;
             case_wr_reg_sel = 2'b11;
             case_jmp_reg_instr = 1'b1;

@@ -16,14 +16,16 @@ module execute (oprnd_1,
                 br_cnd_sel,
                 br_instr,
                 jmp_instr,
+                jmp_reg_instr;
                 ofl,
                 alu_out,
                 zero,
-                PC_src,
                 PC_sext_imm,
                 reg_sext_imm,
                 ltz,
                 lteq,
+                take_new_PC,
+                new_PC,
                 err);
 
    // I/O
@@ -39,14 +41,16 @@ module execute (oprnd_1,
    input  [1:0]  br_cnd_sel;
    input         br_instr;
    input         jmp_instr;
+   input         jmp_reg_instr;
    output        ofl;
    output [15:0] alu_out;
    output        zero;
-   output        PC_src;      // High for for using PC_inc + PC_sext_imm
    output [15:0] PC_sext_imm;
    output [15:0] reg_sext_imm;
    output        ltz;
    output        lteq;
+   output        take_new_PC;
+   output [15:0] new_PC;
    output        err;
 
    wire take_br;
@@ -56,7 +60,8 @@ module execute (oprnd_1,
    wire br_gteq;
 
    assign err = (^{oprnd_1, oprnd_2, alu_Cin, alu_op, alu_invA, alu_invB, alu_sign,
-         PC_inc, br_cnd_sel, br_instr, jmp_instr} === 1'bX) ? 1'b1 : 1'b0;
+         PC_inc, br_cnd_sel, br_instr, jmp_instr, jmp_reg_instr} === 1'bX) ?
+         1'b1 : 1'b0;
 
    // ALU logic
    alu alu(.InA(oprnd_1),
@@ -82,9 +87,11 @@ module execute (oprnd_1,
    mux4_1 mux4_1_take_br(.InA(br_eq), .InB(br_neq), .InC(br_lt), .InD(br_gteq), .S(br_cnd_sel), .Out(take_br));
 
    // PC logic
-   assign PC_src = jmp_instr | (br_instr & take_br);
+   assign take_new_PC = jmp_instr | jmp_reg_instr | (br_instr & take_br);
 
    cla_16b add_PC_sext_imm(.A(PC_inc), .B(sext_imm), .C_in(1'b0), .S(PC_sext_imm), .C_out());
-   cla_16b add_reg_sext_imm(.A(oprnd_1), .B(sext_imm), .C_in(1'b0), .S(reg_sext_imm), .C_out());
+   // TODO: Remove this adder //cla_16b add_reg_sext_imm(.A(oprnd_1), .B(sext_imm), .C_in(1'b0), .S(reg_sext_imm), .C_out());
+
+   mux2_1 mux2_1_new_PC [15:0](.InA(PC_sext_imm), .InB(alu_out), .S(jmp_reg_instr), .Out(new_PC));
    
 endmodule
