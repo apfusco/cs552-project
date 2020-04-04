@@ -36,7 +36,9 @@ module proc (/*AUTOARG*/
    wire wb_error;
 
    // Important signal
-   wire PC_en;
+   wire        PC_en;
+   wire [15:0] new_PC;
+   wire        take_new_PC;
 
    // Fetch stage signals
    wire [15:0] if_PC_inc;
@@ -64,6 +66,7 @@ module proc (/*AUTOARG*/
    wire        id_wr_en;
    wire [2:0]  id_wr_reg;
    wire [2:0]  id_wr_sel;
+   wire        id_jmp_reg_instr;
    // Execute stage signals
    wire [15:0] ex_PC_inc;
    wire [15:0] ex_PC_sext_imm;
@@ -168,13 +171,11 @@ module proc (/*AUTOARG*/
    fetch fetch0(.instr(if_instr),
                 .PC_inc(if_PC_inc),
                 .err(fetch_error),
-                .PC_sext_imm(if_PC_sext_imm),
-                .reg_sext_imm(if_reg_sext_imm),
                 .clk(clk),
                 .rst(rst),
-                .take_br(1'b0/* TODO: PC_src*/),
-                .pc_en(PC_en),
-                .jmp_reg_instr(if_jmp_reg_instr));
+                .new_PC(new_PC),
+                .take_new_PC(take_new_PC),
+                .pc_en(PC_en));
 
    if_id if_id_pipe(.out_instr(id_instr),
                     .out_PC_inc(id_PC_inc),
@@ -280,15 +281,16 @@ module proc (/*AUTOARG*/
                     .br_cnd_sel(ex_br_cnd_sel),
                     .br_instr(ex_br_instr),
                     .jmp_instr(ex_jmp_instr),
+                    .jmp_reg_instr(ex_jmp_reg_instr),
                     .ofl(ex_alu_ofl),
                     .alu_out(ex_alu_out),
                     .zero(ex_alu_zero),
-                    .PC_src(ex_PC_src),
                     .PC_sext_imm(ex_PC_sext_imm),
                     .reg_sext_imm(ex_reg_sext_imm),
                     .ltz(ex_alu_ltz),
                     .lteq(ex_alu_lteq),
                     .take_new_PC(take_new_PC),
+                    .new_PC(new_PC),
                     .err(execute_error));
 
    // TODO: Needs rd_data_1 and rd_data_2 pipelined through
