@@ -35,6 +35,9 @@ module proc (/*AUTOARG*/
    wire mem_wb_error;
    wire wb_error;
 
+   // Important signal
+   wire PC_en;
+
    // Fetch stage signals
    wire [15:0] if_PC_inc;
    wire [15:0] if_PC_sext_imm;
@@ -48,7 +51,13 @@ module proc (/*AUTOARG*/
    wire [15:0] id_reg_sext_imm;
    wire        id_PC_src;
    wire        id_PC_en;
+   wire [15:0] id_rd_data_1;
+   wire [15:0] id_rd_data_2;
+   wire [15:0] id_oprnd_2;
    wire [15:0] id_sext_imm;
+   wire [2:0]  id_alu_op;
+   wire [1:0]  id_br_cnd_sel;
+   wire [1:0]  id_set_sel;
    wire [15:0] id_instr;
    wire [15:0] id_wr_data;
    wire        id_has_Rt;
@@ -81,7 +90,6 @@ module proc (/*AUTOARG*/
    wire        ex_alu_lteq;
    wire        ex_mem_en;
    wire        ex_mem_wr;
-   wire [15:0] ex_wr_data;
    wire        ex_wr_en;
    wire [2:0]  ex_wr_reg;
    wire [2:0]  ex_wr_sel;
@@ -92,8 +100,8 @@ module proc (/*AUTOARG*/
    wire [15:0] mem_reg_sext_imm;
    wire        mem_PC_src;
    wire        mem_PC_en;
-   //wire [15:0] rd_data_1;
-   //wire [15:0] rd_data_2;
+   wire [15:0] mem_rd_data_1;
+   wire [15:0] mem_rd_data_2;
    //wire [15:0] oprnd_2;
    wire [15:0] mem_alu_out;
    wire [15:0] mem_mem_out;
@@ -112,6 +120,8 @@ module proc (/*AUTOARG*/
    wire        mem_wr_en;
    wire [2:0]  mem_wr_reg;
    wire [2:0]  mem_wr_sel;
+   wire [15:0] mem_LBI;
+   wire [15:0] mem_SLBI;
    //wire        jmp_reg_instr;
    // Write back stage signals
    wire [15:0] wb_PC_inc;
@@ -119,6 +129,7 @@ module proc (/*AUTOARG*/
    wire [15:0] wb_reg_sext_imm;
    wire        wb_PC_src;
    wire        wb_PC_en;
+   wire [15:0] wb_rd_data_1;
    wire [15:0] wb_alu_out;
    wire [15:0] wb_mem_out;
    wire [15:0] wb_sext_imm;
@@ -135,6 +146,8 @@ module proc (/*AUTOARG*/
    wire        wb_wr_en;
    wire [2:0]  wb_wr_reg;
    wire [2:0]  wb_wr_sel;
+   wire [15:0] wb_LBI;
+   wire [15:0] wb_SLBI;
    //wire        jmp_reg_instr;
 
    // forwarding signals
@@ -156,8 +169,8 @@ module proc (/*AUTOARG*/
                 .reg_sext_imm(if_reg_sext_imm),
                 .clk(clk),
                 .rst(rst),
-                .take_br(if_PC_src),
-                .pc_en(if_PC_en),
+                .take_br(1'b0/* TODO: PC_src*/),
+                .pc_en(PC_en),
                 .jmp_reg_instr(if_jmp_reg_instr));
 
    if_id if_id_pipe(.out_instr(id_instr),
@@ -188,13 +201,13 @@ module proc (/*AUTOARG*/
                   .alu_invB(id_alu_invB),
                   .alu_Cin(id_alu_Cin),
                   .alu_sign(id_alu_sign),
-                  .pc_en(id_PC_en),
+                  .pc_en(/* TODO: PC_en */),
                   .err(decode_error),
                   .rd_reg_1(id_instr[10:8]),
                   .rd_reg_2(id_instr[7:5]),
                   .in_wr_en(wb_wr_en),
                   .in_wr_reg(wb_wr_reg),
-                  .wr_data(id_wr_data),
+                  .wr_data(wb_wr_data),
                   .instr(id_instr),
                   .clk(clk),
                   .rst(rst));
@@ -207,7 +220,7 @@ module proc (/*AUTOARG*/
                     .out_has_Rt(ex_has_Rt),
                     .out_oprnd_2(ex_oprnd_2),
                     .out_sext_imm(ex_sext_imm),
-                    .out_br_cnd_sel(ex_br_cnd),
+                    .out_br_cnd_sel(ex_br_cnd_sel),
                     .out_set_sel(ex_set_sel),
                     .out_mem_wr(ex_mem_wr),
                     .out_mem_en(ex_mem_en),
@@ -272,15 +285,18 @@ module proc (/*AUTOARG*/
                     .lteq(ex_alu_lteq),
                     .err(execute_error));
 
-   // TODO: Needs sext_imm pipelined through
-   ex_mem ex_mem_pipe(.out_ofl(mem_ofl),
+   // TODO: Needs rd_data_1 and rd_data_2 pipelined through
+   ex_mem ex_mem_pipe(.out_rd_data_1(mem_rd_data_1),
+                      .out_rd_data_2(mem_rd_data_2),
+                      .out_alu_ofl(mem_alu_ofl),
                       .out_alu_out(mem_alu_out),
-                      .out_zero(mem_zero),
+                      .out_alu_zero(mem_alu_zero),
                       .out_PC_src(mem_PC_src),
+                      .out_sext_imm(mem_sext_imm),
                       .out_PC_sext_imm(mem_PC_sext_imm),
                       .out_reg_sext_imm(mem_reg_sext_imm),
-                      .out_ltz(mem_ltz),
-                      .out_lteq(mem_lteq),
+                      .out_alu_ltz(mem_alu_ltz),
+                      .out_alu_lteq(mem_alu_lteq),
                       .out_set_sel(mem_set_sel),
                       .out_sext_imm(mem_sext_imm),
                       .out_mem_wr(mem_mem_wr),
@@ -291,14 +307,16 @@ module proc (/*AUTOARG*/
                       .err(ex_mem_error),
                       .clk(clk),
                       .rst(rst),
-                      .in_ofl(ex_ofl),
+                      .in_rd_data_1(ex_rd_data_1),
+                      .in_rd_data_2(ex_rd_data_2),
+                      .in_alu_ofl(ex_alu_ofl),
                       .in_alu_out(ex_alu_out),
-                      .in_zero(ex_zero),
+                      .in_alu_zero(ex_alu_zero),
                       .in_PC_src(ex_PC_src),
                       .in_PC_sext_imm(ex_PC_sext_imm),
                       .in_reg_sext_imm(ex_reg_sext_imm),
-                      .in_ltz(ex_ltz),
-                      .in_lteq(ex_lteq),
+                      .in_alu_ltz(ex_alu_ltz),
+                      .in_alu_lteq(ex_alu_lteq),
                       .in_set_sel(ex_set_sel),
                       .in_sext_imm(ex_sext_imm),
                       .in_mem_wr(ex_mem_wr),
@@ -312,7 +330,7 @@ module proc (/*AUTOARG*/
                   .addr(mem_alu_out),
                   .en(mem_mem_en),
                   .mem_wr(mem_mem_wr),
-                  .createdump(~mem_PC_en),
+                  .createdump(~PC_en),
                   .clk(clk),
                   .rst(rst),
                   .set(mem_set),
@@ -323,7 +341,6 @@ module proc (/*AUTOARG*/
                   .set_sel(mem_set_sel),
                   .err(memory_error));
 
-   // TODO: Needs sext_imm
    mem_wb mem_wb_pipe(.out_wr_reg(wb_wr_reg),
                       .out_wr_en(wb_wr_en),
                       .out_wr_sel(wb_wr_sel),
@@ -348,8 +365,7 @@ module proc (/*AUTOARG*/
                       .in_SLBI(mem_SLBI),
                       .in_set(mem_set));
 
-   wb wb0(.instr(wb_instr),
-          .alu_out(wb_alu_out),
+   wb wb0(.alu_out(wb_alu_out),
           .mem_out(wb_mem_out),
           .PC_inc(wb_PC_inc),
           .set(wb_set),
