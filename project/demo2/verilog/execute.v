@@ -12,6 +12,7 @@ module execute (oprnd_1,
                 alu_invA,
                 alu_invB,
                 alu_sign,
+                set_sel,
                 PC_inc,
                 br_cnd_sel,
                 br_instr,
@@ -26,6 +27,9 @@ module execute (oprnd_1,
                 lteq,
                 take_new_PC,
                 new_PC,
+                set,
+                LBI,
+                SLBI,
                 err);
 
    // I/O
@@ -37,6 +41,7 @@ module execute (oprnd_1,
    input         alu_invA;
    input         alu_invB;
    input         alu_sign;
+   input  [1:0]  set_sel;
    input  [15:0] PC_inc;
    input  [1:0]  br_cnd_sel;
    input         br_instr;
@@ -51,6 +56,9 @@ module execute (oprnd_1,
    output        lteq;
    output        take_new_PC;
    output [15:0] new_PC;
+   output        set;
+   output [15:0] LBI;
+   output [15:0] SLBI;
    output        err;
 
    wire take_br;
@@ -62,6 +70,10 @@ module execute (oprnd_1,
    assign err = (^{oprnd_1, oprnd_2, alu_Cin, alu_op, alu_invA, alu_invB, alu_sign,
          PC_inc, br_cnd_sel, br_instr, jmp_instr, jmp_reg_instr} === 1'bX) ?
          1'b1 : 1'b0;
+
+   // (S)LBI logic
+   assign LBI = sext_imm;
+   assign SLBI = {oprnd_1[7:0], sext_imm[7:0]};
 
    // ALU logic
    alu alu(.InA(oprnd_1),
@@ -91,6 +103,9 @@ module execute (oprnd_1,
 
    cla_16b add_PC_sext_imm(.A(PC_inc), .B(sext_imm), .C_in(1'b0), .S(PC_sext_imm), .C_out());
    // TODO: Remove this adder //cla_16b add_reg_sext_imm(.A(oprnd_1), .B(sext_imm), .C_in(1'b0), .S(reg_sext_imm), .C_out());
+
+   // determines branching behavior based on result flags
+   mux4_1 mux(.InA(ofl), .InB(zero), .InC(ltz), .InD(lteq), .S(set_sel), .Out(set));
 
    mux2_1 mux2_1_new_PC [15:0](.InA(PC_sext_imm), .InB(alu_out), .S(jmp_reg_instr), .Out(new_PC));
    

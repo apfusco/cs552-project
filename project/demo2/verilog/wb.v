@@ -12,6 +12,8 @@ module wb (alu_out,
            sext_imm,
            wr_sel,
            wr_data,
+           LBI,
+           SLBI,
            err);
 
    input  [15:0] alu_out;
@@ -22,19 +24,17 @@ module wb (alu_out,
    input  [15:0] sext_imm;
    input  [2:0]  wr_sel;
    output [15:0] wr_data;
+   input  [15:0] LBI;
+   input  [15:0] SLBI;
    output err;
 
    wire [15:0] set_ext;
-   wire [15:0] LBI;
-   wire [15:0] SLBI;
    wire [15:0] dontcare;
 
    assign set_ext = {15'h0000, set};
-   assign LBI = sext_imm;
-   assign SLBI = {rd_data_1[7:0], sext_imm[7:0]};
    assign dontcare = 16'hXXXX;
-   assign err = (^{alu_out, mem_out, PC_inc, set, rd_data_1, sext_imm, wr_sel}
-         === 1'bX) ? 1'b1 : 1'b0;
+   assign err = (^{alu_out, mem_out, PC_inc, set, rd_data_1, sext_imm, wr_sel,
+         LBI, SLBI} === 1'bX) ? 1'b1 : 1'b0;
 
    mux8_1 mux8_1_wr_data[15:0](.InA(alu_out),
                                .InB(mem_out),
