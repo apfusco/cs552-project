@@ -22,7 +22,11 @@ module fetch (instr, PC_inc, err, clk, rst, new_PC, take_new_PC, pc_en);
     wire [15:0] two;
     wire [15:0] PC_mux_out;
     wire gnd;
+    wire update_PC;
+    wire halt_n;
 
+    assign halt_n = |instr[15:11]; // HALT is decoded in fetch for immediate feedback.
+    assign update_PC = halt_n; // TODO: Add logic to handle a stall.
     assign gnd = 1'b0;
     assign mem_en = 1'b1;
     assign two = 16'h0002;
@@ -37,11 +41,11 @@ module fetch (instr, PC_inc, err, clk, rst, new_PC, take_new_PC, pc_en);
     mux2_1 mux2_1_nxt_PC [15:0](.InA(PC_inc_wire), .InB(new_PC), .S(take_new_PC), .Out(nxt_PC));
 
     // TODO: add compatability with EPC and error ouput
-    register #(.N(16)) pc_reg(.clk(clk), .rst(rst), .writeEn(pc_en),
+    register #(.N(16)) pc_reg(.clk(clk), .rst(rst), .writeEn(update_PC),
             .dataIn(nxt_PC), .dataOut(PC_reg_out), .err());
     
-    // TODO: unsure of what data_in should tie with
     memory2c imem(.data_out(instr), .data_in(), .addr(PC_reg_out), 
-            .enable(mem_en), .wr(gnd), .createdump(~pc_en), .clk(clk), 
+            .enable(mem_en), .wr(gnd), .createdump(~halt_n), .clk(clk), 
             .rst(rst)); 
+
 endmodule

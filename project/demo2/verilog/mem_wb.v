@@ -52,6 +52,21 @@ module mem_wb(
    input        in_set;
    input        in_stall_n; // low if stage should stall
 
+    assign err = (^{clk,
+                    rst,
+                    in_wr_en,
+                    in_wr_reg,
+                    in_wr_sel,
+                    in_alu_out,
+                    in_mem_out,
+                    in_PC_inc,
+                    in_LBI,
+                    in_SLBI,
+                    in_sext_imm,
+                    in_set,
+                    in_stall_n
+                    } === 1'bX) ? 1'b1 : 1'b0;
+
    // TODO: writeEn needs to be low in the event of a stall.
    // TODO: wr_en needs to be low in the event of a stall.
    register #(.N(1)) wr_en_reg(.clk(clk), .rst(rst), .writeEn(in_stall_n), .dataIn(in_wr_en), .dataOut(out_wr_en), .err());

@@ -127,6 +127,43 @@ module id_ex(
 
     wire stall_n;
 
+    assign err = (^{clk,
+                    rst,
+                    in_rd_data_1,
+                    in_rd_data_2,
+                    in_rd_reg_1,
+                    in_rd_reg_2,
+                    in_has_Rt,
+                    in_oprnd_2,
+                    in_sext_imm,
+                    in_br_cnd_sel,
+                    in_set_sel,
+                    in_mem_wr,
+                    in_mem_en,
+                    in_wr_en,
+                    in_wr_reg,
+                    in_wr_sel,
+                    in_jmp_reg_instr,
+                    in_jmp_instr,
+                    in_br_instr,
+                    in_alu_op,
+                    in_alu_invA,
+                    in_alu_invB,
+                    in_alu_Cin,
+                    in_alu_sign,
+                    in_stall_n,
+                    take_new_PC,
+                    in_ex_fwd_Rs,
+                    in_ex_fwd_Rt,
+                    in_mem_fwd_Rs,
+                    in_mem_fwd_Rt,
+                    in_ex_Rs,
+                    in_ex_Rt,
+                    in_mem_Rs,
+                    in_mem_Rt,
+                    in_pc_en
+                    } === 1'bX) ? 1'b1 : 1'b0;
+
     assign stall_n = (take_new_PC == 1'b0) ? in_stall_n : 1'b0;
 
     register #(.N(16)) rd_data_1_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_rd_data_1), .dataOut(out_rd_data_1), .err());

@@ -22,6 +22,9 @@ module if_id(
    input [15:0] in_PC_inc;
    input        in_stall_n; // active low
 
+   assign err = (^{clk, rst, in_instr, in_stall_n, in_PC_inc} === 1'bX) ? 1'b1
+         : 1'b0;
+
     // TODO: add writeEn signal once fowarding logic is implemented for stalls
    register #(.N(16)) instr_reg(.clk(clk), .rst(rst), .writeEn(in_stall_n), .dataIn(in_instr), .dataOut(out_instr), .err());
    register #(.N(16)) PC_inc_reg(.clk(clk), .rst(rst), .writeEn(in_stall_n), .dataIn(in_PC_inc), .dataOut(out_PC_inc), .err());
