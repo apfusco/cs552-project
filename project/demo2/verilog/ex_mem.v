@@ -37,7 +37,8 @@ module ex_mem(
         in_mem_en,
         in_wr_reg,
         in_wr_sel,
-        in_stall_n);
+        in_stall_n,
+        in_take_new_PC);
 
    output [15:0] out_rd_data_1;
    output [15:0] out_rd_data_2;
@@ -77,12 +78,12 @@ module ex_mem(
    input [2:0]  in_wr_reg;
    input [2:0]  in_wr_sel;
    input        in_stall_n; // low if stage should stall
-   input        control_stall_n; // arrives from control unit, low if stall
+   input        in_take_new_PC; // arrives from execute, low if stall
 
    wire         stall_n;
    
    // control stall takes priority over the stall from previous stage
-   assign stall_n = (control_stall_n == 1'b1) ? in_stall_n : 1'b0;
+   assign stall_n = (in_take_new_PC == 1'b0) ? in_stall_n : 1'b0;
 
    // TODO: writeEn needs to be low in the event of a stall.
    // TODO: mem_wr_en needs to be low in the event of a stall.
