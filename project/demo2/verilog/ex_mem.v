@@ -1,5 +1,6 @@
 module ex_mem(
         // outputs
+        out_PC_inc,
         out_rd_data_1,
         out_rd_data_2,
         out_alu_ofl,
@@ -23,6 +24,7 @@ module ex_mem(
         // inputs
         clk,
         rst,
+        in_PC_inc,
         in_rd_data_1,
         in_rd_data_2,
         in_alu_ofl,
@@ -44,6 +46,7 @@ module ex_mem(
         in_halt,
         take_new_PC);
 
+   output [15:0] out_PC_inc;
    output [15:0] out_rd_data_1;
    output [15:0] out_rd_data_2;
    output        out_alu_ofl;
@@ -67,6 +70,7 @@ module ex_mem(
 
    input        clk;
    input        rst;
+   input [15:0] in_PC_inc;
    input [15:0] in_rd_data_1;
    input [15:0] in_rd_data_2;
    input        in_alu_ofl;
@@ -92,6 +96,7 @@ module ex_mem(
    
    assign err = (^{clk,
                    rst,
+                   in_PC_inc,
                    in_rd_data_1,
                    in_rd_data_2,
                    in_alu_ofl,
@@ -118,6 +123,9 @@ module ex_mem(
 
    // TODO: writeEn needs to be low in the event of a stall.
    // TODO: mem_wr_en needs to be low in the event of a stall.
+   register #(.N(16)) PC_inc_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_PC_inc), .dataOut(out_PC_inc), .err());
+   register #(.N(16)) rd_data_1_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_rd_data_1), .dataOut(out_rd_data_1), .err());
+   register #(.N(16)) rd_data_2_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_rd_data_2), .dataOut(out_rd_data_2), .err());
    register #(.N(1)) alu_ofl_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_alu_ofl), .dataOut(out_alu_ofl), .err());
    register #(.N(16)) alu_out_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_alu_out), .dataOut(out_alu_out), .err());
    register #(.N(1)) zero_alu_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_alu_zero), .dataOut(out_alu_zero), .err());
