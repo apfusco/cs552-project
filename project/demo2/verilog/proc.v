@@ -51,6 +51,7 @@ module proc (/*AUTOARG*/
    wire [15:0] id_sext_imm;
    wire [15:0] id_instr;
    wire [15:0] id_wr_data;
+   wire        id_has_Rt;
    wire        id_wr_en;
    wire [2:0]  id_wr_reg;
    wire [2:0]  id_wr_sel;
@@ -62,6 +63,9 @@ module proc (/*AUTOARG*/
    wire        ex_PC_en;
    wire [15:0] ex_rd_data_1;
    wire [15:0] ex_rd_data_2;
+   wire [2:0]  ex_rd_reg_1;
+   wire [2:0]  ex_rd_reg_2;
+   wire        ex_has_Rt;
    wire [15:0] ex_oprnd_2;
    wire [15:0] ex_alu_out;
    wire [15:0] ex_sext_imm;
@@ -104,6 +108,7 @@ module proc (/*AUTOARG*/
    wire        mem_mem_en;
    wire        mem_mem_wr;
    wire [15:0] mem_wr_data;
+   wire        mem_mem_wr;
    wire        mem_wr_en;
    wire [2:0]  mem_wr_reg;
    wire [2:0]  mem_wr_sel;
@@ -126,10 +131,20 @@ module proc (/*AUTOARG*/
    wire        wb_mem_en;
    wire        wb_mem_wr;
    wire [15:0] wb_wr_data;
+   wire        wb_mem_wr;
    wire        wb_wr_en;
    wire [2:0]  wb_wr_reg;
    wire [2:0]  wb_wr_sel;
    //wire        jmp_reg_instr;
+
+   // forwarding signals
+   wire        ex_fwd_Rs;
+   wire        ex_fwd_Rt;
+   wire        mem_fwd_Rs;
+   wire        mem_fwd_Rt;
+
+   // stall signals
+   wire        id_ex_stall;
 
    // TODO: Add pipeline module error signals.
    assign err = fetch_error | decode_error | execute_error | memory_error | wb_error;
@@ -159,6 +174,7 @@ module proc (/*AUTOARG*/
                   .sext_imm(id_sext_imm),
                   .br_cnd_sel(id_br_cnd_sel),
                   .set_sel(id_set_sel),
+                  .has_Rt(id_has_Rt),
                   .out_wr_en(id_wr_en),
                   .out_wr_reg(id_wr_reg),
                   .mem_wr_en(id_mem_wr),
@@ -183,14 +199,20 @@ module proc (/*AUTOARG*/
                   .clk(clk),
                   .rst(rst));
 
+    // TODO: ex_rd_data_2 is never used, why is it an output of decode?
    id_ex id_ex_pipe(.out_rd_data_1(ex_rd_data_1),
                     .out_rd_data_2(ex_rd_data_2), 
+                    .out_rd_reg_1(ex_rd_reg_1),
+                    .out_rd_reg_2(ex_rd_reg_2),
+                    .out_has_Rt(ex_has_Rt),
                     .out_oprnd_2(ex_oprnd_2),
                     .out_sext_imm(ex_sext_imm),
                     .out_br_cnd_sel(ex_br_cnd),
                     .out_set_sel(ex_set_sel),
-                    .out_mem_wr_en(ex_mem_wr_en),
+                    .out_mem_wr(ex_mem_wr),
                     .out_mem_en(ex_mem_en),
+                    .out_wr_en(ex_wr_en),
+                    .out_wr_reg(ex_wr_reg),
                     .out_wr_sel(ex_wr_sel),
                     .out_jmp_reg_instr(ex_jmp_reg_instr),
                     .out_jmp_instr(ex_jmp_instr),
@@ -206,12 +228,17 @@ module proc (/*AUTOARG*/
                     .rst(rst),
                     .in_rd_data_1(id_rd_data_1),
                     .in_rd_data_2(id_rd_data_2),
+                    .in_rd_reg_1(id_instr[10:8]), // TODO: handle when these are garbage (i.e. the instruction doesn't have an Rs or Rt)
+                    .in_rd_reg_2(id_instr[7:5]), 
+                    .in_has_Rt(id_has_Rt),
                     .in_oprnd_2(id_oprnd_2),
                     .in_sext_imm(id_sext_imm),
                     .in_br_cnd_sel(id_br_cnd_sel),
                     .in_set_sel(id_set_sel),
-                    .in_mem_wr_en(id_mem_wr_en),
+                    .in_mem_wr(id_mem_wr),
                     .in_mem_en(id_mem_en),
+                    .in_wr_en(id_wr_en),
+                    .in_wr_reg(id_wr_reg), // TODO: same as above note for Rd
                     .in_wr_sel(id_wr_sel),
                     .in_jmp_reg_instr(id_jmp_reg_instr),
                     .in_jmp_instr(id_jmp_instr),
@@ -256,8 +283,10 @@ module proc (/*AUTOARG*/
                       .out_lteq(mem_lteq),
                       .out_set_sel(mem_set_sel),
                       .out_sext_imm(mem_sext_imm),
-                      .out_mem_wr_en(mem_wr_en),
+                      .out_mem_wr(mem_mem_wr),
                       .out_mem_en(mem_en),
+                      .out_wr_en(mem_wr_en),
+                      .out_wr_reg(mem_wr_reg), 
                       .out_wr_sel(mem_wr_sel),
                       .err(ex_mem_error),
                       .clk(clk),
@@ -272,8 +301,10 @@ module proc (/*AUTOARG*/
                       .in_lteq(ex_lteq),
                       .in_set_sel(ex_set_sel),
                       .in_sext_imm(ex_sext_imm),
-                      .in_mem_wr_en(ex_mem_wr_en),
+                      .in_mem_wr(ex_mem_wr),
                       .in_mem_en(ex_mem_en),
+                      .in_wr_en(ex_wr_en),
+                      .in_wr_reg(ex_wr_reg), 
                       .in_wr_sel(ex_wr_sel));
 
    memory memory0(.data_out(mem_mem_out),
@@ -327,6 +358,25 @@ module proc (/*AUTOARG*/
           .wr_sel(wb_wr_sel),
           .wr_data(wb_wr_data),
           .err(wb_error));
+
+
+   forward forward0(.ex_fwd_Rs(ex_fwd_Rs),
+                    .ex_fwd_Rt(ex_fwd_Rt),
+                    .mem_fwd_Rs(mem_fwd_Rs),
+                    .mem_fwd_Rt(mem_fwd_Rt),
+                    .mem_wr(mem_wr),
+                    .ex_mem_Rd(mem_wr_reg),
+                    .id_ex_has_Rt(ex_has_Rt),
+                    .id_ex_Rs(ex_rd_reg_1),
+                    .id_ex_Rt(ex_rd_reg_2),
+                    .wb_wr_en(wb_wr_en),
+                    .mem_wb_Rd(wb_wr_reg));
+
+   stall stall0(.id_ex_stall(id_ex_stall),
+                .id_ex_mem_wr(ex_mem_wr), 
+                .id_ex_Rd(ex_wr_reg),
+                .if_id_Rs(id_instr[10:8]), // TODO: only check if Rs/Rt are present?
+                .if_id_Rt(id_instr[7:5]));
 
 endmodule // proc
 // DUMMY LINE FOR REV CONTROL :0:
