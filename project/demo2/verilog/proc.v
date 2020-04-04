@@ -169,8 +169,15 @@ module proc (/*AUTOARG*/
    // stall signals
    wire        stall;
 
-   // TODO: Add pipeline module error signals.
-   assign err = fetch_error | decode_error | execute_error | memory_error | wb_error;
+   assign err = fetch_error   |
+                if_id_error   |
+                decode_error  |
+                id_ex_error   |
+                execute_error |
+                ex_mem_error  |
+                memory_error  |
+                mem_wb_error  |
+                wb_error;
 
    fetch fetch0(.instr(if_instr),
                 .PC_inc(if_PC_inc),
@@ -410,9 +417,9 @@ module proc (/*AUTOARG*/
           .rd_data_1(wb_rd_data_1),
           .sext_imm(wb_sext_imm),
           .wr_sel(wb_wr_sel),
-          .wr_data(wb_wr_data),
           .LBI(wb_LBI),
           .SLBI(wb_SLBI),
+          .wr_data(wb_wr_data),
           .err(wb_error));
 
 

@@ -98,6 +98,32 @@ module ex_mem(
 
    wire         stall_n;
    
+   assign err = (^{clk,
+                   rst,
+                   in_rd_data_1,
+                   in_rd_data_2,
+                   in_alu_ofl,
+                   in_alu_out,
+                   in_alu_zero,
+                   in_PC_src,
+                   in_sext_imm,
+                   in_PC_sext_imm,
+                   in_reg_sext_imm,
+                   in_alu_ltz,
+                   in_alu_lteq,
+                   in_set_sel,
+                   in_mem_wr,
+                   in_mem_en,
+                   in_wr_en,
+                   in_wr_reg,
+                   in_wr_sel,
+                   in_set,
+                   in_LBI,
+                   in_SLBI,
+                   in_stall_n,
+                   take_new_PC
+                   } === 1'bX) ? 1'b1 : 1'b0;
+
    // control stall takes priority over the stall from previous stage
    assign stall_n = (take_new_PC == 1'b0) ? in_stall_n : 1'b0;
 

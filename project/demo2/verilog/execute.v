@@ -94,10 +94,29 @@ module execute (oprnd_1,
                         (mem_fwd_Rt == 1'b1) ? mem_Rt_val :
                         oprnd_2;
 
-   assign err = (^{oprnd_1, oprnd_2, alu_Cin, alu_op, alu_invA, alu_invB,
-         alu_sign, fwd_op_1, fwd_op_2, PC_inc, br_cnd_sel, br_instr, 
-         jmp_instr, jmp_reg_instr} === 1'bX) ?
-         1'b1 : 1'b0;
+   assign err = (^{oprnd_1,
+                   oprnd_2,
+                   sext_imm,
+                   alu_Cin,
+                   alu_op,
+                   alu_invA,
+                   alu_invB,
+                   alu_sign,
+                   set_sel,
+                   PC_inc,
+                   br_cnd_sel,
+                   br_instr,
+                   jmp_instr,
+                   jmp_reg_instr,
+                   ex_fwd_Rs,
+                   ex_fwd_Rt,
+                   mem_fwd_Rs,
+                   mem_fwd_Rt,
+                   ex_Rs_val,
+                   ex_Rt_val,
+                   mem_Rs_val,
+                   mem_Rt_val
+                   } === 1'bX) ? 1'b1 : 1'b0;
 
    // (S)LBI logic
    assign LBI = sext_imm;

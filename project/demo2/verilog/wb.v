@@ -11,9 +11,9 @@ module wb (alu_out,
            rd_data_1,
            sext_imm,
            wr_sel,
-           wr_data,
            LBI,
            SLBI,
+           wr_data,
            err);
 
    input  [15:0] alu_out;
@@ -23,9 +23,9 @@ module wb (alu_out,
    input  [15:0] rd_data_1;
    input  [15:0] sext_imm;
    input  [2:0]  wr_sel;
-   output [15:0] wr_data;
    input  [15:0] LBI;
    input  [15:0] SLBI;
+   output [15:0] wr_data;
    output err;
 
    wire [15:0] set_ext;
