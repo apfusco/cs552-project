@@ -16,6 +16,8 @@ module ex_mem(
         out_mem_en,
         out_wr_reg,
         out_wr_sel,
+        out_LBI,
+        out_SLBI,
         out_stall_n,
         err,
         // inputs
@@ -37,6 +39,8 @@ module ex_mem(
         in_mem_en,
         in_wr_reg,
         in_wr_sel,
+        in_LBI,
+        in_SLBI,
         in_stall_n,
         in_take_new_PC);
 
@@ -56,6 +60,8 @@ module ex_mem(
    output        out_mem_en;
    output [2:0]  out_wr_reg;
    output [2:0]  out_wr_sel;
+   output [15:0] out_LBI;
+   output [15:0] out_SLBI;
    output        out_stall_n; 
    output        err;
 
@@ -77,6 +83,8 @@ module ex_mem(
    input        in_mem_en;
    input [2:0]  in_wr_reg;
    input [2:0]  in_wr_sel;
+   input [15:0] in_LBI;
+   input [15:0] in_SLBI;
    input        in_stall_n; // low if stage should stall
    input        in_take_new_PC; // arrives from execute, low if stall
 
@@ -101,6 +109,8 @@ module ex_mem(
    register #(.N(1)) mem_en_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_mem_en), .dataOut(out_mem_en), .err());
    register #(.N(3)) wr_reg_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_wr_reg), .dataOut(out_wr_reg), .err());
    register #(.N(3)) wr_sel_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_wr_sel), .dataOut(out_wr_sel), .err());
+   register #(.N(16)) LBI_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_LBI), .dataOut(out_LBI), .err());
+   register #(.N(16)) SLBI_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_SLBI), .dataOut(out_SLBI), .err());
    register #(.N(1)) stall_n_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(stall_n), .dataOut(out_stall_n), .err());
 
 endmodule
