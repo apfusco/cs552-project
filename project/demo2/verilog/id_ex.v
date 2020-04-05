@@ -169,7 +169,7 @@ module id_ex(
                     in_halt
                     } === 1'bX) ? 1'b1 : 1'b0;
 
-    assign stall_n = ~take_new_PC & in_stall_n;
+    assign stall_n = in_stall_n;
 
     // For a NOP, wr_en, mem_en, mem_wr, and jmp_reg_instr should all be set to low.
     wire wr_en;
@@ -192,12 +192,12 @@ module id_ex(
     register #(.N(16)) sext_imm_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_sext_imm), .dataOut(out_sext_imm), .err());
     register #(.N(2)) br_cnd_sel_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_br_cnd_sel), .dataOut(out_br_cnd_sel), .err());
     register #(.N(2)) set_sel_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_set_sel), .dataOut(out_set_sel), .err());
-    register #(.N(1)) mem_wr_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_mem_wr), .dataOut(mem_wr/*NOP*/), .err());
-    register #(.N(1)) mem_en_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_mem_en), .dataOut(mem_en/*NOP*/), .err());
-    register #(.N(1)) wr_en_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_wr_en), .dataOut(wr_en/*NOP*/), .err());
+    register #(.N(1)) mem_wr_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(~take_new_PC & in_mem_wr), .dataOut(mem_wr/*NOP*/), .err());
+    register #(.N(1)) mem_en_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(~take_new_PC & in_mem_en), .dataOut(mem_en/*NOP*/), .err());
+    register #(.N(1)) wr_en_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(~take_new_PC & in_wr_en), .dataOut(wr_en/*NOP*/), .err());
     register #(.N(3)) wr_reg_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_wr_reg), .dataOut(out_wr_reg), .err());
     register #(.N(3)) wr_sel_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_wr_sel), .dataOut(out_wr_sel), .err());
-    register #(.N(1)) jmp_reg_instr_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_jmp_reg_instr), .dataOut(jmp_reg_instr/*NOP*/), .err());
+    register #(.N(1)) jmp_reg_instr_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(~take_new_PC & in_jmp_reg_instr), .dataOut(jmp_reg_instr/*NOP*/), .err());
     register #(.N(1)) jmp_instr_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_jmp_instr), .dataOut(out_jmp_instr), .err());
     register #(.N(1)) br_instr_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_br_instr), .dataOut(out_br_instr), .err());
     register #(.N(3)) alu_op_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_alu_op), .dataOut(out_alu_op), .err());
