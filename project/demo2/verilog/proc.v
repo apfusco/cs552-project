@@ -64,6 +64,7 @@ module proc (/*AUTOARG*/
    wire        ex_halt;
    wire [15:0] ex_rd_data_1;
    wire [15:0] ex_rd_data_2;
+   wire [15:0] ex_fwd_rd_data_2;
    wire [2:0]  ex_rd_reg_1;
    wire [2:0]  ex_rd_reg_2;
    wire        ex_has_Rt;
@@ -142,10 +143,12 @@ module proc (/*AUTOARG*/
    wire        ex_fwd_Rt;
    wire        mem_fwd_Rs;
    wire        mem_fwd_Rt;
+   wire        mem_fwd_ST;
    wire [15:0] ex_Rs;
    wire [15:0] ex_Rt;
    wire [15:0] mem_Rs;
    wire [15:0] mem_Rt;
+   //wire [15:0] mem_ST;//TODO: Remove this line
 
    // stall signals
    wire        stall;
@@ -278,6 +281,7 @@ module proc (/*AUTOARG*/
 
    execute execute0(.oprnd_1(ex_rd_data_1),
                     .oprnd_2(ex_oprnd_2),
+                    .rd_data_2(ex_rd_data_2),
                     .sext_imm(ex_sext_imm),
                     .alu_Cin(ex_alu_Cin),
                     .alu_op(ex_alu_op),
@@ -294,10 +298,12 @@ module proc (/*AUTOARG*/
                     .ex_fwd_Rt(ex_fwd_Rt),
                     .mem_fwd_Rs(mem_fwd_Rs),
                     .mem_fwd_Rt(mem_fwd_Rt),
+                    .mem_fwd_ST(mem_fwd_ST),
                     .ex_Rs_val(ex_Rs),
                     .ex_Rt_val(ex_Rt),
                     .mem_Rs_val(mem_Rs),
                     .mem_Rt_val(mem_Rt),
+                    .mem_ST_val(mem_Rt),
                     .ofl(ex_alu_ofl),
                     .alu_out(ex_alu_out),
                     .zero(ex_alu_zero),
@@ -308,6 +314,7 @@ module proc (/*AUTOARG*/
                     .set(ex_set),
                     .LBI(ex_LBI),
                     .SLBI(ex_SLBI),
+                    .fwd_rd_data_2(ex_fwd_rd_data_2),
                     .err(execute_error));
 
    ex_mem ex_mem_pipe(.out_PC_inc(mem_PC_inc),
@@ -336,7 +343,7 @@ module proc (/*AUTOARG*/
                       .rst(rst),
                       .in_PC_inc(ex_PC_inc),
                       .in_rd_data_1(ex_rd_data_1),
-                      .in_rd_data_2(ex_rd_data_2),
+                      .in_rd_data_2(ex_fwd_rd_data_2),
                       .in_rd_reg_1(ex_rd_reg_1),
                       .in_rd_reg_2(ex_rd_reg_2),
                       .in_alu_ofl(ex_alu_ofl),
@@ -418,6 +425,7 @@ module proc (/*AUTOARG*/
                     .ex_Rt(ex_Rt),
                     .mem_Rs(mem_Rs),
                     .mem_Rt(mem_Rt),
+                    .mem_fwd_ST(mem_fwd_ST),
                     .mem_to_mem_Rs(mem_to_mem_Rs),
                     .mem_to_mem_fwd_Rs(mem_to_mem_fwd_Rs),
                     .stall(stall),
@@ -434,6 +442,7 @@ module proc (/*AUTOARG*/
                     .ex_mem_lbi_result(mem_LBI),
                     .ex_mem_slbi_result(mem_SLBI),
                     .ex_mem_wr_sel(mem_wr_sel),
+                    .ex_mem_mem_wr(ex_mem_wr),
                     .mem_wb_alu_result(wb_alu_out),
                     .mem_wb_mem_result(wb_mem_out),
                     .mem_wb_set_result({15'h0000, wb_set}),

@@ -6,6 +6,7 @@
 */
 module execute (oprnd_1,
                 oprnd_2,
+                rd_data_2,
                 sext_imm,
                 alu_Cin,
                 alu_op,
@@ -22,10 +23,12 @@ module execute (oprnd_1,
                 ex_fwd_Rt,
                 mem_fwd_Rs,
                 mem_fwd_Rt,
+                mem_fwd_ST,
                 ex_Rs_val,
                 ex_Rt_val,
                 mem_Rs_val,
                 mem_Rt_val,
+                mem_ST_val,
                 ofl,
                 alu_out,
                 zero,
@@ -36,11 +39,13 @@ module execute (oprnd_1,
                 set,
                 LBI,
                 SLBI,
+                fwd_rd_data_2,
                 err);
 
    // I/O
    input  [15:0] oprnd_1;
    input  [15:0] oprnd_2;
+   input  [15:0] rd_data_2;
    input  [15:0] sext_imm;
    input         alu_Cin;
    input  [2:0]  alu_op;
@@ -57,10 +62,12 @@ module execute (oprnd_1,
    input         ex_fwd_Rt;
    input         mem_fwd_Rs;
    input         mem_fwd_Rt;
+   input         mem_fwd_ST;
    input [15:0]  ex_Rs_val;
    input [15:0]  ex_Rt_val;
    input [15:0]  mem_Rs_val;
    input [15:0]  mem_Rt_val;
+   input [15:0]  mem_ST_val;
 
    output        ofl;
    output [15:0] alu_out;
@@ -72,6 +79,7 @@ module execute (oprnd_1,
    output        set;
    output [15:0] LBI;
    output [15:0] SLBI;
+   output [15:0] fwd_rd_data_2;
    output        err;
 
    wire take_br;
@@ -92,6 +100,8 @@ module execute (oprnd_1,
    assign fwd_op_2 = (ex_fwd_Rt == 1'b1) ? ex_Rt_val :
                         (mem_fwd_Rt == 1'b1) ? mem_Rt_val :
                         oprnd_2;
+
+   assign fwd_rd_data_2 = mem_fwd_ST ? mem_ST_val : rd_data_2;
 
    assign err = (^{oprnd_1,
                    oprnd_2,
