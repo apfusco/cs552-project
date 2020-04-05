@@ -19,6 +19,7 @@ module stall(
     input [2:0] ex_mem_Rd;
     input [2:0] id_ex_Rs;
     input [2:0] id_ex_Rt;
+    input       id_ex_has_Rt;
 
     wire ex_mem_mem_rd;
 

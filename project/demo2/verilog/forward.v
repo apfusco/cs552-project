@@ -12,6 +12,7 @@ module forward(
         mem_Rs,
         mem_Rt,
         // inputs
+        stall,
         mem_wr_en,
         ex_mem_Rd,
         id_ex_has_Rt,
@@ -42,6 +43,7 @@ module forward(
     output [15:0] mem_Rs;
     output [15:0] mem_Rt;
     
+    input        stall;
     input        mem_wr_en; // ex/mem stage reg write signal
     input [2:0]  ex_mem_Rd;
     input        id_ex_has_Rt;
@@ -64,16 +66,14 @@ module forward(
 
     wire ex_mem_reg_wr;// TODO: This signal isn't used...?
     wire mem_wb_reg_wr;// TODO: This signal isn't used...?
-    wire [15:0] dontcare;
     wire [15:0] ex_wr_data;
     wire [15:0] mem_wr_data;
 
-    assign dontcare = 16'hXXXX;
 
     // foward in EX if writing result to reg and the EX/MEM dest and ID/EX 
     // source registers are same
     assign ex_fwd_Rs = mem_wr_en & ~|(ex_mem_Rd ^ id_ex_Rs);
-    assign ex_fwd_Rt = mem_wr_en & id_ex_has_Rt & ~|(ex_mem_Rd ^ id_ex_Rt); 
+    assign ex_fwd_Rt = mem_wr_en & id_ex_has_Rt & ~|(ex_mem_Rd ^ id_ex_Rt);
 
 
     // TODO: may need to manually implement !(e/m_wr_en & r/m_rd != d/e_rt)
@@ -86,24 +86,24 @@ module forward(
     // hard to compress into a 4:1 mux because of how wr_sel is set up
         // could feasibly just make this a one-hot-esque thing
     mux8_1 mux8_1_ex_data[15:0](.InA(ex_mem_alu_result),
-                             .InB(dontcare),
-                             .InC(dontcare),
+                             .InB(16'h0000),
+                             .InC(16'h0000),
                              .InD(ex_mem_set_result),
                              .InE(ex_mem_lbi_result),
                              .InF(ex_mem_slbi_result),
-                             .InG(dontcare),
-                             .InH(dontcare),
+                             .InG(16'h0000),
+                             .InH(16'h0000),
                              .S(ex_mem_wr_sel),
                              .Out(ex_wr_data));
 
     mux8_1 mux8_1_mem_data[15:0](.InA(mem_wb_alu_result),
                              .InB(mem_wb_mem_result),
-                             .InC(dontcare),
+                             .InC(16'h0000),
                              .InD(mem_wb_set_result),
                              .InE(mem_wb_lbi_result),
                              .InF(mem_wb_slbi_result),
-                             .InG(dontcare),
-                             .InH(dontcare),
+                             .InG(16'h0000),
+                             .InH(16'h0000),
                              .S(mem_wb_wr_sel),
                              .Out(mem_wr_data));
 
@@ -115,9 +115,9 @@ module forward(
 //    assign mem_Rs = (mem_fwd_Rs == 1'b1) ? mem_wr_data : dontcare;
 //    assign mem_Rt = (mem_fwd_Rt == 1'b1) ? mem_wr_data : dontcare;
 
-    assign ex_Rs = ex_fwd_Rs ? ex_wr_data : 16'h0;
-    assign ex_Rt = ex_fwd_Rt ? ex_wr_data : 16'h0;
-    assign mem_Rs = mem_fwd_Rs ? mem_wr_data : 16'h0;
-    assign mem_Rt = mem_fwd_Rt ? mem_wr_data : 16'h0;
+    assign ex_Rs = ex_fwd_Rs ? ex_wr_data : 16'h0000;
+    assign ex_Rt = ex_fwd_Rt ? ex_wr_data : 16'h0000;
+    assign mem_Rs = mem_fwd_Rs ? mem_wr_data : 16'h0000;
+    assign mem_Rt = mem_fwd_Rt ? mem_wr_data : 16'h0000;
 
 endmodule

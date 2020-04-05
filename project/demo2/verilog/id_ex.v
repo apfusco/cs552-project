@@ -23,7 +23,6 @@ module id_ex(
         out_alu_invB,
         out_alu_Cin,
         out_alu_sign,
-        out_stall_n,
         out_halt,
         err,
         // inputs
@@ -87,7 +86,6 @@ module id_ex(
     output        out_alu_invB;
     output        out_alu_Cin;
     output        out_alu_sign;
-    output        out_stall_n;
     output        out_halt;
     output        err;
 
