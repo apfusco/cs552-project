@@ -2,7 +2,6 @@ module if_id(
         // outputs
         out_instr,
         out_PC_inc,
-        out_stall_n,
         out_halt,
         err,
         // inputs
@@ -15,7 +14,6 @@ module if_id(
 
    output [15:0] out_instr;
    output [15:0] out_PC_inc;
-   output        out_stall_n;
    output        out_halt;
    output err;
 
