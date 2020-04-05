@@ -435,12 +435,13 @@ module proc (/*AUTOARG*/
                     .mem_wb_slbi_result(wb_SLBI),
                     .mem_wb_wr_sel(wb_wr_sel));
 
-   stall stall0(.id_ex_stall(stall),
-                .id_ex_mem_en(ex_mem_en),
-                .id_ex_mem_wr(ex_mem_wr), 
-                .id_ex_Rd(ex_wr_reg),
-                .if_id_Rs(id_instr[10:8]), // TODO: only check if Rs/Rt are present?
-                .if_id_Rt(id_instr[7:5]));
+   stall stall0(.ex_mem_stall(stall),
+                .ex_mem_mem_en(mem_mem_en),
+                .ex_mem_mem_wr(mem_mem_wr), 
+                .ex_mem_Rd(mem_wr_reg),
+                .id_ex_Rs(ex_rd_reg_1),
+                .id_ex_Rt(ex_rd_reg_2),
+                .id_ex_has_Rt(ex_has_Rt));
 
 endmodule // proc
 // DUMMY LINE FOR REV CONTROL :0:
