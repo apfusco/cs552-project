@@ -90,7 +90,7 @@ module forward(
     assign mem_fwd_Rs = wb_wr_en & ~|(mem_wb_Rd ^ id_ex_Rs) & ~ex_fwd_Rs;
     assign mem_fwd_Rt = wb_wr_en & id_ex_has_Rt & ~|(mem_wb_Rd ^ id_ex_Rt) & ~ex_fwd_Rt;
 
-    assign mem_to_mem_fwd_Rs = mem_wb_mem_wr & ~|(mem_wb_Rd ^ ex_mem_Rs);
+    assign mem_to_mem_fwd_Rs = wb_wr_en & mem_wb_mem_wr & ~|(mem_wb_Rd ^ ex_mem_Rs);
 
     // hard to compress into a 4:1 mux because of how wr_sel is set up
         // could feasibly just make this a one-hot-esque thing
