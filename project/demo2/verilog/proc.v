@@ -361,6 +361,8 @@ module proc (/*AUTOARG*/
                   .addr(mem_alu_out),
                   .en(mem_mem_en),
                   .mem_wr(mem_mem_wr),
+                  .mem_mem_fwd(mem_to_mem_fwd_Rs),
+                  .fwd_data_in(mem_to_mem_Rs),
                   .createdump(mem_halt),
                   .clk(clk),
                   .rst(rst),
@@ -418,7 +420,6 @@ module proc (/*AUTOARG*/
                     .stall(stall),
                     .mem_wr_en(mem_wr_en), // reg write signal from ex/mem
                     .ex_mem_Rd(mem_wr_reg),
-                    .mem_wb_Rd(wb_wr_reg),
                     .id_ex_has_Rt(ex_has_Rt),
                     .id_ex_Rs(ex_rd_reg_1),
                     .id_ex_Rt(ex_rd_reg_2),
