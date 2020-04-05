@@ -32,7 +32,6 @@ module if_id(
     // TODO: add writeEn signal once fowarding logic is implemented for stalls
    register #(.N(16)) instr_reg(.clk(clk), .rst(rst), .writeEn(in_stall_n), .dataIn(in_instr), .dataOut(out_instr), .err());
    register #(.N(16)) PC_inc_reg(.clk(clk), .rst(rst), .writeEn(in_stall_n), .dataIn(in_PC_inc), .dataOut(out_PC_inc), .err());
-   register #(.N(1)) stall_n_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(in_stall_n), .dataOut(out_stall_n), .err());
-   register #(.N(1)) halt_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(in_halt), .dataOut(out_halt), .err());
+   register #(.N(1)) halt_reg(.clk(clk), .rst(rst), .writeEn(in_stall_n), .dataIn(in_halt), .dataOut(out_halt), .err());
 
 endmodule
