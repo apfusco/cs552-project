@@ -175,7 +175,6 @@ module proc (/*AUTOARG*/
 
    if_id if_id_pipe(.out_instr(id_instr),
                     .out_PC_inc(id_PC_inc),
-                    .out_stall_n(id_stall_n),
                     .out_halt(id_halt),
                     .err(if_id_error),
                     .clk(clk),
@@ -331,7 +330,6 @@ module proc (/*AUTOARG*/
                       .out_set(mem_set),
                       .out_LBI(mem_LBI),
                       .out_SLBI(mem_SLBI),
-                      .out_stall_n(mem_stall_n),
                       .out_halt(mem_halt),
                       .err(ex_mem_error),
                       .clk(clk),
@@ -354,7 +352,6 @@ module proc (/*AUTOARG*/
                       .in_set(ex_set),
                       .in_LBI(ex_LBI),
                       .in_SLBI(ex_SLBI),
-                      .in_stall_n(ex_stall_n), 
                       .in_halt(ex_halt),
                       .take_new_PC(take_new_PC));
 
@@ -392,8 +389,7 @@ module proc (/*AUTOARG*/
                       .in_PC_inc(mem_PC_inc),
                       .in_set(mem_set),
                       .in_LBI(mem_LBI),
-                      .in_SLBI(mem_SLBI),
-                      .in_stall_n(mem_stall_n));
+                      .in_SLBI(mem_SLBI));
 
    wb wb0(.alu_out(wb_alu_out),
           .mem_out(wb_mem_out),
