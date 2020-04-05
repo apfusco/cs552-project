@@ -93,6 +93,8 @@ module proc (/*AUTOARG*/
    wire        mem_halt;
    wire [15:0] mem_rd_data_1;
    wire [15:0] mem_rd_data_2;
+   wire [15:0] mem_rd_reg_1;
+   wire [15:0] mem_rd_reg_2;
    //wire [15:0] oprnd_2;
    wire [15:0] mem_alu_out;
    wire [15:0] mem_mem_out;
@@ -310,6 +312,8 @@ module proc (/*AUTOARG*/
    ex_mem ex_mem_pipe(.out_PC_inc(mem_PC_inc),
                       .out_rd_data_1(mem_rd_data_1),
                       .out_rd_data_2(mem_rd_data_2),
+                      .out_rd_reg_1(mem_rd_reg_1),
+                      .out_rd_reg_2(mem_rd_reg_2),
                       .out_alu_ofl(mem_alu_ofl),
                       .out_alu_out(mem_alu_out),
                       .out_alu_zero(mem_alu_zero),
@@ -332,6 +336,8 @@ module proc (/*AUTOARG*/
                       .in_PC_inc(ex_PC_inc),
                       .in_rd_data_1(ex_rd_data_1),
                       .in_rd_data_2(ex_rd_data_2),
+                      .in_rd_reg_1(ex_rd_reg_1),
+                      .in_rd_reg_2(ex_rd_reg_2),
                       .in_alu_ofl(ex_alu_ofl),
                       .in_alu_out(ex_alu_out),
                       .in_alu_zero(ex_alu_zero),
@@ -407,12 +413,16 @@ module proc (/*AUTOARG*/
                     .ex_Rt(ex_Rt),
                     .mem_Rs(mem_Rs),
                     .mem_Rt(mem_Rt),
+                    .mem_to_mem_Rs(mem_to_mem_Rs),
+                    .mem_to_mem_fwd_Rs(mem_to_mem_fwd_Rs),
                     .stall(stall),
                     .mem_wr_en(mem_wr_en), // reg write signal from ex/mem
                     .ex_mem_Rd(mem_wr_reg),
+                    .mem_wb_Rd(wb_wr_reg),
                     .id_ex_has_Rt(ex_has_Rt),
                     .id_ex_Rs(ex_rd_reg_1),
                     .id_ex_Rt(ex_rd_reg_2),
+                    .ex_mem_Rs(mem_rd_reg_1),
                     .wb_wr_en(wb_wr_en),
                     .mem_wb_Rd(wb_wr_reg),
                     .ex_mem_alu_result(mem_alu_out),
