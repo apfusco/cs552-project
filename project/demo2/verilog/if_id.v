@@ -30,7 +30,7 @@ module if_id(
          : 1'b0;
 
    wire [15:0] instr;
-   assign instr = take_new_PC : {5'b00001, in_instr[10:0]} ? in_instr;
+   assign instr = take_new_PC ? {5'b00001, in_instr[10:0]} : in_instr;
 
     // TODO: add writeEn signal once fowarding logic is implemented for stalls
    register #(.N(16)) instr_reg(.clk(clk), .rst(rst), .writeEn(in_stall_n), .dataIn(instr), .dataOut(out_instr), .err());
