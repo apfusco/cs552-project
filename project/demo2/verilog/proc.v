@@ -94,7 +94,7 @@ module proc (/*AUTOARG*/
    wire [15:0] mem_rd_data_1;
    wire [15:0] mem_rd_data_2;
    wire [2:0]  mem_rd_reg_1;
-   //wire [2:0]  mem_rd_reg_2;
+   wire [2:0]  mem_rd_reg_2;
    //wire [15:0] oprnd_2;
    wire [15:0] mem_alu_out;
    wire [15:0] mem_mem_out;
@@ -314,6 +314,7 @@ module proc (/*AUTOARG*/
                       .out_rd_data_1(mem_rd_data_1),
                       .out_rd_data_2(mem_rd_data_2),
                       .out_rd_reg_1(mem_rd_reg_1),
+                      .out_rd_reg_2(mem_rd_reg_2),
                       .out_alu_ofl(mem_alu_ofl),
                       .out_alu_out(mem_alu_out),
                       .out_alu_zero(mem_alu_zero),
@@ -337,6 +338,7 @@ module proc (/*AUTOARG*/
                       .in_rd_data_1(ex_rd_data_1),
                       .in_rd_data_2(ex_rd_data_2),
                       .in_rd_reg_1(ex_rd_reg_1),
+                      .in_rd_reg_2(ex_rd_reg_2),
                       .in_alu_ofl(ex_alu_ofl),
                       .in_alu_out(ex_alu_out),
                       .in_alu_zero(ex_alu_zero),
@@ -424,7 +426,7 @@ module proc (/*AUTOARG*/
                     .id_ex_has_Rt(ex_has_Rt),
                     .id_ex_Rs(ex_rd_reg_1),
                     .id_ex_Rt(ex_rd_reg_2),
-                    .ex_mem_Rs(mem_rd_reg_1),
+                    .ex_mem_Rs(mem_rd_reg_2),//FIXME: was mem_rd_reg_1
                     .wb_wr_en(wb_wr_en),
                     .mem_wb_Rd(wb_wr_reg),
                     .ex_mem_alu_result(mem_alu_out),
@@ -438,7 +440,7 @@ module proc (/*AUTOARG*/
                     .mem_wb_lbi_result(wb_LBI),
                     .mem_wb_slbi_result(wb_SLBI),
                     .mem_wb_wr_sel(wb_wr_sel),
-                    .mem_wb_mem_wr(wb_mem_wr));
+                    .mem_wb_mem_wr(mem_mem_wr));//FIXME: Was wb_mem_wr
 
    stall stall0(.ex_mem_stall(stall),
                 .ex_mem_mem_en(ex_mem_en),
