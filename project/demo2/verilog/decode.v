@@ -70,7 +70,7 @@ module decode (rd_data_1,
     wire [1:0] sext_op;
     wire [1:0] wr_reg_sel;
     wire oprnd_sel;
-    wire [2:0] wr_reg;
+//    wire [2:0] wr_reg;
 
     // Error signals
     wire reg_error;

@@ -66,7 +66,7 @@ module mem_wb(
                     in_LBI,
                     in_SLBI,
                     in_sext_imm,
-                    in_set,
+                    in_set
                     } === 1'bX) ? 1'b1 : 1'b0;
 
    // TODO: writeEn needs to be low in the event of a stall.

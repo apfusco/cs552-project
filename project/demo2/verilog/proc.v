@@ -45,7 +45,6 @@ module proc (/*AUTOARG*/
    wire [15:0] if_instr;
    // Decode stage signals
    wire [15:0] id_PC_inc;
-   wire        id_stall_n;
    wire        id_halt;
    wire [15:0] id_rd_data_1;
    wire [15:0] id_rd_data_2;
@@ -55,7 +54,6 @@ module proc (/*AUTOARG*/
    wire [1:0]  id_br_cnd_sel;
    wire [1:0]  id_set_sel;
    wire [15:0] id_instr;
-   wire [15:0] id_wr_data;
    wire        id_has_Rt;
    wire        id_wr_en;
    wire [2:0]  id_wr_reg;
@@ -78,7 +76,6 @@ module proc (/*AUTOARG*/
    wire        ex_alu_invA;
    wire        ex_alu_invB;
    wire        ex_alu_sign;
-   wire        ex_stall_n;
    wire        ex_alu_zero;
    wire        ex_alu_ofl;
    wire        ex_alu_ltz;
@@ -100,7 +97,6 @@ module proc (/*AUTOARG*/
    wire [15:0] mem_alu_out;
    wire [15:0] mem_mem_out;
    wire [15:0] mem_sext_imm;
-   wire [2:0]  mem_alu_op;
    wire        mem_set;
    wire        mem_alu_zero;
    wire        mem_alu_ofl;
@@ -109,11 +105,9 @@ module proc (/*AUTOARG*/
    wire [1:0]  mem_set_sel;
    wire        mem_mem_en;
    wire        mem_mem_wr;
-   wire [15:0] mem_wr_data;
    wire        mem_wr_en;
    wire [2:0]  mem_wr_reg;
    wire [2:0]  mem_wr_sel;
-   wire        mem_stall_n;
    wire [15:0] mem_LBI;
    wire [15:0] mem_SLBI;
    //wire        jmp_reg_instr;
@@ -239,7 +233,6 @@ module proc (/*AUTOARG*/
                     .out_alu_invB(ex_alu_invB),
                     .out_alu_Cin(ex_alu_Cin),
                     .out_alu_sign(ex_alu_sign),
-                    .out_stall_n(ex_stall_n),
                     .out_halt(ex_halt),
                     .err(id_ex_error),
                     .clk(clk),
@@ -267,7 +260,7 @@ module proc (/*AUTOARG*/
                     .in_alu_invB(id_alu_invB),
                     .in_alu_Cin(id_alu_Cin),
                     .in_alu_sign(id_alu_sign),
-                    .in_stall_n(id_stall_n), 
+                    .in_stall_n(~stall), 
                     .take_new_PC(take_new_PC),
                     .in_ex_fwd_Rs(ex_fwd_Rs),
                     .in_ex_fwd_Rt(ex_fwd_Rt),
@@ -413,6 +406,7 @@ module proc (/*AUTOARG*/
                     .ex_Rt(ex_Rt),
                     .mem_Rs(mem_Rs),
                     .mem_Rt(mem_Rt),
+                    .stall(stall),
                     .mem_wr_en(mem_wr_en), // reg write signal from ex/mem
                     .ex_mem_Rd(mem_wr_reg),
                     .id_ex_has_Rt(ex_has_Rt),
