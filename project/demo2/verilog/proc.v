@@ -182,6 +182,7 @@ module proc (/*AUTOARG*/
                     .in_instr(if_instr),
                     .in_stall_n(~stall), // turns stall into an active low
                     .in_PC_inc(if_PC_inc),
+                    .take_new_PC(take_new_PC),
                     .in_halt(if_halt));
 
    decode decode0(.rd_data_1(id_rd_data_1),
