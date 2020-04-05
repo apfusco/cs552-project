@@ -427,12 +427,12 @@ module proc (/*AUTOARG*/
                     .mem_wb_wr_sel(wb_wr_sel));
 
    stall stall0(.ex_mem_stall(stall),
-                .ex_mem_mem_en(mem_mem_en),
-                .ex_mem_mem_wr(mem_mem_wr), 
-                .ex_mem_Rd(mem_wr_reg),
-                .id_ex_Rs(ex_rd_reg_1),
-                .id_ex_Rt(ex_rd_reg_2),
-                .id_ex_has_Rt(ex_has_Rt));
+                .ex_mem_mem_en(ex_mem_en),
+                .ex_mem_mem_wr(ex_mem_wr),
+                .ex_mem_Rd(ex_wr_reg),
+                .id_ex_Rs(id_instr[10:8]),
+                .id_ex_Rt(id_instr[7:5]),
+                .id_ex_has_Rt(id_has_Rt));
 
 endmodule // proc
 // DUMMY LINE FOR REV CONTROL :0:
