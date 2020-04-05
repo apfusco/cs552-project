@@ -4,6 +4,7 @@ module ex_mem(
         out_rd_data_1,
         out_rd_data_2,
         out_rd_reg_1,
+        out_rd_reg_2,
         out_alu_ofl,
         out_alu_out,
         out_alu_zero,
@@ -28,6 +29,7 @@ module ex_mem(
         in_rd_data_1,
         in_rd_data_2,
         in_rd_reg_1,
+        in_rd_reg_2,
         in_alu_ofl,
         in_alu_out,
         in_alu_zero,
@@ -50,6 +52,7 @@ module ex_mem(
    output [15:0] out_rd_data_1;
    output [15:0] out_rd_data_2;
    output [2:0] out_rd_reg_1;
+   output [2:0]  out_rd_reg_2;
    output        out_alu_ofl;
    output [15:0] out_alu_out;
    output        out_alu_zero;
@@ -74,6 +77,7 @@ module ex_mem(
    input [15:0] in_rd_data_1;
    input [15:0] in_rd_data_2;
    input [2:0]  in_rd_reg_1;
+   input [2:0]  in_rd_reg_2;
    input        in_alu_ofl;
    input [15:0] in_alu_out;
    input        in_alu_zero;
@@ -98,6 +102,7 @@ module ex_mem(
                    in_rd_data_1,
                    in_rd_data_2,
                    in_rd_reg_1,
+                   in_rd_reg_2,
                    in_alu_ofl,
                    in_alu_out,
                    in_alu_zero,
@@ -122,6 +127,7 @@ module ex_mem(
    register #(.N(16)) rd_data_1_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(in_rd_data_1), .dataOut(out_rd_data_1), .err());
    register #(.N(16)) rd_data_2_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(in_rd_data_2), .dataOut(out_rd_data_2), .err());
    register #(.N(3)) rd_reg_1_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(in_rd_reg_1), .dataOut(out_rd_reg_1), .err());
+   register #(.N(3)) rd_reg_2_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(in_rd_reg_2), .dataOut(out_rd_reg_2), .err());
    register #(.N(1)) alu_ofl_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(in_alu_ofl), .dataOut(out_alu_ofl), .err());
    register #(.N(16)) alu_out_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(in_alu_out), .dataOut(out_alu_out), .err());
    register #(.N(1)) zero_alu_reg(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(in_alu_zero), .dataOut(out_alu_zero), .err());

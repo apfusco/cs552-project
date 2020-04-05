@@ -107,7 +107,7 @@ module forward(
 
     mux8_1 mux8_1_mem_data[15:0](.InA(mem_wb_alu_result),
                              .InB(mem_wb_mem_result),
-                             .InC(16'h0000),
+                             .InC(16'h0000),//PC_inc
                              .InD(mem_wb_set_result),
                              .InE(mem_wb_lbi_result),
                              .InF(mem_wb_slbi_result),
