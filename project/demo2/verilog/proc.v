@@ -165,7 +165,8 @@ module proc (/*AUTOARG*/
                 .rst(rst),
                 .new_PC(new_PC),
                 .take_new_PC(take_new_PC),
-                .stall(stall));
+                .stall(stall),
+                .actual_halt(mem_halt));
 
    if_id if_id_pipe(.out_instr(id_instr),
                     .out_PC_inc(id_PC_inc),
