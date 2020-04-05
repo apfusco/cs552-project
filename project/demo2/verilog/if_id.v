@@ -30,11 +30,13 @@ module if_id(
          : 1'b0;
 
    wire [15:0] instr;
-   assign instr = take_new_PC ? {5'b00001, in_instr[10:0]} : in_instr;
+   wire halt;
+   assign out_instr = take_new_PC ? {5'b00001, instr[10:0]} : instr;
+   assign out_halt = halt & ~take_new_PC;
 
     // TODO: add writeEn signal once fowarding logic is implemented for stalls
-   register #(.N(16)) instr_reg(.clk(clk), .rst(rst), .writeEn(in_stall_n), .dataIn(instr), .dataOut(out_instr), .err());
+   register #(.N(16)) instr_reg(.clk(clk), .rst(rst), .writeEn(in_stall_n), .dataIn(in_instr), .dataOut(instr), .err());
    register #(.N(16)) PC_inc_reg(.clk(clk), .rst(rst), .writeEn(in_stall_n), .dataIn(in_PC_inc), .dataOut(out_PC_inc), .err());
-   register #(.N(1)) halt_reg(.clk(clk), .rst(rst), .writeEn(in_stall_n), .dataIn(in_halt), .dataOut(out_halt), .err());
+   register #(.N(1)) halt_reg(.clk(clk), .rst(rst), .writeEn(in_stall_n), .dataIn(in_halt), .dataOut(halt), .err());
 
 endmodule
