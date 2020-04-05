@@ -119,7 +119,7 @@ module execute (oprnd_1,
 
    // (S)LBI logic
    assign LBI = sext_imm;
-   assign SLBI = {oprnd_1[7:0], sext_imm[7:0]};
+   assign SLBI = {fwd_op_1[7:0], sext_imm[7:0]};
 
    // ALU logic
    alu alu(.InA(fwd_op_1),
