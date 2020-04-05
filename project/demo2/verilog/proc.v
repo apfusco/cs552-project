@@ -93,8 +93,8 @@ module proc (/*AUTOARG*/
    wire        mem_halt;
    wire [15:0] mem_rd_data_1;
    wire [15:0] mem_rd_data_2;
-   wire [15:0] mem_rd_reg_1;
-   wire [15:0] mem_rd_reg_2;
+   wire [2:0]  mem_rd_reg_1;
+   //wire [2:0]  mem_rd_reg_2;
    //wire [15:0] oprnd_2;
    wire [15:0] mem_alu_out;
    wire [15:0] mem_mem_out;
@@ -127,7 +127,7 @@ module proc (/*AUTOARG*/
    //wire        alu_ltz;
    //wire        alu_lteq;
    //wire        wb_mem_en;
-   //wire        wb_mem_wr;
+   wire        wb_mem_wr;
    wire [15:0] wb_wr_data;
    wire        wb_wr_en;
    wire [2:0]  wb_wr_reg;
@@ -137,6 +137,7 @@ module proc (/*AUTOARG*/
    //wire        jmp_reg_instr;
 
    // forwarding signals
+   wire [15:0] mem_to_mem_Rs;
    wire        ex_fwd_Rs;
    wire        ex_fwd_Rt;
    wire        mem_fwd_Rs;
@@ -370,6 +371,7 @@ module proc (/*AUTOARG*/
                       .out_wr_reg(wb_wr_reg),
                       .out_wr_en(wb_wr_en),
                       .out_wr_sel(wb_wr_sel),
+                      .out_mem_wr(wb_mem_wr),
                       .out_alu_out(wb_alu_out),
                       .out_mem_out(wb_mem_out),
                       .out_sext_imm(wb_sext_imm),
@@ -384,6 +386,7 @@ module proc (/*AUTOARG*/
                       .in_wr_reg(mem_wr_reg),
                       .in_wr_en(mem_wr_en),
                       .in_wr_sel(mem_wr_sel),
+                      .in_mem_wr(mem_mem_wr),
                       .in_alu_out(mem_alu_out),
                       .in_mem_out(mem_mem_out),
                       .in_sext_imm(mem_sext_imm),
@@ -423,6 +426,7 @@ module proc (/*AUTOARG*/
                     .id_ex_Rt(ex_rd_reg_2),
                     .ex_mem_Rs(mem_rd_reg_1),
                     .wb_wr_en(wb_wr_en),
+                    .mem_wb_Rd(wb_wr_reg),
                     .ex_mem_alu_result(mem_alu_out),
                     .ex_mem_set_result({15'h0000, mem_set}),
                     .ex_mem_lbi_result(mem_LBI),
@@ -433,7 +437,8 @@ module proc (/*AUTOARG*/
                     .mem_wb_set_result({15'h0000, wb_set}),
                     .mem_wb_lbi_result(wb_LBI),
                     .mem_wb_slbi_result(wb_SLBI),
-                    .mem_wb_wr_sel(wb_wr_sel));
+                    .mem_wb_wr_sel(wb_wr_sel),
+                    .mem_wb_mem_wr(wb_mem_wr));
 
    stall stall0(.ex_mem_stall(stall),
                 .ex_mem_mem_en(ex_mem_en),
