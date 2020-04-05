@@ -178,29 +178,29 @@ module id_ex(
     wire jmp_reg_instr;
     wire halt;
 
-    assign out_has_Rt = has_Rt & in_stall_n;// & ~take_new_PC;
-    assign out_wr_en = wr_en & in_stall_n;// & ~take_new_PC;
-    assign out_mem_en = mem_en & in_stall_n;// & ~take_new_PC;
-    assign out_mem_wr = mem_wr & in_stall_n;// & ~take_new_PC;
-    assign out_jmp_reg_instr = jmp_reg_instr & in_stall_n;// & ~take_new_PC;
-    assign out_halt = halt & in_stall_n;// & ~take_new_PC;
+    assign has_Rt = in_has_Rt & in_stall_n;// & ~take_new_PC;
+    assign wr_en = in_wr_en & in_stall_n;// & ~take_new_PC;
+    assign mem_en = in_mem_en & in_stall_n;// & ~take_new_PC;
+    assign mem_wr = in_mem_wr & in_stall_n;// & ~take_new_PC;
+    assign jmp_reg_instr = in_jmp_reg_instr & in_stall_n;// & ~take_new_PC;
+    assign halt = in_halt & in_stall_n;// & ~take_new_PC;
 
     register #(.N(16)) PC_inc_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_PC_inc), .dataOut(out_PC_inc), .err());
     register #(.N(16)) rd_data_1_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_rd_data_1), .dataOut(out_rd_data_1), .err());
     register #(.N(16)) rd_data_2_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_rd_data_2), .dataOut(out_rd_data_2), .err());
     register #(.N(3)) rd_reg_1_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_rd_reg_1), .dataOut(out_rd_reg_1), .err());
     register #(.N(3)) rd_reg_2_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_rd_reg_2), .dataOut(out_rd_reg_2), .err());
-    register #(.N(1)) has_Rt_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_has_Rt), .dataOut(has_Rt/*NOP*/), .err());
+    register #(.N(1)) has_Rt_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(has_Rt), .dataOut(out_has_Rt/*NOP*/), .err());
     register #(.N(16)) oprnd_2_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_oprnd_2), .dataOut(out_oprnd_2), .err());
     register #(.N(16)) sext_imm_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_sext_imm), .dataOut(out_sext_imm), .err());
     register #(.N(2)) br_cnd_sel_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_br_cnd_sel), .dataOut(out_br_cnd_sel), .err());
     register #(.N(2)) set_sel_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_set_sel), .dataOut(out_set_sel), .err());
-    register #(.N(1)) mem_wr_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_mem_wr), .dataOut(mem_wr/*NOP*/), .err());
-    register #(.N(1)) mem_en_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_mem_en), .dataOut(mem_en/*NOP*/), .err());
-    register #(.N(1)) wr_en_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_wr_en), .dataOut(wr_en/*NOP*/), .err());
+    register #(.N(1)) mem_wr_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(mem_wr), .dataOut(out_mem_wr/*NOP*/), .err());
+    register #(.N(1)) mem_en_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(mem_en), .dataOut(out_mem_en/*NOP*/), .err());
+    register #(.N(1)) wr_en_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(wr_en), .dataOut(out_wr_en/*NOP*/), .err());
     register #(.N(3)) wr_reg_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_wr_reg), .dataOut(out_wr_reg), .err());
     register #(.N(3)) wr_sel_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_wr_sel), .dataOut(out_wr_sel), .err());
-    register #(.N(1)) jmp_reg_instr_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(~take_new_PC & jmp_reg_instr), .dataOut(jmp_reg_instr/*NOP*/), .err());
+    register #(.N(1)) jmp_reg_instr_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(jmp_reg_instr), .dataOut(out_jmp_reg_instr/*NOP*/), .err());
     register #(.N(1)) jmp_instr_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_jmp_instr), .dataOut(out_jmp_instr), .err());
     register #(.N(1)) br_instr_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_br_instr), .dataOut(out_br_instr), .err());
     register #(.N(3)) alu_op_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_alu_op), .dataOut(out_alu_op), .err());
@@ -208,6 +208,6 @@ module id_ex(
     register #(.N(1)) alu_invB_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_alu_invB), .dataOut(out_alu_invB), .err());
     register #(.N(1)) alu_Cin_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_alu_Cin), .dataOut(out_alu_Cin), .err());
     register #(.N(1)) alu_sign_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_alu_sign), .dataOut(out_alu_sign), .err());
-    register #(.N(1)) halt_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_halt), .dataOut(halt/* NOP */), .err());
+    register #(.N(1)) halt_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(halt), .dataOut(out_halt/* NOP */), .err());
 
 endmodule

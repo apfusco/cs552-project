@@ -21,7 +21,6 @@ module forward(
         id_ex_Rs, 
         id_ex_Rt,
         ex_mem_Rs,
-        id_ex_mem_wr, // id_mem_wr signal
         wb_wr_en,
         mem_wb_Rd,
         ex_mem_alu_result,
@@ -57,7 +56,6 @@ module forward(
     input [2:0]  id_ex_Rs;
     input [2:0]  id_ex_Rt;
     input [2:0]  ex_mem_Rs;
-    input        id_ex_mem_wr;
     input        wb_wr_en; // mem/wb stage reg write signal
     input [2:0]  mem_wb_Rd;
     input [15:0] ex_mem_alu_result; // ex stage results
