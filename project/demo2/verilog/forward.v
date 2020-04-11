@@ -76,8 +76,6 @@ module forward(
     input        mem_mem_wr;
     // TODO: PC_inc results needed or no?
 
-    wire ex_mem_reg_wr;// TODO: This signal isn't used...?
-    wire mem_wb_reg_wr;// TODO: This signal isn't used...?
     wire [15:0] ex_wr_data;
     wire [15:0] mem_wr_data;
 
