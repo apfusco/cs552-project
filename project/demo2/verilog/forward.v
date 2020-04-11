@@ -21,7 +21,7 @@ module forward(
         id_ex_has_Rt,
         id_ex_Rs, 
         id_ex_Rt,
-        ex_mem_Rs,
+        ex_mem_Rt,
         wb_wr_en,
         mem_wb_Rd,
         ex_mem_alu_result,
@@ -58,7 +58,7 @@ module forward(
     input        id_ex_has_Rt;
     input [2:0]  id_ex_Rs;
     input [2:0]  id_ex_Rt;
-    input [2:0]  ex_mem_Rs;
+    input [2:0]  ex_mem_Rt;
     input        wb_wr_en; // mem/wb stage reg write signal
     input [2:0]  mem_wb_Rd;
     input [15:0] ex_mem_alu_result; // ex stage results
@@ -97,7 +97,7 @@ module forward(
 //    assign mem_fwd_Rs = wb_wr_en & ~|(mem_wb_Rd ^ id_ex_Rs) & ~ex_fwd_Rs;
     assign mem_fwd_ST = wb_wr_en & ~|(mem_wb_Rd ^ id_ex_Rt) & ex_mem_mem_wr;
 
-    assign mem_to_mem_fwd_Rs = wb_wr_en & mem_wb_mem_wr & ~|(mem_wb_Rd ^ ex_mem_Rs);
+    assign mem_to_mem_fwd_Rs = wb_wr_en & mem_wb_mem_wr & ~|(mem_wb_Rd ^ ex_mem_Rt);
 
     // hard to compress into a 4:1 mux because of how wr_sel is set up
         // could feasibly just make this a one-hot-esque thing
