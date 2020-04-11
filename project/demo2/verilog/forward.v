@@ -123,19 +123,10 @@ module forward(
                              .S(wb_wr_sel),
                              .Out(mem_wr_data));
 
-    // TODO: probably a better way to do this, but I'm tired
-    // TODO: There can't be don't cares in the processor, so idk how this
-    // should be implemented.
-//    assign ex_Rs = (ex_fwd_Rs == 1'b1) ? ex_wr_data : dontcare;
-//    assign ex_Rt = (ex_fwd_Rt == 1'b1) ? ex_wr_data : dontcare;
-//    assign mem_Rs = (mem_fwd_Rs == 1'b1) ? mem_wr_data : dontcare;
-//    assign mem_Rt = (mem_fwd_Rt == 1'b1) ? mem_wr_data : dontcare;
+    assign ex_Rs_data = ex_wr_data;     // Should be used when ex_fwd_Rs
+    assign ex_Rt_data = ex_wr_data;     // Should be used when ex_fwd_Rt
+    assign mem_Rs_data = mem_wr_data;   // Should be used when mem_fwd_Rs
+    assign mem_Rt_data = mem_wr_data;   // Should be used when mem_fwd_Rt
+    assign mem_to_mem_Rs = mem_wr_data; // Should be used when mem_to_mem_fwd_Rs
 
-    assign ex_Rs_data = ex_wr_data;
-    assign ex_Rt_data = ex_wr_data;
-    assign mem_Rs_data = mem_wr_data;
-    assign mem_Rt_data = mem_wr_data;
-
-    // TODO: can I replace the true val with just an alu_result...
-    assign mem_to_mem_Rs = mem_to_mem_fwd_Rs ? mem_wr_data : 16'h0000;
 endmodule
