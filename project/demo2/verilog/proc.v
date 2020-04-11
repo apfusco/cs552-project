@@ -43,6 +43,7 @@ module proc (/*AUTOARG*/
    wire [15:0] if_PC_inc;
    wire        if_halt;
    wire [15:0] if_instr;
+
    // Decode stage signals
    wire [15:0] id_PC_inc;
    wire        id_halt;
@@ -89,6 +90,7 @@ module proc (/*AUTOARG*/
    wire        ex_jmp_reg_instr;
    wire [15:0] ex_LBI;
    wire [15:0] ex_SLBI;
+
    // Memory stage signals
    wire [15:0] mem_PC_inc;
    wire        mem_halt;
@@ -112,6 +114,7 @@ module proc (/*AUTOARG*/
    wire [2:0]  mem_wr_sel;
    wire [15:0] mem_LBI;
    wire [15:0] mem_SLBI;
+
    // Write back stage signals
    wire [15:0] wb_PC_inc;
    wire [15:0] wb_rd_data_1;
