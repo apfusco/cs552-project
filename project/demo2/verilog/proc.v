@@ -96,7 +96,6 @@ module proc (/*AUTOARG*/
    wire [15:0] mem_rd_data_2;
    wire [2:0]  mem_rd_reg_1;
    wire [2:0]  mem_rd_reg_2;
-   //wire [15:0] oprnd_2;
    wire [15:0] mem_alu_out;
    wire [15:0] mem_mem_out;
    wire [15:0] mem_sext_imm;
@@ -113,21 +112,13 @@ module proc (/*AUTOARG*/
    wire [2:0]  mem_wr_sel;
    wire [15:0] mem_LBI;
    wire [15:0] mem_SLBI;
-   //wire        jmp_reg_instr;
    // Write back stage signals
    wire [15:0] wb_PC_inc;
-   //wire        wb_halt;
    wire [15:0] wb_rd_data_1;
    wire [15:0] wb_alu_out;
    wire [15:0] wb_mem_out;
    wire [15:0] wb_sext_imm;
-   //wire [2:0]  wb_alu_op;
    wire        wb_set;
-   //wire        alu_zero;
-   //wire        alu_ofl;
-   //wire        alu_ltz;
-   //wire        alu_lteq;
-   //wire        wb_mem_en;
    wire        wb_mem_wr;
    wire [15:0] wb_wr_data;
    wire        wb_wr_en;
@@ -135,7 +126,6 @@ module proc (/*AUTOARG*/
    wire [2:0]  wb_wr_sel;
    wire [15:0] wb_LBI;
    wire [15:0] wb_SLBI;
-   //wire        jmp_reg_instr;
 
    // forwarding signals
    wire [15:0] mem_to_mem_Rs;
@@ -148,7 +138,6 @@ module proc (/*AUTOARG*/
    wire [15:0] ex_Rt;
    wire [15:0] mem_Rs;
    wire [15:0] mem_Rt;
-   //wire [15:0] mem_ST;//TODO: Remove this line
 
    // stall signals
    wire        stall;
@@ -206,7 +195,7 @@ module proc (/*AUTOARG*/
                   .alu_invB(id_alu_invB),
                   .alu_Cin(id_alu_Cin),
                   .alu_sign(id_alu_sign),
-                  .halt(/* TODO */),
+                  .halt(),
                   .err(decode_error),
                   .rd_reg_1(id_instr[10:8]),
                   .rd_reg_2(id_instr[7:5]),
@@ -247,8 +236,8 @@ module proc (/*AUTOARG*/
                     .in_PC_inc(id_PC_inc),
                     .in_rd_data_1(id_rd_data_1),
                     .in_rd_data_2(id_rd_data_2),
-                    .in_rd_reg_1(id_instr[10:8]), // TODO: handle when these are garbage (i.e. the instruction doesn't have an Rs or Rt)
-                    .in_rd_reg_2(id_instr[7:5]), 
+                    .in_rd_reg_1(id_instr[10:8]),
+                    .in_rd_reg_2(id_instr[7:5]),
                     .in_has_Rt(id_has_Rt),
                     .in_oprnd_2(id_oprnd_2),
                     .in_sext_imm(id_sext_imm),
@@ -257,7 +246,7 @@ module proc (/*AUTOARG*/
                     .in_mem_wr(id_mem_wr),
                     .in_mem_en(id_mem_en),
                     .in_wr_en(id_wr_en),
-                    .in_wr_reg(id_wr_reg), // TODO: same as above note for Rd
+                    .in_wr_reg(id_wr_reg),
                     .in_wr_sel(id_wr_sel),
                     .in_jmp_reg_instr(id_jmp_reg_instr),
                     .in_jmp_instr(id_jmp_instr),
@@ -429,12 +418,12 @@ module proc (/*AUTOARG*/
                     .mem_to_mem_Rs(mem_to_mem_Rs),
                     .mem_to_mem_fwd_Rs(mem_to_mem_fwd_Rs),
                     .stall(stall),
-                    .mem_wr_en(mem_wr_en), // reg write signal from ex/mem
+                    .mem_wr_en(mem_wr_en),
                     .ex_mem_Rd(mem_wr_reg),
                     .id_ex_has_Rt(ex_has_Rt),
                     .id_ex_Rs(ex_rd_reg_1),
                     .id_ex_Rt(ex_rd_reg_2),
-                    .ex_mem_Rs(mem_rd_reg_2),//FIXME: was mem_rd_reg_1
+                    .ex_mem_Rt(mem_rd_reg_2),// FIXME: Fix label
                     .wb_wr_en(wb_wr_en),
                     .mem_wb_Rd(wb_wr_reg),
                     .ex_mem_alu_result(mem_alu_out),
@@ -449,7 +438,7 @@ module proc (/*AUTOARG*/
                     .mem_wb_lbi_result(wb_LBI),
                     .mem_wb_slbi_result(wb_SLBI),
                     .mem_wb_wr_sel(wb_wr_sel),
-                    .mem_wb_mem_wr(mem_mem_wr));//FIXME: Was wb_mem_wr
+                    .mem_wb_mem_wr(mem_mem_wr));//FIXME: Fix label
 
    stall stall0(.ex_mem_stall(stall),
                 .ex_mem_mem_en(ex_mem_en),
