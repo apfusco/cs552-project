@@ -14,6 +14,7 @@ module forward(
         mem_fwd_ST,
         mem_to_mem_Rs,
         mem_to_mem_fwd_Rs,
+        err,
         // inputs
         stall,
         mem_wr_en,
@@ -51,6 +52,7 @@ module forward(
     output [15:0] mem_Rs_data;
     output [15:0] mem_Rt_data;
     output [15:0] mem_to_mem_Rs;
+    output        err;
     
     input        stall;
     input        mem_wr_en; // ex/mem stage reg write signal
@@ -74,6 +76,31 @@ module forward(
     input [15:0] wb_slbi_result;
     input [2:0]  wb_wr_sel;
     input        mem_mem_wr;
+
+   assign err = (^{stall,
+                   mem_wr_en,
+                   mem_Rd,
+                   ex_has_Rt,
+                   ex_Rs,
+                   ex_Rt,
+                   mem_Rt,
+                   wb_wr_en,
+                   wb_Rd,
+                   mem_alu_result,
+                   mem_set_result,
+                   mem_lbi_result,
+                   mem_slbi_result,
+                   mem_wr_sel,
+                   ex_mem_wr,
+                   wb_alu_result,
+                   wb_mem_result,
+                   wb_set_result,
+                   wb_lbi_result,
+                   wb_slbi_result,
+                   wb_wr_sel,
+                   mem_mem_wr
+                   } === 1'bX) ? 1'b1 : 1'b0;
+
     // TODO: PC_inc results needed or no?
 
     wire [15:0] ex_wr_data;

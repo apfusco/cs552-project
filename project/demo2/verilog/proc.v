@@ -34,6 +34,8 @@ module proc (/*AUTOARG*/
    wire memory_error;
    wire mem_wb_error;
    wire wb_error;
+   wire forward_error;
+   wire stall_error;
 
    // Important signal
    wire [15:0] new_PC;
@@ -60,6 +62,7 @@ module proc (/*AUTOARG*/
    wire [2:0]  id_wr_reg;
    wire [2:0]  id_wr_sel;
    wire        id_jmp_reg_instr;
+
    // Execute stage signals
    wire [15:0] ex_PC_inc;
    wire        ex_halt;
@@ -153,7 +156,9 @@ module proc (/*AUTOARG*/
                 ex_mem_error  |
                 memory_error  |
                 mem_wb_error  |
-                wb_error;
+                wb_error      |
+                forward_error |
+                stall_error;
 
    fetch fetch0(.instr(if_instr),
                 .PC_inc(if_PC_inc),
@@ -419,6 +424,7 @@ module proc (/*AUTOARG*/
                     .mem_fwd_ST(mem_fwd_ST),
                     .mem_to_mem_Rs(mem_to_mem_Rs),
                     .mem_to_mem_fwd_Rs(mem_to_mem_fwd_Rs),
+                    .err(forward_error),
                     .stall(stall),
                     .mem_wr_en(mem_wr_en),
                     .mem_Rd(mem_wr_reg),
@@ -443,6 +449,7 @@ module proc (/*AUTOARG*/
                     .mem_mem_wr(mem_mem_wr));
 
    stall stall0(.ex_mem_stall(stall),
+                .err(stall_error),
                 .ex_mem_mem_en(ex_mem_en),
                 .ex_mem_mem_wr(ex_mem_wr),
                 .ex_mem_Rd(ex_wr_reg),
