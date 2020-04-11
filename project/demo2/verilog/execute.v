@@ -28,7 +28,6 @@ module execute (oprnd_1,
                 ex_Rt_val,
                 mem_Rs_val,
                 mem_Rt_val,
-                mem_ST_val,
                 ofl,
                 alu_out,
                 zero,
@@ -67,7 +66,6 @@ module execute (oprnd_1,
    input [15:0]  ex_Rt_val;
    input [15:0]  mem_Rs_val;
    input [15:0]  mem_Rt_val;
-   input [15:0]  mem_ST_val;
 
    output        ofl;
    output [15:0] alu_out;
@@ -101,7 +99,7 @@ module execute (oprnd_1,
                         (mem_fwd_Rt == 1'b1) ? mem_Rt_val :
                         oprnd_2;
 
-   assign fwd_rd_data_2 = mem_fwd_ST ? mem_ST_val : rd_data_2;
+   assign fwd_rd_data_2 = mem_fwd_ST ? mem_Rt_val : rd_data_2;
 
    assign err = (^{oprnd_1,
                    oprnd_2,
