@@ -128,16 +128,16 @@ module proc (/*AUTOARG*/
    wire [15:0] wb_SLBI;
 
    // forwarding signals
-   wire [15:0] mem_to_mem_Rs;
    wire        ex_fwd_Rs;
    wire        ex_fwd_Rt;
    wire        mem_fwd_Rs;
    wire        mem_fwd_Rt;
    wire        mem_fwd_ST;
-   wire [15:0] ex_Rs;
-   wire [15:0] ex_Rt;
-   wire [15:0] mem_Rs;
-   wire [15:0] mem_Rt;
+   wire [15:0] ex_to_ex_Rs;
+   wire [15:0] ex_to_ex_Rt;
+   wire [15:0] mem_to_ex_Rs;
+   wire [15:0] mem_to_ex_Rt;
+   wire [15:0] mem_to_mem_Rs;
 
    // stall signals
    wire        stall;
@@ -262,10 +262,10 @@ module proc (/*AUTOARG*/
                     .in_ex_fwd_Rt(ex_fwd_Rt),
                     .in_mem_fwd_Rs(mem_fwd_Rs),
                     .in_mem_fwd_Rt(mem_fwd_Rt),
-                    .in_ex_Rs(ex_Rs),
-                    .in_ex_Rt(ex_Rt),
-                    .in_mem_Rs(mem_Rs),
-                    .in_mem_Rt(mem_Rt),
+                    .in_ex_Rs(ex_to_ex_Rs),
+                    .in_ex_Rt(ex_to_ex_Rt),
+                    .in_mem_Rs(mem_to_ex_Rs),
+                    .in_mem_Rt(mem_to_ex_Rt),
                     .in_halt(id_halt));
 
    execute execute0(.oprnd_1(ex_rd_data_1),
@@ -288,11 +288,11 @@ module proc (/*AUTOARG*/
                     .mem_fwd_Rs(mem_fwd_Rs),
                     .mem_fwd_Rt(mem_fwd_Rt),
                     .mem_fwd_ST(mem_fwd_ST),
-                    .ex_Rs_val(ex_Rs),
-                    .ex_Rt_val(ex_Rt),
-                    .mem_Rs_val(mem_Rs),
-                    .mem_Rt_val(mem_Rt),
-                    .mem_ST_val(mem_Rt),
+                    .ex_Rs_val(ex_to_ex_Rs),
+                    .ex_Rt_val(ex_to_ex_Rt),
+                    .mem_Rs_val(mem_to_ex_Rs),
+                    .mem_Rt_val(mem_to_ex_Rt),
+                    .mem_ST_val(mem_to_ex_Rt),// TODO: Remove unnecessary signal
                     .ofl(ex_alu_ofl),
                     .alu_out(ex_alu_out),
                     .zero(ex_alu_zero),
@@ -406,39 +406,40 @@ module proc (/*AUTOARG*/
           .err(wb_error));
 
 
+   // FIXME: Fix all of the labels.
    forward forward0(.ex_fwd_Rs(ex_fwd_Rs),
                     .ex_fwd_Rt(ex_fwd_Rt),
                     .mem_fwd_Rs(mem_fwd_Rs),
                     .mem_fwd_Rt(mem_fwd_Rt),
-                    .ex_Rs(ex_Rs),
-                    .ex_Rt(ex_Rt),
-                    .mem_Rs(mem_Rs),
-                    .mem_Rt(mem_Rt),
+                    .ex_Rs_data(ex_to_ex_Rs),
+                    .ex_Rt_data(ex_to_ex_Rt),
+                    .mem_Rs_data(mem_to_ex_Rs),
+                    .mem_Rt_data(mem_to_ex_Rt),
                     .mem_fwd_ST(mem_fwd_ST),
                     .mem_to_mem_Rs(mem_to_mem_Rs),
                     .mem_to_mem_fwd_Rs(mem_to_mem_fwd_Rs),
                     .stall(stall),
                     .mem_wr_en(mem_wr_en),
-                    .ex_mem_Rd(mem_wr_reg),
-                    .id_ex_has_Rt(ex_has_Rt),
-                    .id_ex_Rs(ex_rd_reg_1),
-                    .id_ex_Rt(ex_rd_reg_2),
-                    .ex_mem_Rt(mem_rd_reg_2),// FIXME: Fix label
+                    .mem_Rd(mem_wr_reg),
+                    .ex_has_Rt(ex_has_Rt),
+                    .ex_Rs(ex_rd_reg_1),
+                    .ex_Rt(ex_rd_reg_2),
+                    .mem_Rt(mem_rd_reg_2),// FIXME: Fix label
                     .wb_wr_en(wb_wr_en),
-                    .mem_wb_Rd(wb_wr_reg),
-                    .ex_mem_alu_result(mem_alu_out),
-                    .ex_mem_set_result({15'h0000, mem_set}),
-                    .ex_mem_lbi_result(mem_LBI),
-                    .ex_mem_slbi_result(mem_SLBI),
-                    .ex_mem_wr_sel(mem_wr_sel),
-                    .ex_mem_mem_wr(ex_mem_wr),
-                    .mem_wb_alu_result(wb_alu_out),
-                    .mem_wb_mem_result(wb_mem_out),
-                    .mem_wb_set_result({15'h0000, wb_set}),
-                    .mem_wb_lbi_result(wb_LBI),
-                    .mem_wb_slbi_result(wb_SLBI),
-                    .mem_wb_wr_sel(wb_wr_sel),
-                    .mem_wb_mem_wr(mem_mem_wr));//FIXME: Fix label
+                    .wb_Rd(wb_wr_reg),// FIXME: Should be wb_Rd
+                    .mem_alu_result(mem_alu_out),
+                    .mem_set_result({15'h0000, mem_set}),
+                    .mem_lbi_result(mem_LBI),//FIXME: mem_lbi
+                    .mem_slbi_result(mem_SLBI),//FIXME: mem_slbi
+                    .mem_wr_sel(mem_wr_sel),//FIXME: mem_wr_sel
+                    .ex_mem_wr(ex_mem_wr),
+                    .wb_alu_result(wb_alu_out),
+                    .wb_mem_result(wb_mem_out),
+                    .wb_set_result({15'h0000, wb_set}),
+                    .wb_lbi_result(wb_LBI),
+                    .wb_slbi_result(wb_SLBI),
+                    .wb_wr_sel(wb_wr_sel),
+                    .mem_mem_wr(mem_mem_wr));//FIXME: Fix label
 
    stall stall0(.ex_mem_stall(stall),
                 .ex_mem_mem_en(ex_mem_en),
