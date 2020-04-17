@@ -90,10 +90,9 @@ module cache_ctrl(clk,
                   Done = 1'b1;
                   stall = 1'b0;
                end else if (dirty) begin
-                  en = 1'b1;
                   nxt_state = 4'b0011;
                end else begin
-                  mem_rd = 1'b0;
+                  mem_rd = 1'b1;
                   nxt_state = 4'b0101;
                end
             end else if (write) begin
@@ -105,10 +104,9 @@ module cache_ctrl(clk,
                   Done = 1'b1;
                   stall = 1'b0;
                end else begin
-                  en = 1'b1;
                   nxt_state = 4'b0011;
                end
-            end else
+            end else // No request is made
                stall = 1'b0;
          end
          4'b0001 : begin // CMP_WR
@@ -135,6 +133,7 @@ module cache_ctrl(clk,
             end
          end
          4'b0011 : begin // ACCESS_RD
+            en = 1'b1;
             if (dirty) begin
                mem_wr = 1'b1;
                nxt_state = 4'b0100;
@@ -143,34 +142,28 @@ module cache_ctrl(clk,
                nxt_state = 4'b0101;
             end
          end
-         4'b0100 : begin // MEM_WR
-            if (!busy)
-               nxt_state = 4'b0101;
+         4'b0100 : begin // MEM_WR_1
+            nxt_state = 4'b0111;
          end
-         4'b0101 : begin // MEM_RD
-            if (!busy) begin
-               en = 1'b1;
-               cache_wr = 1'b1;
-               nxt_state = 4'b0110;
-            end
+         4'b0101 : begin // MEM_RD_1
+            nxt_state = 4'b1000;
          end
          4'b0110 : begin // ACCESS_WR
-            nxt_state = 4'b0000;
-            Done = 1'b1;
-            stall = 1'b0;
             en = 1'b1;
             comp = 1'b1;
             cache_wr = write;
-         end
-         4'b0111 : begin // MISS_WR
             Done = 1'b1;
             stall = 1'b0;
             nxt_state = 4'b0000;
          end
-         4'b1000 : begin // MISS_RD
-            Done = 1'b1;
-            stall = 1'b0;
-            nxt_state = 4'b0000;
+         4'b0111 : begin // MEM_WR_2
+            mem_rd = 1'b1;
+            nxt_state = 4'b0101;
+         end
+         4'b1000 : begin // MEM_RD_2
+            en = 1'b1;
+            cache_wr = 1'b1;
+            nxt_state = 4'b0110;
          end
          default : begin
             nxt_state = 4'b0000;

@@ -103,7 +103,7 @@ module mem_system(/*AUTOARG*/
                      .clk               (clk),
                      .rst               (rst),
                      .createdump        (createdump_reg),
-                     .addr              ({tag_out, Addr_reg[10:0]}),
+                     .addr              ({tag_in, Addr_reg[10:0]}),
                      .data_in           (cache_data_out),
                      .wr                (mem_wr),
                      .rd                (mem_rd));
@@ -132,7 +132,7 @@ module mem_system(/*AUTOARG*/
                   .mem_wr(mem_wr));
 
    mux2_1 mux_cache_data_in[15:0](.InA(mem_data_out), .InB(DataIn_reg), .S(comp), .Out(cache_data_in));
-   mux2_1 mux_tag_in[4:0](.InA(tag_out), .InB(Addr_reg[15:11]), .S(comp), .Out(tag_in));
+   mux2_1 mux_tag_in[4:0](.InA(tag_out), .InB(Addr_reg[15:11]), .S(comp | mem_rd), .Out(tag_in));
 
    assign DataOut = cache_data_out;
    
