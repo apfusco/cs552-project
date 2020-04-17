@@ -85,12 +85,27 @@ module cache_ctrl(clk,
             if (read) begin
                en = 1'b1;
                comp = 1'b1;
-               nxt_state = 4'b0010;
+               if (hit & valid) begin
+                  CacheHit = 1'b1;
+                  Done = 1'b1;
+               end else if (dirty) begin
+                  en = 1'b1;
+                  nxt_state = 4'b0011;
+               end else begin
+                  mem_rd = 1'b0;
+                  nxt_state = 4'b0101;
+               end
             end else if (write) begin
                en = 1'b1;
                comp = 1'b1;
                cache_wr = 1'b1;
-               nxt_state = 4'b0001;
+               if (hit & valid) begin
+                  CacheHit = 1'b1;
+                  Done = 1'b1;
+               end else begin
+                  en = 1'b1;
+                  nxt_state = 4'b0011;
+               end
             end else
                stall = 1'b0;
          end
@@ -138,16 +153,12 @@ module cache_ctrl(clk,
             end
          end
          4'b0110 : begin // ACCESS_WR
-            if (write) begin
-               en = 1'b1;
-               comp = 1'b1;
-               cache_wr = 1'b1;
-               nxt_state = 4'b0111;
-            end else if (read) begin
-               en = 1'b1;
-               comp = 1'b1;
-               nxt_state = 4'b1000;
-            end
+            nxt_state = 4'b0000;
+            Done = 1'b1;
+            stall = 1'b0;
+            en = 1'b1;
+            comp = 1'b1;
+            cache_wr = write;
          end
          4'b0111 : begin // MISS_WR
             Done = 1'b1;
