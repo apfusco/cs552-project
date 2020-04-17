@@ -78,10 +78,10 @@ module cache_ctrl(clk,
       mem_rd = 1'b0;
       mem_wr = 1'b0;
       case_err = 1'b0;
+      nxt_state = state;
 
       case (state)
          4'b0000 : begin // IDLE
-            stall = 1'b0;
             if (read) begin
                en = 1'b1;
                comp = 1'b1;
@@ -91,13 +91,13 @@ module cache_ctrl(clk,
                comp = 1'b1;
                cache_wr = 1'b1;
                nxt_state = 4'b0001;
-            end
+            end else
+               stall = 1'b0;
          end
          4'b0001 : begin // CMP_WR
             if (hit & valid) begin
                CacheHit = 1'b1;
                Done = 1'b1;
-               stall = 1'b0;
                nxt_state = 4'b0000;
             end else begin
                en = 1'b1;
@@ -108,7 +108,6 @@ module cache_ctrl(clk,
             if (hit & valid) begin
                CacheHit = 1'b1;
                Done = 1'b1;
-               stall = 1'b0;
                nxt_state = 4'b0000;
             end else if (dirty) begin
                en = 1'b1;
@@ -133,6 +132,7 @@ module cache_ctrl(clk,
          end
          4'b0101 : begin // MEM_RD
             if (!busy) begin
+               en = 1'b1;
                cache_wr = 1'b1;
                nxt_state = 4'b0110;
             end
