@@ -86,7 +86,7 @@ module mem_system(/*AUTOARG*/
                           .clk                  (clk),
                           .rst                  (rst),
                           .createdump           (createdump_reg),
-                          .tag_in               (tag_in),
+                          .tag_in               (Addr_reg[15:11]),
                           .index                (Addr_reg[10:3]),
                           .offset               (Addr_reg[2:0]),
                           .data_in              (cache_data_in),
@@ -120,6 +120,7 @@ module mem_system(/*AUTOARG*/
                   .dirty(dirty),
                   .valid(valid),
                   .busy(busy),
+                  .mem_stall(mem_stall),
                   .err(cache_ctrl_error),
                   .dataOut(FSM_data_out/* FIXME: Not used */),
                   .CacheHit(CacheHit),
@@ -132,7 +133,7 @@ module mem_system(/*AUTOARG*/
                   .mem_wr(mem_wr));
 
    mux2_1 mux_cache_data_in[15:0](.InA(mem_data_out), .InB(DataIn_reg), .S(comp), .Out(cache_data_in));
-   mux2_1 mux_tag_in[4:0](.InA(tag_out), .InB(Addr_reg[15:11]), .S(comp | mem_rd), .Out(tag_in));
+   mux2_1 mux_tag_in[4:0](.InA(tag_out), .InB(Addr_reg[15:11]), .S(~mem_wr), .Out(tag_in));
 
    assign DataOut = cache_data_out;
    

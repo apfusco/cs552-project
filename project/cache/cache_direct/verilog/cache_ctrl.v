@@ -8,6 +8,7 @@ module cache_ctrl(clk,
                   dirty,
                   valid,
                   busy,
+                  mem_stall,
                   err,
                   dataOut,
                   CacheHit,
@@ -30,6 +31,7 @@ module cache_ctrl(clk,
    input        dirty;
    input        valid;
    input [3:0]  busy;
+   input        mem_stall;
 
    output err;
 
@@ -136,11 +138,10 @@ module cache_ctrl(clk,
             en = 1'b1;
             if (dirty) begin
                mem_wr = 1'b1;
-               nxt_state = 4'b0100;
             end else begin
                mem_rd = 1'b1;
-               nxt_state = 4'b0101;
             end
+            nxt_state = |busy ? state : (dirty ? 4'b0100 : 4'b0101);
          end
          4'b0100 : begin // MEM_WR_1
             nxt_state = 4'b0111;
@@ -158,7 +159,7 @@ module cache_ctrl(clk,
          end
          4'b0111 : begin // MEM_WR_2
             mem_rd = 1'b1;
-            nxt_state = 4'b0101;
+            nxt_state = mem_stall ? state : 4'b0101;
          end
          4'b1000 : begin // MEM_RD_2
             en = 1'b1;
