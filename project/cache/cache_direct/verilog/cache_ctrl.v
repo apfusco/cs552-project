@@ -88,6 +88,7 @@ module cache_ctrl(clk,
                if (hit & valid) begin
                   CacheHit = 1'b1;
                   Done = 1'b1;
+                  stall = 1'b0;
                end else if (dirty) begin
                   en = 1'b1;
                   nxt_state = 4'b0011;
@@ -102,6 +103,7 @@ module cache_ctrl(clk,
                if (hit & valid) begin
                   CacheHit = 1'b1;
                   Done = 1'b1;
+                  stall = 1'b0;
                end else begin
                   en = 1'b1;
                   nxt_state = 4'b0011;
