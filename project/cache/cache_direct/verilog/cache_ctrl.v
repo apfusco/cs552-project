@@ -9,6 +9,7 @@ module cache_ctrl(clk,
                   valid,
                   busy,
                   mem_stall,
+                  cnt,
                   err,
                   dataOut,
                   CacheHit,
@@ -18,7 +19,8 @@ module cache_ctrl(clk,
                   en,
                   cache_wr,
                   mem_rd,
-                  mem_wr);
+                  mem_wr,
+                  inc);
 
    input clk;
    input rst;
@@ -32,6 +34,7 @@ module cache_ctrl(clk,
    input        valid;
    input [3:0]  busy;
    input        mem_stall;
+   input [1:0]  cnt;
 
    output err;
 
@@ -44,6 +47,7 @@ module cache_ctrl(clk,
    output reg        cache_wr;
    output reg        mem_rd;
    output reg        mem_wr;
+   output reg        inc;
 
    reg case_err;
    reg [3:0] state;
@@ -79,6 +83,7 @@ module cache_ctrl(clk,
       cache_wr = 1'b0;
       mem_rd = 1'b0;
       mem_wr = 1'b0;
+      inc = 1'b0;
       case_err = 1'b0;
       nxt_state = state;
 
@@ -91,11 +96,12 @@ module cache_ctrl(clk,
                   CacheHit = 1'b1;
                   Done = 1'b1;
                   stall = 1'b0;
-               end else if (dirty) begin
-                  nxt_state = 4'b0011;
                end else begin
-                  mem_rd = 1'b1;
-                  nxt_state = 4'b0101;
+                  nxt_state = 4'b0011;
+//               end else begin
+//                  mem_rd = 1'b1;
+//                  inc = 1'b1;
+//                  nxt_state = 4'b0101;
                end
             end else if (write) begin
                en = 1'b1;
@@ -136,6 +142,7 @@ module cache_ctrl(clk,
          end
          4'b0011 : begin // ACCESS_RD
             en = 1'b1;
+            inc = ~mem_stall;
             if (dirty) begin
                mem_wr = 1'b1;
             end else begin
@@ -144,10 +151,20 @@ module cache_ctrl(clk,
             nxt_state = |busy ? state : (dirty ? 4'b0100 : 4'b0101);
          end
          4'b0100 : begin // MEM_WR_1
-            nxt_state = 4'b0111;
+            // No transition
+            en = !(!mem_stall && !cnt);
+            mem_wr = !(!mem_stall && !cnt);
+
+            mem_rd = !mem_stall && !cnt;
+            inc = !mem_stall;
+            nxt_state = (!mem_stall && !cnt) ? 4'b0111 : state;
          end
          4'b0101 : begin // MEM_RD_1
-            nxt_state = 4'b1000;
+            en = ~mem_stall;
+            cache_wr = ~mem_stall;
+            mem_rd = 1'b1;
+            inc = ~mem_stall;
+            nxt_state = mem_stall ? state : 4'b1000;
          end
          4'b0110 : begin // ACCESS_WR
             en = 1'b1;
@@ -158,13 +175,16 @@ module cache_ctrl(clk,
             nxt_state = 4'b0000;
          end
          4'b0111 : begin // MEM_WR_2
+            // TODO: Not used
             mem_rd = 1'b1;
             nxt_state = mem_stall ? state : 4'b0101;
          end
          4'b1000 : begin // MEM_RD_2
             en = 1'b1;
             cache_wr = 1'b1;
-            nxt_state = 4'b0110;
+            mem_rd = !cnt;
+            inc = |cnt & ~mem_stall;
+            nxt_state = !cnt ? 4'b0110 : (stall && |cnt) ? 4'b0101 : state;
          end
          default : begin
             nxt_state = 4'b0000;
