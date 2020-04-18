@@ -1,7 +1,6 @@
 module cache_ctrl(clk,
                   rst,
                   addr,
-                  dataIn,
                   read,
                   write,
                   hit,
@@ -11,7 +10,6 @@ module cache_ctrl(clk,
                   mem_stall,
                   cnt,
                   err,
-                  dataOut,
                   CacheHit,
                   Done,
                   stall,
@@ -26,7 +24,6 @@ module cache_ctrl(clk,
    input rst;
 
    input [15:0] addr;
-   input [15:0] dataIn;
    input        read;
    input        write;
    input        hit;
@@ -38,7 +35,6 @@ module cache_ctrl(clk,
 
    output err;
 
-   output reg [15:0] dataOut;
    output reg        CacheHit;
    output reg        Done;
    output reg        stall;
@@ -58,7 +54,6 @@ module cache_ctrl(clk,
    assign input_error = (^{clk,
                            rst,
                            addr,
-                           dataIn,
                            read,
                            write,
                            hit,
@@ -93,9 +88,9 @@ module cache_ctrl(clk,
             inc = (read | write) & (~hit | ~valid);
             nxt_state = ((read | write) & (~hit | ~valid)) ? 4'b0011: state;
          end
-         4'b0001 : begin // CMP_WR
+         4'b0001 : begin // TODO: Remove
          end
-         4'b0010 : begin // CMP_RD
+         4'b0010 : begin // TODO: Remove
          end
          4'b0011 : begin // ACCESS_RD
             en = 1'b1;
