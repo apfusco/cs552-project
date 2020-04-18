@@ -44,11 +44,15 @@ module mem_system(/*AUTOARG*/
    wire [4:0]  tag_out;
    wire        en;
    wire [4:0]  tag_in;
+   wire [2:0]  cache_offset_in;
+   wire [2:0]  mem_offset_in;
    wire        comp;
    wire        cache_wr;
    wire        mem_rd;
    wire        mem_wr;
-   wire        mem_stall;// TODO: IDK what this signal is for.
+   wire        inc;
+   wire        mem_stall;
+   wire [1:0]  cnt;
    wire [3:0]  busy;
 
    wire [15:0] cache_data_in;
@@ -65,11 +69,16 @@ module mem_system(/*AUTOARG*/
                            rst} === 1'bX) ? 1'b1 : 1'b0;
    assign err = cache_ctrl_error | four_bank_mem_error | cache_error | input_error;
 
+   // Flopped inputs
    register #(.N(16)) Addr_register(.clk(clk), .rst(rst), .writeEn(~Stall), .dataIn(Addr), .dataOut(Addr_reg), .err());
    register #(.N(16)) DataIn_register(.clk(clk), .rst(rst), .writeEn(~Stall), .dataIn(DataIn), .dataOut(DataIn_reg), .err());
    register #(.N(1)) Rd_register(.clk(clk), .rst(rst), .writeEn(~Stall), .dataIn(Rd), .dataOut(Rd_reg), .err());
    register #(.N(1)) Wr_register(.clk(clk), .rst(rst), .writeEn(~Stall), .dataIn(Wr), .dataOut(Wr_reg), .err());
    register #(.N(1)) createdump_register(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(createdump), .dataOut(createdump_reg), .err());
+
+   // Counter
+   // TODO: Need a 2-bit adder
+   register #(.N(2)) cnt_register(.clk(clk), .rst(rst), .writeEn(inc), .dataIn(cnt + 2'b01), .dataOut(cnt), .err());
 
    /* data_mem = 1, inst_mem = 0 *
     * needed for cache parameter */
@@ -88,7 +97,7 @@ module mem_system(/*AUTOARG*/
                           .createdump           (createdump_reg),
                           .tag_in               (Addr_reg[15:11]),
                           .index                (Addr_reg[10:3]),
-                          .offset               (Addr_reg[2:0]),
+                          .offset               (cache_offset_in),
                           .data_in              (cache_data_in),
                           .comp                 (comp),
                           .write                (cache_wr),
@@ -103,7 +112,7 @@ module mem_system(/*AUTOARG*/
                      .clk               (clk),
                      .rst               (rst),
                      .createdump        (createdump_reg),
-                     .addr              ({tag_in, Addr_reg[10:0]}),
+                     .addr              ({tag_in, Addr_reg[10:3], mem_offset_in}),
                      .data_in           (cache_data_out),
                      .wr                (mem_wr),
                      .rd                (mem_rd));
@@ -121,6 +130,7 @@ module mem_system(/*AUTOARG*/
                   .valid(valid),
                   .busy(busy),
                   .mem_stall(mem_stall),
+                  .cnt(cnt),
                   .err(cache_ctrl_error),
                   .dataOut(FSM_data_out/* FIXME: Not used */),
                   .CacheHit(CacheHit),
@@ -130,10 +140,13 @@ module mem_system(/*AUTOARG*/
                   .en(en),
                   .cache_wr(cache_wr),
                   .mem_rd(mem_rd),
-                  .mem_wr(mem_wr));
+                  .mem_wr(mem_wr),
+                  .inc(inc));
 
    mux2_1 mux_cache_data_in[15:0](.InA(mem_data_out), .InB(DataIn_reg), .S(comp), .Out(cache_data_in));
    mux2_1 mux_tag_in[4:0](.InA(tag_out), .InB(Addr_reg[15:11]), .S(~mem_wr), .Out(tag_in));
+   mux2_1 mux_cache_offset_in[2:0](.InA({(cnt - 2'b10), 1'b0}), .InB(Addr_reg[2:0]), .S(comp), .Out(cache_offset_in));
+   mux2_1 mux_mem_offset_in[2:0](.InA({cnt, 1'b0}), .InB(Addr_reg[2:0]), .S(comp), .Out(mem_offset_in));
 
    assign DataOut = cache_data_out;
    
