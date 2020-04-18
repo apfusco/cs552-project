@@ -89,37 +89,17 @@ module cache_ctrl(clk,
 
       case (state)
          4'b0000 : begin // IDLE
-            if (read) begin
-               en = 1'b1;
-               comp = 1'b1;
-               if (hit & valid) begin
-                  CacheHit = 1'b1;
-                  Done = 1'b1;
-                  stall = 1'b0;
-               end else begin
-                  inc = 1'b1;
-                  nxt_state = 4'b0011;
-//               end else begin
-//                  mem_rd = 1'b1;
-//                  inc = 1'b1;
-//                  nxt_state = 4'b0101;
-               end
-            end else if (write) begin
-               en = 1'b1;
-               comp = 1'b1;
-               cache_wr = 1'b1;
-               if (hit & valid) begin
-                  CacheHit = 1'b1;
-                  Done = 1'b1;
-                  stall = 1'b0;
-               end else begin
-                  inc = 1'b1;
-                  nxt_state = 4'b0011;
-               end
-            end else // No request is made
-               stall = 1'b0;
+            en = read | write;
+            comp = read | write;
+            cache_wr = write;
+            CacheHit = (read | write) & hit & valid;
+            Done = (read | write) & hit & valid;
+            stall = (read | write) & (~hit | ~valid);
+            inc = (read | write) & (~hit | ~valid);
+            nxt_state = ((read | write) & (~hit | ~valid)) ? 4'b0011: state;
          end
          4'b0001 : begin // CMP_WR
+            // TODO: This state should not be used
             if (hit & valid) begin
                CacheHit = 1'b1;
                Done = 1'b1;
@@ -130,6 +110,7 @@ module cache_ctrl(clk,
             end
          end
          4'b0010 : begin // CMP_RD
+            // TODO: This state should not be used.
             if (hit & valid) begin
                CacheHit = 1'b1;
                Done = 1'b1;
@@ -145,11 +126,8 @@ module cache_ctrl(clk,
          4'b0011 : begin // ACCESS_RD
             en = 1'b1;
             inc = ~mem_stall;
-            if (dirty) begin
-               mem_wr = 1'b1;
-            end else begin
-               mem_rd = 1'b1;
-            end
+            mem_wr = dirty;
+            mem_rd = ~dirty;
             nxt_state = mem_stall ? state : (dirty ? 4'b0100 : 4'b0101);
          end
          4'b0100 : begin // MEM_WR_1
