@@ -9,9 +9,6 @@ module mem_system(/*AUTOARG*/
    Addr, DataIn, Rd, Wr, createdump, clk, rst
    );
 
-   // TODO: Right now, this module assumes that the input values will not
-   // change while stall is asserted.
-   
    input [15:0] Addr;
    input [15:0] DataIn;
    input        Rd;
@@ -59,7 +56,6 @@ module mem_system(/*AUTOARG*/
    wire [15:0] cache_data_in;
    wire [15:0] cache_data_out;
    wire [15:0] mem_data_out;
-   wire [15:0] FSM_data_out;
 
    assign input_error = (^{Addr,
                            DataIn,
@@ -107,7 +103,7 @@ module mem_system(/*AUTOARG*/
 
    four_bank_mem mem(// Outputs
                      .data_out          (mem_data_out),
-                     .stall             (mem_stall/* TODO: IDK what this is */),
+                     .stall             (mem_stall),
                      .busy              (busy),
                      .err               (four_bank_mem_error),
                      // Inputs
@@ -124,7 +120,6 @@ module mem_system(/*AUTOARG*/
    cache_ctrl FSM(.clk(clk),
                   .rst(rst),
                   .addr(Addr_reg),
-                  .dataIn(DataIn_reg/* FIXME: Not used */),
                   .read(Rd_reg),
                   .write(Wr_reg),
                   .hit(hit),
@@ -134,7 +129,6 @@ module mem_system(/*AUTOARG*/
                   .mem_stall(mem_stall),
                   .cnt(cnt),
                   .err(cache_ctrl_error),
-                  .dataOut(FSM_data_out/* FIXME: Not used */),
                   .CacheHit(CacheHit),
                   .Done(Done),
                   .stall(Stall),
