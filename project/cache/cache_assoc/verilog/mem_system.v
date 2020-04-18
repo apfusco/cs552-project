@@ -65,6 +65,10 @@ module mem_system(/*AUTOARG*/
    wire        flip_victimway;
    wire        update_victim;
 
+   // Flopped output
+   wire        update_output;
+   wire [15:0] DataOut_in;
+
    wire [15:0] cache_data_in;
    wire [15:0] c0_data_out;
    wire [15:0] c2_data_out;
@@ -88,6 +92,9 @@ module mem_system(/*AUTOARG*/
 
    register #(.N(1)) victimway_register(.clk(clk), .rst(rst), .writeEn(flip_victimway), .dataIn(~victimway), .dataOut(victimway), .err());
    register #(.N(1)) victim_register(.clk(clk), .rst(rst), .writeEn(update_victim), .dataIn(nxt_victim), .dataOut(victim), .err());
+
+   // Flopped output
+   register #(.N(16)) DataOut_register(.clk(clk), .rst(rst), .writeEn(update_output), .dataIn(DataOut_in), .dataOut(DataOut), .err());
 
    // Counter
    counter_2b adder(.A(cnt), .B(2'b01), .C_in(1'b0), .S(cnt_inc), .C_out());
@@ -157,7 +164,7 @@ module mem_system(/*AUTOARG*/
                   .read(Rd_reg),
                   .write(Wr_reg),
                   .hit(c0_hit | c2_hit),
-                  .dirty(nxt_victim ? c2_dirty : c0_dirty),
+                  .dirty(victim ? c2_dirty : c0_dirty),
                   .valid((c0_hit & c0_valid) | (c2_hit & c2_valid)),
                   .busy(busy),
                   .mem_stall(mem_stall),
@@ -173,7 +180,8 @@ module mem_system(/*AUTOARG*/
                   .mem_wr(mem_wr),
                   .inc(inc),
                   .flip_victimway(flip_victimway),
-                  .update_victim(update_victim));
+                  .update_victim(update_victim),
+                  .update_output(update_output));
 
    mux2_1 mux_cache_data_in[15:0](.InA(mem_data_out), .InB(DataIn_reg), .S(comp), .Out(cache_data_in));
    mux2_1 mux_tag_in[4:0](.InA(victim ? c2_tag_out : c0_tag_out), .InB(Addr_reg[15:11]), .S(~mem_wr), .Out(tag_in));
@@ -186,7 +194,7 @@ module mem_system(/*AUTOARG*/
    assign c2_wr = (comp | victim) & cache_wr;
 
    // Will only output non-zero when there's a hit and the data is valid.
-   assign DataOut = (c2_hit && c2_valid) ? c2_data_out : (c0_hit && c0_valid) ? c0_data_out : 16'h0000;
+   assign DataOut_in = (c2_hit && c2_valid) ? c2_data_out : (c0_hit && c0_valid) ? c0_data_out : 16'h0000;
    
 endmodule // mem_system
 
