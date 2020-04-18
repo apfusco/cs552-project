@@ -53,6 +53,7 @@ module mem_system(/*AUTOARG*/
    wire        inc;
    wire        mem_stall;
    wire [1:0]  cnt;
+   wire [1:0]  cnt_dec;
    wire [3:0]  busy;
 
    wire [15:0] cache_data_in;
@@ -79,6 +80,7 @@ module mem_system(/*AUTOARG*/
    // Counter
    // TODO: Need a 2-bit adder
    register #(.N(2)) cnt_register(.clk(clk), .rst(rst), .writeEn(inc), .dataIn(cnt + 2'b01), .dataOut(cnt), .err());
+   assign cnt_dec = {~cnt[1], cnt[0]};
 
    /* data_mem = 1, inst_mem = 0 *
     * needed for cache parameter */
@@ -145,7 +147,7 @@ module mem_system(/*AUTOARG*/
 
    mux2_1 mux_cache_data_in[15:0](.InA(mem_data_out), .InB(DataIn_reg), .S(comp), .Out(cache_data_in));
    mux2_1 mux_tag_in[4:0](.InA(tag_out), .InB(Addr_reg[15:11]), .S(~mem_wr), .Out(tag_in));
-   mux2_1 mux_cache_offset_in[2:0](.InA({(cnt - 2'b10), 1'b0}), .InB(Addr_reg[2:0]), .S(comp), .Out(cache_offset_in));
+   mux2_1 mux_cache_offset_in[2:0](.InA({cache_wr ? cnt_dec : cnt, 1'b0}), .InB(Addr_reg[2:0]), .S(comp), .Out(cache_offset_in));
    mux2_1 mux_mem_offset_in[2:0](.InA({cnt, 1'b0}), .InB(Addr_reg[2:0]), .S(comp), .Out(mem_offset_in));
 
    assign DataOut = cache_data_out;
