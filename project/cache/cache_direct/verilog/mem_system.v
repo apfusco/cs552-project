@@ -50,6 +50,7 @@ module mem_system(/*AUTOARG*/
    wire        inc;
    wire        mem_stall;
    wire [1:0]  cnt;
+   wire [1:0]  cnt_inc;
    wire [1:0]  cnt_dec;
    wire [3:0]  busy;
 
@@ -74,8 +75,8 @@ module mem_system(/*AUTOARG*/
    register #(.N(1)) createdump_register(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(createdump), .dataOut(createdump_reg), .err());
 
    // Counter
-   // TODO: Need a 2-bit adder
-   register #(.N(2)) cnt_register(.clk(clk), .rst(rst), .writeEn(inc), .dataIn(cnt + 2'b01), .dataOut(cnt), .err());
+   counter_2b adder(.A(cnt), .B(2'b01), .C_in(1'b0), .S(cnt_inc), .C_out());
+   register #(.N(2)) cnt_register(.clk(clk), .rst(rst), .writeEn(inc), .dataIn(cnt_inc), .dataOut(cnt), .err());
    assign cnt_dec = {~cnt[1], cnt[0]};
 
    /* data_mem = 1, inst_mem = 0 *
