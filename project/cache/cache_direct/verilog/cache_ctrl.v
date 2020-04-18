@@ -50,7 +50,7 @@ module cache_ctrl(clk,
    output reg        inc;
 
    reg case_err;
-   reg [3:0] state;
+   wire [3:0] state;
    reg [3:0] nxt_state;
 
    wire input_error;
@@ -67,12 +67,7 @@ module cache_ctrl(clk,
                            busy} === 1'bX) ? 1'b1 : 1'b0;
    assign err = input_error | case_err;
 
-   always @(posedge clk) begin
-      if (rst)
-         state <= 1'b0;
-      else
-         state <= nxt_state;
-   end
+   register #(.N(4)) state_register(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(nxt_state), .dataOut(state), .err());
 
    always @(*) begin
       CacheHit = 1'b0;
