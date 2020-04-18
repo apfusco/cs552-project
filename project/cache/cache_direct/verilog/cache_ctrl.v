@@ -97,6 +97,7 @@ module cache_ctrl(clk,
                   Done = 1'b1;
                   stall = 1'b0;
                end else begin
+                  inc = 1'b1;
                   nxt_state = 4'b0011;
 //               end else begin
 //                  mem_rd = 1'b1;
@@ -112,6 +113,7 @@ module cache_ctrl(clk,
                   Done = 1'b1;
                   stall = 1'b0;
                end else begin
+                  inc = 1'b1;
                   nxt_state = 4'b0011;
                end
             end else // No request is made
@@ -172,19 +174,21 @@ module cache_ctrl(clk,
             cache_wr = write;
             Done = 1'b1;
             stall = 1'b0;
+            inc = 1'b1;
             nxt_state = 4'b0000;
          end
-         4'b0111 : begin // MEM_WR_2
-            // TODO: Not used
-            mem_rd = 1'b1;
-            nxt_state = mem_stall ? state : 4'b0101;
+         4'b0111 : begin // ACCESS_WR_2
+            en = 1'b1;
+            cache_wr = 1'b1;
+            inc = 1'b1;
+            nxt_state = 4'b0110;
          end
          4'b1000 : begin // MEM_RD_2
             en = 1'b1;
             cache_wr = 1'b1;
-            mem_rd = !cnt;
-            inc = |cnt & ~mem_stall;
-            nxt_state = !cnt ? 4'b0110 : (stall && |cnt) ? 4'b0101 : state;
+            mem_rd = |cnt;
+            inc = ~mem_stall;
+            nxt_state = !cnt ? 4'b0111 : (mem_stall && |cnt) ? 4'b0101 : state;
          end
          default : begin
             nxt_state = 4'b0000;
