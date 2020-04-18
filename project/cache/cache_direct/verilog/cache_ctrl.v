@@ -150,7 +150,7 @@ module cache_ctrl(clk,
             end else begin
                mem_rd = 1'b1;
             end
-            nxt_state = |busy ? state : (dirty ? 4'b0100 : 4'b0101);
+            nxt_state = mem_stall ? state : (dirty ? 4'b0100 : 4'b0101);
          end
          4'b0100 : begin // MEM_WR_1
             // No transition
@@ -159,7 +159,7 @@ module cache_ctrl(clk,
 
             mem_rd = !mem_stall && !cnt;
             inc = !mem_stall;
-            nxt_state = (!mem_stall && !cnt) ? 4'b0111 : state;
+            nxt_state = (!mem_stall && !cnt) ? 4'b0101 : state;
          end
          4'b0101 : begin // MEM_RD_1
             en = ~mem_stall;
