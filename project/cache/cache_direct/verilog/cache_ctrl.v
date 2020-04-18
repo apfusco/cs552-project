@@ -99,29 +99,8 @@ module cache_ctrl(clk,
             nxt_state = ((read | write) & (~hit | ~valid)) ? 4'b0011: state;
          end
          4'b0001 : begin // CMP_WR
-            // TODO: This state should not be used
-            if (hit & valid) begin
-               CacheHit = 1'b1;
-               Done = 1'b1;
-               nxt_state = 4'b0000;
-            end else begin
-               en = 1'b1;
-               nxt_state = 4'b0011;
-            end
          end
          4'b0010 : begin // CMP_RD
-            // TODO: This state should not be used.
-            if (hit & valid) begin
-               CacheHit = 1'b1;
-               Done = 1'b1;
-               nxt_state = 4'b0000;
-            end else if (dirty) begin
-               en = 1'b1;
-               nxt_state = 4'b0011;
-            end else begin
-               mem_rd = 1'b0;
-               nxt_state = 4'b0101;
-            end
          end
          4'b0011 : begin // ACCESS_RD
             en = 1'b1;
