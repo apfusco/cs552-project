@@ -29,7 +29,7 @@ module stall(
                     id_ex_Rs,
                     id_ex_Rt,
                     id_ex_has_Rt
-                    } == 1'bX) ? 1'b1 : 1'b0;
+                    } === 1'bX) ? 1'b1 : 1'b0;
 
     wire ex_mem_mem_rd;
 
