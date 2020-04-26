@@ -20,8 +20,7 @@ module cache_ctrl(clk,
                   mem_wr,
                   inc,
                   flip_victimway,
-                  update_victim,
-                  update_output);
+                  update_victim);
 
    input clk;
    input rst;
@@ -49,7 +48,6 @@ module cache_ctrl(clk,
    output reg        inc;
    output reg        flip_victimway;
    output reg        update_victim;
-   output reg        update_output;
 
    reg case_err;
    wire [3:0] state;
@@ -83,7 +81,6 @@ module cache_ctrl(clk,
       case_err = 1'b0;
       flip_victimway = 1'b0;
       update_victim = 1'b0;
-      update_output = 1'b0;
       nxt_state = state;
 
       case (state)
@@ -91,23 +88,17 @@ module cache_ctrl(clk,
             en = read | write;
             comp = read | write;
             cache_wr = write;
-            stall = read | write;
+            CacheHit = (read | write) & hit & valid;
+            Done = (read | write) & hit & valid;
+            stall = (read | write) & (~hit | ~valid);
             inc = (read | write) & (~hit | ~valid);
             flip_victimway = read | write;
             update_victim = 1'b1;
-            update_output = (read | write) & (hit & valid);
-            nxt_state = (read | write) ? ((hit & valid) ? 4'b0001 : 4'b0011) : state;
+            nxt_state = ((read | write) & (~hit | ~valid)) ? 4'b0011: state;
          end
-         4'b0001 : begin // DONE_HIT
-            CacheHit = 1'b1;
-            Done = 1'b1;
-            stall = 1'b0;
-            nxt_state = 4'b0000;
+         4'b0001 : begin // TODO: Remove
          end
-         4'b0010 : begin // DONE_MISS
-            Done = 1'b1;
-            stall = 1'b0;
-            nxt_state = 4'b0000;
+         4'b0010 : begin // TODO: Remove
          end
          4'b0011 : begin // ACCESS_RD
             en = 1'b1;
@@ -136,9 +127,10 @@ module cache_ctrl(clk,
             en = 1'b1;
             comp = 1'b1;
             cache_wr = write;
+            Done = 1'b1;
+            stall = 1'b0;
             inc = 1'b1;
-            update_output = 1'b1;
-            nxt_state = 4'b0010;
+            nxt_state = 4'b0000;
          end
          4'b0111 : begin // ACCESS_WR_2
             en = 1'b1;
