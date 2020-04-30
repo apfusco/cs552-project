@@ -17,31 +17,43 @@ module fetch (instr, PC_inc, halt, err, clk, rst, new_PC, take_new_PC, stall, ac
     input stall;
     input actual_halt;
 
-    wire mem_en;
+    wire mem_system_error;
+    wire input_error;
+
     wire [15:0] nxt_PC;
     wire [15:0] PC_reg_out;
     wire [15:0] PC_inc_wire; // PC + 2
     wire [15:0] two;
     wire [15:0] PC_mux_out;
-    wire gnd;
     wire update_PC;
     wire halt_n;
+
+    wire done;
+    wire cache_stall;
+    wire cache_hit;
 
     // NOP signals
     wire [15:0] nop_instr;
     wire nop_halt;
-    assign instr = take_new_PC ? {5'b00001, nop_instr[10:0]} : nop_instr;
+
+    assign instr = (take_new_PC | cache_stall) ? {5'b00001, nop_instr[10:0]} : nop_instr;
     assign halt = nop_halt & ~take_new_PC;
 
-    assign halt_n = |instr[15:11]; // HALT is decoded in fetch for immediate feedback.
+    assign halt_n = |instr[15:11] | ~done; // HALT is decoded in fetch for immediate feedback.
     assign nop_halt = ~halt_n;
-    assign update_PC = (halt_n & ~stall) | take_new_PC;
-    assign gnd = 1'b0;
-    assign mem_en = 1'b1;
+    // TODO: Handle the case when take_new_PC is asserted during a cache stall
+    assign update_PC = (halt_n & ~stall & ~cache_stall) | take_new_PC;
     assign two = 16'h0002;
     assign PC_inc = PC_inc_wire;
 
-    assign err = (^{clk, rst, new_PC, take_new_PC, stall, actual_halt} === 1'bX) ? 1'b1 : 1'b0;
+    assign input_error = (^{clk,
+                            rst,
+                            new_PC,
+                            take_new_PC,
+                            stall,
+                            actual_halt} === 1'bX) ? 1'b1 : 1'b0;
+
+    assign err = input_error | mem_system_error;
 
     // PC + 2 since our ISA uses 16 bit instructions
     cla_16b pc_addr(.A(PC_reg_out), .B(two), .C_in(1'b0), .S(PC_inc_wire), .C_out());
@@ -53,8 +65,21 @@ module fetch (instr, PC_inc, halt, err, clk, rst, new_PC, take_new_PC, stall, ac
     register #(.N(16)) pc_reg(.clk(clk), .rst(rst), .writeEn(update_PC),
             .dataIn(nxt_PC), .dataOut(PC_reg_out), .err());
     
-    memory2c imem(.data_out(nop_instr), .data_in(), .addr(PC_reg_out), 
-            .enable(mem_en), .wr(gnd), .createdump(actual_halt), .clk(clk), 
-            .rst(rst)); 
+    //memory2c imem(.data_out(nop_instr), .data_in(), .addr(PC_reg_out),
+    //        .enable(1'b1), .wr(1'b0), .createdump(actual_halt), .clk(clk),
+    //        .rst(rst));
+
+    mem_system imem(.DataOut(nop_instr),
+                    .Done(done),
+                    .Stall(cache_stall),
+                    .CacheHit(cache_hit),
+                    .err(mem_system_error),
+                    .Addr(PC_reg_out),
+                    .DataIn(16'h0000),
+                    .Rd(halt_n),
+                    .Wr(1'b0),
+                    .createdump(actual_halt),
+                    .clk(clk),
+                    .rst(rst));
 
 endmodule
