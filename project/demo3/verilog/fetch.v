@@ -27,6 +27,7 @@ module fetch (instr, PC_inc, halt, err, clk, rst, new_PC, take_new_PC, stall, ac
     wire [15:0] PC_mux_out;
     wire update_PC;
     wire halt_n;
+    wire took_new_PC;
 
     wire done;
     wire cache_stall;
@@ -36,7 +37,7 @@ module fetch (instr, PC_inc, halt, err, clk, rst, new_PC, take_new_PC, stall, ac
     wire [15:0] nop_instr;
     wire nop_halt;
 
-    assign instr = (take_new_PC | cache_stall) ? {5'b00001, nop_instr[10:0]} : nop_instr;
+    assign instr = (take_new_PC | cache_stall | took_new_PC) ? {5'b00001, nop_instr[10:0]} : nop_instr;
     assign halt = nop_halt & ~take_new_PC;
 
     assign halt_n = |instr[15:11] | ~done; // HALT is decoded in fetch for immediate feedback.
@@ -64,6 +65,11 @@ module fetch (instr, PC_inc, halt, err, clk, rst, new_PC, take_new_PC, stall, ac
     // TODO: add compatability with EPC and error ouput
     register #(.N(16)) pc_reg(.clk(clk), .rst(rst), .writeEn(update_PC),
             .dataIn(nxt_PC), .dataOut(PC_reg_out), .err());
+
+    register #(.N(1)) took_new_PC_reg(.clk(clk), .rst(rst),
+                                      .writeEn(take_new_PC | done),
+                                      .dataIn(take_new_PC),
+                                      .dataOut(took_new_PC), .err());
     
     //memory2c imem(.data_out(nop_instr), .data_in(), .addr(PC_reg_out),
     //        .enable(1'b1), .wr(1'b0), .createdump(actual_halt), .clk(clk),
