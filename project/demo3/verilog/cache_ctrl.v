@@ -118,7 +118,6 @@ module cache_ctrl(clk,
          end
          4'b0101 : begin // MEM_RD_1
             en = ~mem_stall;
-            cache_wr = ~mem_stall;
             mem_rd = 1'b1;
             inc = ~mem_stall;
             nxt_state = mem_stall ? state : 4'b1000;
