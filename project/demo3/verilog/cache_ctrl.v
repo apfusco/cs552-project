@@ -91,7 +91,7 @@ module cache_ctrl(clk,
             CacheHit = (read | write) & hit & valid;
             Done = (read | write) & hit & valid;
             stall = (read | write) & (~hit | ~valid);
-            inc = (read | write) & (~hit | ~valid);
+            inc = (read | write) & (~hit | ~valid) & &cnt;
             flip_victimway = read | write;
             update_victim = 1'b1;
             nxt_state = ((read | write) & (~hit | ~valid)) ? 4'b0011: state;
