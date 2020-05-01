@@ -139,35 +139,35 @@ module proc_hier_pbench();
    assign WriteData = DUT.p0.decode0.registers.writeData;
    // Data being written to the register. (16 bits)
    
-   assign MemRead =  (DUT.p0.memory0.en & ~DUT.p0.memory0.mem_wr);
+   assign MemRead =  (DUT.p0.mem_mem_en & ~DUT.p0.mem_mem_wr);
    // Is memory being read, one bit signal (1 means yes, 0 means no)
    
-   assign MemWrite = (DUT.p0.memory0.en & DUT.p0.memory0.mem_wr);
+   assign MemWrite = (DUT.p0.mem_mem_en & DUT.p0.mem_mem_wr);
    // Is memory being written to (1 bit signal)
    
-   assign MemAddress = DUT.p0.memory0.addr;
+   assign MemAddress = DUT.p0.mem_alu_out;
    // Address to access memory with (for both reads and writes to memory, 16 bits)
    
-   assign MemDataIn = DUT.p0.memory0.data;
+   assign MemDataIn = DUT.p0.mem_rd_data_2;
    // Data to be written to memory for memory writes (16 bits)
    
-   assign MemDataOut = DUT.p0.memory0.data_out;
+   assign MemDataOut = DUT.p0.mem_mem_out;
    // Data read from memory for memory reads (16 bits)
 
    // new added 05/03
-   assign ICacheReq = 0;// DUT.p0.readData;//TODO
+   assign ICacheReq = DUT.p0.fetch0.done;// DUT.p0.readData;
    // Signal indicating a valid instruction read request to cache
    // Above assignment is a dummy example
    
-   assign ICacheHit = 0;// DUT.p0.readData;//TODO
+   assign ICacheHit = DUT.p0.fetch0.cache_hit;// DUT.p0.readData;
    // Signal indicating a valid instruction cache hit
    // Above assignment is a dummy example
 
-   assign DCacheReq = 0;// DUT.p0.readData;//TODO
+   assign DCacheReq = DUT.p0.memory0.done;// DUT.p0.readData;
    // Signal indicating a valid instruction data read or write request to cache
    // Above assignment is a dummy example
    //    
-   assign DCacheHit = 0; //DUT.p0.readData;//TODO
+   assign DCacheHit = DUT.p0.memory0.cache_hit; //DUT.p0.readData;//TODO
    // Signal indicating a valid data cache hit
    // Above assignment is a dummy example
    
