@@ -20,6 +20,7 @@ module fetch (instr, PC_inc, halt, err, clk, rst, new_PC, take_new_PC, stall, ac
     wire mem_system_error;
     wire input_error;
 
+    wire        took_new_PC;
     wire [15:0] nxt_PC;
     wire [15:0] PC_reg_out;
     wire [15:0] PC_inc_wire; // PC + 2
@@ -36,13 +37,13 @@ module fetch (instr, PC_inc, halt, err, clk, rst, new_PC, take_new_PC, stall, ac
     wire [15:0] nop_instr;
     wire nop_halt;
 
-    assign instr = (take_new_PC | cache_stall) ? {5'b00001, nop_instr[10:0]} : nop_instr;
+    assign instr = (take_new_PC | cache_stall | took_new_PC) ? {5'b00001, nop_instr[10:0]} : nop_instr;
     assign halt = nop_halt;
 
-    assign halt_n = |instr[15:11] | ~done | take_new_PC; // HALT is decoded in fetch for immediate feedback.
+    assign halt_n = |instr[15:11] | ~done | take_new_PC | took_new_PC; // HALT is decoded in fetch for immediate feedback.
     assign nop_halt = ~halt_n;
     // TODO: Handle the case when take_new_PC is asserted during a cache stall
-    assign update_PC = (halt_n & ~stall & done) | take_new_PC;
+    assign update_PC = ((halt_n & ~stall & done) | take_new_PC) & ~took_new_PC;
     assign two = 16'h0002;
     assign PC_inc = PC_inc_wire;
 
@@ -65,6 +66,9 @@ module fetch (instr, PC_inc, halt, err, clk, rst, new_PC, take_new_PC, stall, ac
     register #(.N(16)) pc_reg(.clk(clk), .rst(rst), .writeEn(update_PC),
             .dataIn(nxt_PC), .dataOut(PC_reg_out), .err());
 
+    register #(.N(1)) took_new_PC_reg(.clk(clk), .rst(rst), .writeEn(take_new_PC | done),
+            .dataIn(take_new_PC & cache_stall), .dataOut(took_new_PC), .err());
+
     //memory2c imem(.data_out(nop_instr), .data_in(), .addr(PC_reg_out),
     //        .enable(1'b1), .wr(1'b0), .createdump(actual_halt), .clk(clk),
     //        .rst(rst));
@@ -74,7 +78,7 @@ module fetch (instr, PC_inc, halt, err, clk, rst, new_PC, take_new_PC, stall, ac
                     .Stall(cache_stall),
                     .CacheHit(cache_hit),
                     .err(mem_system_error),
-                    .Addr((done | cache_stall) ? nxt_PC : PC_reg_out),
+                    .Addr((~done & ~cache_stall & ~take_new_PC) | took_new_PC ? PC_reg_out : nxt_PC),
                     .DataIn(16'h0000),
                     .Rd(halt_n),
                     .Wr(1'b0),
