@@ -78,7 +78,7 @@ module fetch (instr, PC_inc, halt, err, clk, rst, new_PC, take_new_PC, stall, ac
                     .Stall(cache_stall),
                     .CacheHit(cache_hit),
                     .err(mem_system_error),
-                    .Addr((~done & ~cache_stall & ~take_new_PC) | took_new_PC ? PC_reg_out : nxt_PC),
+                    .Addr((~done & ~cache_stall & ~take_new_PC) | took_new_PC | stall ? PC_reg_out : nxt_PC),
                     .DataIn(16'h0000),
                     .Rd(halt_n),
                     .Wr(1'b0),
