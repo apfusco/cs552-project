@@ -147,6 +147,7 @@ module proc (/*AUTOARG*/
 
    // stall signals
    wire        stall;
+   wire        mem_stall;
 
    assign err = fetch_error   |
                 if_id_error   |
@@ -168,7 +169,7 @@ module proc (/*AUTOARG*/
                 .rst(rst),
                 .new_PC(new_PC),
                 .take_new_PC(take_new_PC),
-                .stall(stall),
+                .stall(stall | mem_stall),
                 .actual_halt(mem_halt));
 
    if_id if_id_pipe(.out_instr(id_instr),
@@ -178,7 +179,7 @@ module proc (/*AUTOARG*/
                     .clk(clk),
                     .rst(rst),
                     .in_instr(if_instr),
-                    .in_stall_n(~stall), // turns stall into an active low
+                    .in_stall_n(~stall | ~mem_stall), // turns stall into an active low
                     .in_PC_inc(if_PC_inc),
                     .take_new_PC(take_new_PC),
                     .in_halt(if_halt));
@@ -264,7 +265,8 @@ module proc (/*AUTOARG*/
                     .in_alu_invB(id_alu_invB),
                     .in_alu_Cin(id_alu_Cin),
                     .in_alu_sign(id_alu_sign),
-                    .in_stall_n(~stall), 
+                    .hazard_stall_n(~stall), 
+                    .mem_stall_n(~mem_stall), 
                     .take_new_PC(take_new_PC),
                     .in_ex_fwd_Rs(ex_fwd_Rs),
                     .in_ex_fwd_Rt(ex_fwd_Rt),
@@ -361,15 +363,16 @@ module proc (/*AUTOARG*/
                       .take_new_PC(take_new_PC));
 
    memory memory0(.data_out(mem_mem_out),
-                  .data_in(mem_rd_data_2),
-                  .addr(mem_alu_out),
-                  .en(mem_mem_en),
-                  .mem_wr(mem_mem_wr),
+                  .data_in(ex_rd_data_2),
+                  .addr(ex_alu_out),
+                  .en(ex_mem_en),
+                  .mem_wr(ex_mem_wr),
                   .mem_mem_fwd(mem_to_mem_fwd_Rs),
                   .fwd_data_in(mem_to_mem_Rs),
                   .createdump(mem_halt),
                   .clk(clk),
                   .rst(rst),
+                  .stall(mem_stall),
                   .err(memory_error));
 
    mem_wb mem_wb_pipe(.out_rd_data_1(wb_rd_data_1),
@@ -398,7 +401,8 @@ module proc (/*AUTOARG*/
                       .in_PC_inc(mem_PC_inc),
                       .in_set(mem_set),
                       .in_LBI(mem_LBI),
-                      .in_SLBI(mem_SLBI));
+                      .in_SLBI(mem_SLBI),
+                      .stall_n(~mem_stall));
 
    wb wb0(.alu_out(wb_alu_out),
           .mem_out(wb_mem_out),
