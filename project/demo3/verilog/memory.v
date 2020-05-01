@@ -5,7 +5,7 @@
    Description     : This module contains all components in the Memory stage of the 
                      processor.
 */
-module memory (data_out, data_in, addr, en, mem_wr, mem_mem_fwd, fwd_data_in, createdump, clk, rst, err);
+module memory (data_out, data_in, addr, en, mem_wr, mem_mem_fwd, fwd_data_in, createdump, clk, rst, stall, err);
 
     // memory signals
     output [15:0] data_out;
@@ -18,16 +18,36 @@ module memory (data_out, data_in, addr, en, mem_wr, mem_mem_fwd, fwd_data_in, cr
     input createdump;
     input clk;
     input rst;
+    output stall;
     output err;
 
-    wire [15:0] data;
+    wire        input_error;
+    wire        mem_system_error;
 
-    assign err = (^{data_in, addr, en, mem_wr, mem_mem_fwd, fwd_data_in,
+    wire [15:0] data;
+    wire        done;
+    wire        cache_hit;
+
+    assign input_error = (^{data_in, addr, en, mem_wr, mem_mem_fwd, fwd_data_in,
           createdump, clk, rst} === 1'bX) ? 1'b1 : 1'b0;
+    assign err = input_error | mem_system_error;
 
     mux2_1 mux2_1_data [15:0](.InA(data_in), .InB(fwd_data_in), .S(mem_mem_fwd), .Out(data));
     
-   memory2c mem(.data_out(data_out), .data_in(data), .addr(addr), .enable(en), 
-        .wr(mem_wr), .createdump(createdump), .clk(clk), .rst(rst));
+    //memory2c mem(.data_out(data_out), .data_in(data), .addr(addr), .enable(en), 
+    //    .wr(mem_wr), .createdump(createdump), .clk(clk), .rst(rst));
+
+    mem_system dmem(.DataOut(data_out),
+                    .Done(done),
+                    .Stall(stall),
+                    .CacheHit(cache_hit),
+                    .err(mem_system_error),
+                    .Addr(addr),
+                    .DataIn(data),
+                    .Rd(en & ~mem_wr),
+                    .Wr(en & mem_wr),
+                    .createdump(createdump),
+                    .clk(clk),
+                    .rst(rst));
 
 endmodule
