@@ -12,6 +12,7 @@ module mem_wb(
         out_SLBI,
         out_sext_imm,
         out_set,
+        out_halt,
         err,
         // inputs
         clk,
@@ -28,6 +29,7 @@ module mem_wb(
         in_SLBI,
         in_sext_imm,
         in_set,
+        in_halt,
         stall_n);
 
    output [15:0] out_rd_data_1;
@@ -42,6 +44,7 @@ module mem_wb(
    output [15:0] out_SLBI;
    output [15:0] out_sext_imm;
    output        out_set;
+   output        out_halt;
    output        err;
 
    input        clk;
@@ -58,10 +61,12 @@ module mem_wb(
    input [15:0] in_SLBI;
    input [15:0] in_sext_imm;
    input        in_set;
+   input        in_halt;
    input        stall_n;
 
    wire wr_en;
    wire mem_wr;
+   wire halt;
 
     assign err = (^{clk,
                     rst,
@@ -81,6 +86,7 @@ module mem_wb(
 
    assign out_wr_en = wr_en & stall_n;
    assign out_mem_wr = mem_wr & stall_n;
+   assign out_halt = halt & stall_n;
 
    // TODO: writeEn needs to be low in the event of a stall.
    // TODO: wr_en needs to be low in the event of a stall.
@@ -96,5 +102,6 @@ module mem_wb(
    register #(.N(16)) SLBI_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_SLBI), .dataOut(out_SLBI), .err());
    register #(.N(16)) sext_imm_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_sext_imm), .dataOut(out_sext_imm), .err());
    register #(.N(1)) set_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_set), .dataOut(out_set), .err());
+   register #(.N(1)) halt_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_halt), .dataOut(halt), .err());
 
 endmodule
