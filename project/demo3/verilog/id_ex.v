@@ -174,6 +174,8 @@ module id_ex(
     wire mem_en;
     wire mem_wr;
     wire jmp_reg_instr;
+    wire jmp_instr;
+    wire br_instr;
     wire halt;
 
     assign has_Rt = in_has_Rt & hazard_stall_n;// & ~take_new_PC;
@@ -181,6 +183,8 @@ module id_ex(
     assign mem_en = in_mem_en & hazard_stall_n;// & ~take_new_PC;
     assign mem_wr = in_mem_wr & hazard_stall_n;// & ~take_new_PC;
     assign jmp_reg_instr = in_jmp_reg_instr & hazard_stall_n;// & ~take_new_PC;
+    assign jmp_instr = in_jmp_instr & hazard_stall_n;
+    assign br_instr = in_br_instr & hazard_stall_n;
     assign halt = in_halt & hazard_stall_n;// & ~take_new_PC;
 
     register #(.N(16)) PC_inc_reg(.clk(clk), .rst(rst), .writeEn(mem_stall_n), .dataIn(in_PC_inc), .dataOut(out_PC_inc), .err());
@@ -199,8 +203,8 @@ module id_ex(
     register #(.N(3)) wr_reg_reg(.clk(clk), .rst(rst), .writeEn(mem_stall_n), .dataIn(in_wr_reg), .dataOut(out_wr_reg), .err());
     register #(.N(3)) wr_sel_reg(.clk(clk), .rst(rst), .writeEn(mem_stall_n), .dataIn(in_wr_sel), .dataOut(out_wr_sel), .err());
     register #(.N(1)) jmp_reg_instr_reg(.clk(clk), .rst(rst), .writeEn(mem_stall_n), .dataIn(jmp_reg_instr), .dataOut(out_jmp_reg_instr/*NOP*/), .err());
-    register #(.N(1)) jmp_instr_reg(.clk(clk), .rst(rst), .writeEn(mem_stall_n), .dataIn(in_jmp_instr), .dataOut(out_jmp_instr), .err());
-    register #(.N(1)) br_instr_reg(.clk(clk), .rst(rst), .writeEn(mem_stall_n), .dataIn(in_br_instr), .dataOut(out_br_instr), .err());
+    register #(.N(1)) jmp_instr_reg(.clk(clk), .rst(rst), .writeEn(mem_stall_n), .dataIn(jmp_instr), .dataOut(out_jmp_instr), .err());
+    register #(.N(1)) br_instr_reg(.clk(clk), .rst(rst), .writeEn(mem_stall_n), .dataIn(br_instr), .dataOut(out_br_instr), .err());
     register #(.N(3)) alu_op_reg(.clk(clk), .rst(rst), .writeEn(mem_stall_n), .dataIn(in_alu_op), .dataOut(out_alu_op), .err());
     register #(.N(1)) alu_invA_reg(.clk(clk), .rst(rst), .writeEn(mem_stall_n), .dataIn(in_alu_invA), .dataOut(out_alu_invA), .err());
     register #(.N(1)) alu_invB_reg(.clk(clk), .rst(rst), .writeEn(mem_stall_n), .dataIn(in_alu_invB), .dataOut(out_alu_invB), .err());
