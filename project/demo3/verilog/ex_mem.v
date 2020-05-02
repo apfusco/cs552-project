@@ -46,6 +46,8 @@ module ex_mem(
         in_LBI,
         in_SLBI,
         in_halt,
+        mem_mem_fwd,
+        fwd_data_in,
         stall_n,
         take_new_PC);
 
@@ -95,6 +97,8 @@ module ex_mem(
    input [15:0] in_LBI;
    input [15:0] in_SLBI;
    input        in_halt;
+   input        mem_mem_fwd;
+   input [15:0] fwd_data_in;
    input        stall_n;
    input        take_new_PC; // arrives from execute, low if stall
 
@@ -120,6 +124,8 @@ module ex_mem(
                    in_set,
                    in_LBI,
                    in_SLBI,
+                   mem_mem_fwd,
+                   fwd_data_in,
                    stall_n,
                    take_new_PC
                    } === 1'bX) ? 1'b1 : 1'b0;
@@ -128,7 +134,7 @@ module ex_mem(
    // TODO: mem_wr_en needs to be low in the event of a stall.
    register #(.N(16)) PC_inc_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_PC_inc), .dataOut(out_PC_inc), .err());
    register #(.N(16)) rd_data_1_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_rd_data_1), .dataOut(out_rd_data_1), .err());
-   register #(.N(16)) rd_data_2_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_rd_data_2), .dataOut(out_rd_data_2), .err());
+   register #(.N(16)) rd_data_2_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(mem_mem_fwd ? fwd_data_in : in_rd_data_2), .dataOut(out_rd_data_2), .err());
    register #(.N(3)) rd_reg_1_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_rd_reg_1), .dataOut(out_rd_reg_1), .err());
    register #(.N(3)) rd_reg_2_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_rd_reg_2), .dataOut(out_rd_reg_2), .err());
    register #(.N(1)) alu_ofl_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_alu_ofl), .dataOut(out_alu_ofl), .err());

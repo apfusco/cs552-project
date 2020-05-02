@@ -122,7 +122,7 @@ module forward(
 //    assign mem_fwd_Rs = wb_wr_en & ~|(mem_wb_Rd ^ id_ex_Rs) & ~ex_fwd_Rs;
     assign mem_fwd_ST = wb_wr_en & ~|(wb_Rd ^ ex_Rt) & ex_mem_wr;
 
-    assign mem_to_mem_fwd_Rs = wb_wr_en & mem_mem_wr & ~|(wb_Rd ^ mem_Rt);
+    assign mem_to_mem_fwd_Rs = mem_wr_en & ex_mem_wr & ~|(mem_Rd ^ ex_Rt);
 
     // hard to compress into a 4:1 mux because of how wr_sel is set up
         // could feasibly just make this a one-hot-esque thing
@@ -152,6 +152,6 @@ module forward(
     assign ex_Rt_data = ex_wr_data;     // Should be used when ex_fwd_Rt
     assign mem_Rs_data = mem_wr_data;   // Should be used when mem_fwd_Rs
     assign mem_Rt_data = mem_wr_data;   // Should be used when mem_fwd_Rt
-    assign mem_to_mem_Rs = mem_wr_data; // Should be used when mem_to_mem_fwd_Rs
+    assign mem_to_mem_Rs = ex_wr_data; // Should be used when mem_to_mem_fwd_Rs
 
 endmodule
