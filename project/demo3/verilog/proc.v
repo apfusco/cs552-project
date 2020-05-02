@@ -360,6 +360,8 @@ module proc (/*AUTOARG*/
                       .in_LBI(ex_LBI),
                       .in_SLBI(ex_SLBI),
                       .in_halt(ex_halt),
+                      .mem_mem_fwd(mem_to_mem_fwd_Rs),
+                      .fwd_data_in(mem_to_mem_Rs),
                       .stall_n(~mem_stall),
                       .take_new_PC(take_new_PC));
 
