@@ -179,7 +179,7 @@ module proc (/*AUTOARG*/
                     .clk(clk),
                     .rst(rst),
                     .in_instr(if_instr),
-                    .in_stall_n(~stall | ~mem_stall), // turns stall into an active low
+                    .in_stall_n(~stall & ~mem_stall), // turns stall into an active low
                     .in_PC_inc(if_PC_inc),
                     .take_new_PC(take_new_PC),
                     .in_halt(if_halt));
@@ -360,6 +360,7 @@ module proc (/*AUTOARG*/
                       .in_LBI(ex_LBI),
                       .in_SLBI(ex_SLBI),
                       .in_halt(ex_halt),
+                      .stall_n(~mem_stall),
                       .take_new_PC(take_new_PC));
 
    memory memory0(.data_out(mem_mem_out),
