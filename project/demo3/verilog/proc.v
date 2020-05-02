@@ -120,6 +120,7 @@ module proc (/*AUTOARG*/
 
    // Write back stage signals
    wire [15:0] wb_PC_inc;
+   wire        wb_halt;
    wire [15:0] wb_rd_data_1;
    wire [15:0] wb_alu_out;
    wire [15:0] wb_mem_out;
@@ -390,6 +391,7 @@ module proc (/*AUTOARG*/
                       .out_set(wb_set),
                       .out_LBI(wb_LBI),
                       .out_SLBI(wb_SLBI),
+                      .out_halt(wb_halt),
                       .err(mem_wb_error),
                       .clk(clk),
                       .rst(rst),
@@ -405,6 +407,7 @@ module proc (/*AUTOARG*/
                       .in_set(mem_set),
                       .in_LBI(mem_LBI),
                       .in_SLBI(mem_SLBI),
+                      .in_halt(mem_halt),
                       .stall_n(~mem_stall));
 
    wb wb0(.alu_out(wb_alu_out),
