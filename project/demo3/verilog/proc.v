@@ -363,7 +363,7 @@ module proc (/*AUTOARG*/
                       .take_new_PC(take_new_PC));
 
    memory memory0(.data_out(mem_mem_out),
-                  .data_in(ex_rd_data_2),
+                  .data_in(ex_fwd_rd_data_2),
                   .addr(ex_alu_out),
                   .en(ex_mem_en),
                   .mem_wr(ex_mem_wr),
