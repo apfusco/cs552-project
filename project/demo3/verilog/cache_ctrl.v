@@ -103,9 +103,9 @@ module cache_ctrl(clk,
          4'b0011 : begin // ACCESS_RD
             en = 1'b1;
             inc = ~mem_stall;
-            mem_wr = dirty;
-            mem_rd = ~dirty;
-            nxt_state = mem_stall ? state : (dirty ? 4'b0100 : 4'b0101);
+            mem_wr = dirty & valid;
+            mem_rd = ~dirty | ~valid;
+            nxt_state = mem_stall ? state : (dirty & valid ? 4'b0100 : 4'b0101);
          end
          4'b0100 : begin // MEM_WR_1
             // No transition
