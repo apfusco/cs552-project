@@ -26,6 +26,7 @@ module forward(
         wb_wr_en,
         wb_Rd,
         mem_alu_result,
+        mem_mem_result,
         mem_set_result,
         mem_lbi_result,
         mem_slbi_result,
@@ -68,6 +69,7 @@ module forward(
     input [15:0] mem_lbi_result;
     input [15:0] mem_slbi_result;
     input [2:0]  mem_wr_sel;
+    input [15:0] mem_mem_result;
     input        ex_mem_wr;
     input [15:0] wb_alu_result; // mem stage results
     input [15:0] wb_mem_result;
@@ -90,6 +92,7 @@ module forward(
                    mem_set_result,
                    mem_lbi_result,
                    mem_slbi_result,
+                   mem_mem_result,
                    mem_wr_sel,
                    ex_mem_wr,
                    wb_alu_result,
@@ -127,7 +130,7 @@ module forward(
     // hard to compress into a 4:1 mux because of how wr_sel is set up
         // could feasibly just make this a one-hot-esque thing
     mux8_1 mux8_1_ex_data[15:0](.InA(mem_alu_result),
-                             .InB(16'h0000),
+                             .InB(mem_mem_result),
                              .InC(16'h0000),
                              .InD(mem_set_result),
                              .InE(mem_lbi_result),
