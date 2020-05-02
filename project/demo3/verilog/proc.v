@@ -445,6 +445,7 @@ module proc (/*AUTOARG*/
                     .mem_set_result({15'h0000, mem_set}),
                     .mem_lbi_result(mem_LBI),
                     .mem_slbi_result(mem_SLBI),
+                    .mem_mem_result(mem_mem_out),
                     .mem_wr_sel(mem_wr_sel),
                     .ex_mem_wr(ex_mem_wr),
                     .wb_alu_result(wb_alu_out),
