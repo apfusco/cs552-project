@@ -158,7 +158,7 @@ module mem_system(/*AUTOARG*/
                   .write(Wr_reg),
                   .hit(c0_hit | c2_hit),
                   .dirty(nxt_victim ? c2_dirty : c0_dirty),
-                  .valid((c0_hit & c0_valid) | (c2_hit & c2_valid)),
+                  .valid((c0_hit & c0_valid) | (c2_hit & c2_valid) | (~c0_hit & ~c2_hit & ~nxt_victim & c0_valid) | (~c0_hit & ~c2_hit & nxt_victim & c2_valid)),
                   .busy(busy),
                   .mem_stall(mem_stall),
                   .cnt(cnt),
