@@ -86,8 +86,6 @@ module execute (oprnd_1,
    wire br_lt;
    wire br_gteq;
    wire [15:0] PC_sext_imm;
-   // wire [15:0] reg_sext_imm; // TODO: This signal shouldn't be needed
-   // anymore now that the ALU is used for the addition.
 
    wire [15:0] fwd_op_1;
    wire [15:0] fwd_op_2;
@@ -156,7 +154,6 @@ module execute (oprnd_1,
    assign take_new_PC = jmp_instr | jmp_reg_instr | (br_instr & take_br);
 
    cla_16b add_PC_sext_imm(.A(PC_inc), .B(sext_imm), .C_in(1'b0), .S(PC_sext_imm), .C_out());
-   // TODO: Remove this adder //cla_16b add_reg_sext_imm(.A(oprnd_1), .B(sext_imm), .C_in(1'b0), .S(reg_sext_imm), .C_out());
 
    // determines branching behavior based on result flags
    mux4_1 mux(.InA(ofl), .InB(zero), .InC(ltz), .InD(lteq), .S(set_sel), .Out(set));

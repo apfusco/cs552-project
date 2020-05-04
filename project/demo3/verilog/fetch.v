@@ -42,7 +42,6 @@ module fetch (instr, PC_inc, halt, err, clk, rst, new_PC, take_new_PC, stall, ac
 
     assign halt_n = |instr[15:11] | ~done | take_new_PC | took_new_PC; // HALT is decoded in fetch for immediate feedback.
     assign nop_halt = ~halt_n;
-    // TODO: Handle the case when take_new_PC is asserted during a cache stall
     assign update_PC = ((halt_n & ~stall & done) | take_new_PC) & ~took_new_PC;
     assign two = 16'h0002;
     assign PC_inc = PC_inc_wire;
@@ -68,10 +67,6 @@ module fetch (instr, PC_inc, halt, err, clk, rst, new_PC, take_new_PC, stall, ac
 
     register #(.N(1)) took_new_PC_reg(.clk(clk), .rst(rst), .writeEn(take_new_PC | done),
             .dataIn(take_new_PC & cache_stall), .dataOut(took_new_PC), .err());
-
-    //memory2c imem(.data_out(nop_instr), .data_in(), .addr(PC_reg_out),
-    //        .enable(1'b1), .wr(1'b0), .createdump(actual_halt), .clk(clk),
-    //        .rst(rst));
 
     mem_system imem(.DataOut(nop_instr),
                     .Done(done),

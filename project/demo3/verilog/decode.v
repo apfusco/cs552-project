@@ -70,7 +70,6 @@ module decode (rd_data_1,
     wire [1:0] sext_op;
     wire [1:0] wr_reg_sel;
     wire oprnd_sel;
-//    wire [2:0] wr_reg;
 
     // Error signals
     wire reg_error;
@@ -98,7 +97,6 @@ module decode (rd_data_1,
                              .writeEn(in_wr_en));
     
     // sign extension for immediates
-        // TODO: this won't work for ST instructions
     sext sign_extender(.instr(instr), .ext_op(sext_op), .imm(sext_imm), .err(sext_error));
     mux2_1 oprnd2_mux [15:0](.InA(rd_data_2), .InB(sext_imm), .S(oprnd_sel),
             .Out(oprnd_2));

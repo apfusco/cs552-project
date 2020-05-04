@@ -8,7 +8,7 @@ module ex_mem(
         out_alu_ofl,
         out_alu_out,
         out_alu_zero,
-        out_sext_imm, 
+        out_sext_imm,
         out_alu_ltz,
         out_alu_lteq,
         out_set_sel,
@@ -130,10 +130,9 @@ module ex_mem(
                    take_new_PC
                    } === 1'bX) ? 1'b1 : 1'b0;
 
-   // TODO: writeEn needs to be low in the event of a stall.
-   // TODO: mem_wr_en needs to be low in the event of a stall.
    register #(.N(16)) PC_inc_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_PC_inc), .dataOut(out_PC_inc), .err());
    register #(.N(16)) rd_data_1_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_rd_data_1), .dataOut(out_rd_data_1), .err());
+   // TODO: Clean up the following forwarding logic.
    register #(.N(16)) rd_data_2_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(mem_mem_fwd ? fwd_data_in : in_rd_data_2), .dataOut(out_rd_data_2), .err());
    register #(.N(3)) rd_reg_1_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_rd_reg_1), .dataOut(out_rd_reg_1), .err());
    register #(.N(3)) rd_reg_2_reg(.clk(clk), .rst(rst), .writeEn(stall_n), .dataIn(in_rd_reg_2), .dataOut(out_rd_reg_2), .err());
