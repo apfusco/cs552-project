@@ -34,8 +34,6 @@ module memory (data_out, data_in, addr, en, mem_wr, mem_mem_fwd, fwd_data_in, cr
 
     mux2_1 mux2_1_data [15:0](.InA(data_in), .InB(fwd_data_in), .S(mem_mem_fwd), .Out(data));
     
-    //memory2c mem(.data_out(data_out), .data_in(data), .addr(addr), .enable(en), 
-    //    .wr(mem_wr), .createdump(createdump), .clk(clk), .rst(rst));
     mem_system #(.memtype(1)) dmem(.DataOut(data_out),
                     .Done(done),
                     .Stall(stall),
