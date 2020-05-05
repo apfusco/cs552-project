@@ -47,12 +47,13 @@ module fetch (instr, PC_inc, halt, err, clk, rst, new_PC, take_new_PC, stall, ac
     assign two = 16'h0002;
     assign PC_inc = PC_inc_wire;
 
-    assign input_error = (^{clk,
-                            rst,
-                            new_PC,
-                            take_new_PC,
-                            stall,
-                            actual_halt} === 1'bX) ? 1'b1 : 1'b0;
+    assign input_error = 1'b0;
+    //assign input_error = (^{clk,
+    //                        rst,
+    //                        new_PC,
+    //                        take_new_PC,
+    //                        stall,
+    //                        actual_halt} === 1'bX) ? 1'b1 : 1'b0;
 
     assign err = input_error | mem_system_error;
 

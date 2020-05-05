@@ -55,15 +55,16 @@ module cache_ctrl(clk,
 
    wire input_error;
 
-   assign input_error = (^{clk,
-                           rst,
-                           addr,
-                           read,
-                           write,
-                           hit,
-                           dirty,
-                           valid,
-                           busy} === 1'bX) ? 1'b1 : 1'b0;
+   assign input_error = 1'b0;
+   //assign input_error = (^{clk,
+   //                        rst,
+   //                        addr,
+   //                        read,
+   //                        write,
+   //                        hit,
+   //                        dirty,
+   //                        valid,
+   //                        busy} === 1'bX) ? 1'b1 : 1'b0;
    assign err = input_error | case_err;
 
    register #(.N(4)) state_register(.clk(clk), .rst(rst), .writeEn(1'b1), .dataIn(nxt_state), .dataOut(state), .err());

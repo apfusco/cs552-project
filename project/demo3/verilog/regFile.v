@@ -39,7 +39,8 @@ module regFile (
                                  .dataIn(writeData), .dataOut(Q[R*N-1:0]),
                                  .err(reg_err));
 
-   assign err = |{reg_err, ((^{read1RegSel, read2RegSel, writeRegSel} === 1'bX) ? 1'b1 : 1'b0)};
+   assign err = 1'b0;
+   //assign err = |{reg_err, ((^{read1RegSel, read2RegSel, writeRegSel} === 1'bX) ? 1'b1 : 1'b0)};
 
    mux8_1 mux_read1RegSel[N-1:0](.InA(Q[1*N-1:0*N]),
                                  .InB(Q[2*N-1:1*N]),

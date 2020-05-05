@@ -26,8 +26,9 @@ module if_id(
    input        take_new_PC;
    input        in_halt;
 
-   assign err = (^{clk, rst, in_instr, in_stall_n, in_PC_inc, in_halt} === 1'bX) ? 1'b1
-         : 1'b0;
+   assign err = 1'b0;
+   //assign err = (^{clk, rst, in_instr, in_stall_n, in_PC_inc, in_halt} === 1'bX) ? 1'b1
+   //      : 1'b0;
 
    wire [15:0] instr;
    wire halt;

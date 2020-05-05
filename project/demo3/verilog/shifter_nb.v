@@ -1,4 +1,4 @@
-module shifter_nb #(parameter SHFT) (In, Cnt, Op, Out);
+module shifter_nb #(parameter SHFT = 1) (In, Cnt, Op, Out);
 
    // declare constant for size of inputs, outputs (N) and # bits to shift (C)
    parameter   N = 16;

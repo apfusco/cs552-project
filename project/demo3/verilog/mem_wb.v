@@ -68,21 +68,22 @@ module mem_wb(
    wire mem_wr;
    wire halt;
 
-    assign err = (^{clk,
-                    rst,
-                    in_rd_data_1,
-                    in_wr_en,
-                    in_wr_reg,
-                    in_wr_sel,
-                    in_alu_out,
-                    in_mem_out,
-                    in_PC_inc,
-                    in_LBI,
-                    in_SLBI,
-                    in_sext_imm,
-                    in_set,
-                    stall_n
-                    } === 1'bX) ? 1'b1 : 1'b0;
+   assign err = 1'b0;
+   // assign err = (^{clk,
+   //                 rst,
+   //                 in_rd_data_1,
+   //                 in_wr_en,
+   //                 in_wr_reg,
+   //                 in_wr_sel,
+   //                 in_alu_out,
+   //                 in_mem_out,
+   //                 in_PC_inc,
+   //                 in_LBI,
+   //                 in_SLBI,
+   //                 in_sext_imm,
+   //                 in_set,
+   //                 stall_n
+   //                 } === 1'bX) ? 1'b1 : 1'b0;
 
    assign out_wr_en = wr_en & stall_n;
    assign out_mem_wr = mem_wr & stall_n;

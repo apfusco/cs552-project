@@ -33,8 +33,9 @@ module wb (alu_out,
 
    assign set_ext = {15'h0000, set};
    assign dontcare = 16'hXXXX;
-   assign err = (^{alu_out, mem_out, PC_inc, set, rd_data_1, sext_imm, wr_sel,
-         LBI, SLBI} === 1'bX) ? 1'b1 : 1'b0;
+   assign err = 1'b0;
+   //assign err = (^{alu_out, mem_out, PC_inc, set, rd_data_1, sext_imm, wr_sel,
+   //      LBI, SLBI} === 1'bX) ? 1'b1 : 1'b0;
 
    mux8_1 mux8_1_wr_data[15:0](.InA(alu_out),
                                .InB(mem_out),

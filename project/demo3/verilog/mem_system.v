@@ -70,13 +70,14 @@ module mem_system(/*AUTOARG*/
    wire [15:0] c2_data_out;
    wire [15:0] mem_data_out;
 
-   assign input_error = (^{Addr,
-                           DataIn,
-                           Rd,
-                           Wr,
-                           createdump,
-                           clk,
-                           rst} === 1'bX) ? 1'b1 : 1'b0;
+   assign input_error = 1'b0;
+   //assign input_error = (^{Addr,
+   //                        DataIn,
+   //                        Rd,
+   //                        Wr,
+   //                        createdump,
+   //                        clk,
+   //                        rst} === 1'bX) ? 1'b1 : 1'b0;
    assign err = cache_ctrl_error | four_bank_mem_error | c0_error | c2_error | input_error;
 
    // Flopped inputs

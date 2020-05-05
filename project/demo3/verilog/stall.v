@@ -23,13 +23,14 @@ module stall(
     input [2:0] id_ex_Rt;
     input       id_ex_has_Rt;
 
-    assign err = (^{ex_mem_mem_en,
-                    ex_mem_mem_wr,
-                    ex_mem_Rd,
-                    id_ex_Rs,
-                    id_ex_Rt,
-                    id_ex_has_Rt
-                    } === 1'bX) ? 1'b1 : 1'b0;
+    assign err = 1'b0;
+    //assign err = (^{ex_mem_mem_en,
+    //                ex_mem_mem_wr,
+    //                ex_mem_Rd,
+    //                id_ex_Rs,
+    //                id_ex_Rt,
+    //                id_ex_has_Rt
+    //                } === 1'bX) ? 1'b1 : 1'b0;
 
     wire ex_mem_mem_rd;
 

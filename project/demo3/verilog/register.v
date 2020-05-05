@@ -1,4 +1,4 @@
-module register #(parameter N) (clk, rst, writeEn, dataIn, dataOut, err);
+module register #(parameter N = 1) (clk, rst, writeEn, dataIn, dataOut, err);
 
    input         clk;
    input         rst;
@@ -11,7 +11,8 @@ module register #(parameter N) (clk, rst, writeEn, dataIn, dataOut, err);
    wire [N-1:0] d;
    wire [N-1:0] q;
 
-   assign err = (^{dataIn, writeEn} === 1'bX) ? 1'b1 : 1'b0;
+   assign err = 1'b0;
+   //assign err = (^{dataIn, writeEn} === 1'bX) ? 1'b1 : 1'b0;
 
    mux2_1 mux[N-1:0](.InA(q), .InB(dataIn), .S(writeEn), .Out(d));
    dff flop[N-1:0](.q(q), .d(d), .clk(clk), .rst(rst));

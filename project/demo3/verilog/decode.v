@@ -78,7 +78,8 @@ module decode (rd_data_1,
     wire input_error;
     wire sext_error;
 
-    assign input_error = (^{rd_reg_1, rd_reg_2, in_wr_en, wr_data, instr, clk, rst} === 1'bX) ? 1'b1 : 1'b0;
+    assign input_error = 1'b0;
+    //assign input_error = (^{rd_reg_1, rd_reg_2, in_wr_en, wr_data, instr, clk, rst} === 1'bX) ? 1'b1 : 1'b0;
     assign err = reg_error | cntrl_error | input_error | sext_error;
 
     // determine the dest register
